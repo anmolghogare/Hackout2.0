@@ -19,6 +19,8 @@ export interface BaseLayoutProps {
   onStartJudgeTour?: () => void;
   onApplyPreset?: (preset: Partial<SliderInputs>) => void;
   sliderInputs?: SliderInputs;
+  apiKey?: string;
+  aiModel?: string;
   isBackendOnline?: boolean;
   children: React.ReactNode;
 }
@@ -38,6 +40,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
   onStartJudgeTour,
   onApplyPreset = () => {},
   sliderInputs,
+  apiKey,
+  aiModel,
   isBackendOnline = true,
   children,
 }) => {
@@ -103,6 +107,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         onStartJudgeTour={onStartJudgeTour}
         facilityConfig={facilityConfig}
         sliderInputs={sliderInputs}
+        apiKey={apiKey}
+        aiModel={aiModel}
       />
     </div>
   );
