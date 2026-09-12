@@ -165,7 +165,17 @@ export const DashboardPage: React.FC = () => {
       {/* ============================================================ */}
       {activeTab === 'simulation' && (
         <div className="animate-fadeIn space-y-6">
-          <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
+          <ProcessFlowCanvas
+            stages={stages}
+            viewMode={viewMode}
+            onSelectStageForSimulation={(stageIdx) => {
+              if (stageIdx === 0) applyPreset({ pcrResinPct: 20 });
+              else if (stageIdx === 1) applyPreset({ fuelShiftPct: 50, tempReductionPct: 10 });
+              else if (stageIdx === 2) applyPreset({ fuelShiftPct: 30, scrapRecyclePct: 50 });
+              else if (stageIdx === 3) applyPreset({ scrapRecyclePct: 100 });
+              setActiveTab('simulator_hub');
+            }}
+          />
         </div>
       )}
 
@@ -205,7 +215,10 @@ export const DashboardPage: React.FC = () => {
             scenarios={savedScenarios}
             onSaveCurrentScenario={saveScenario}
             onDeleteScenario={deleteScenario}
-            onLoadScenario={applyPreset}
+            onLoadScenario={(inputs) => {
+              applyPreset(inputs);
+              setActiveTab('simulator_hub');
+            }}
             viewMode={viewMode}
           />
         </div>
@@ -252,7 +265,13 @@ export const DashboardPage: React.FC = () => {
       {/* ============================================================ */}
       {activeTab === 'roadmap' && (
         <div className="animate-fadeIn space-y-6">
-          <RoadmapTable viewMode={viewMode} />
+          <RoadmapTable
+            viewMode={viewMode}
+            onSimulatePhase={(inputs) => {
+              applyPreset(inputs);
+              setActiveTab('simulator_hub');
+            }}
+          />
         </div>
       )}
 

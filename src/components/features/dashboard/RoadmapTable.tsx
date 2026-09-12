@@ -2,13 +2,17 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card';
 import { Badge } from '../../ui/Badge';
 import { BarChart3, Calendar, ShieldCheck, Zap, Coins } from 'lucide-react';
-import { ViewMode } from '../../../types';
+import { ViewMode, SliderInputs } from '../../../types';
 
 export interface RoadmapTableProps {
   viewMode?: ViewMode;
+  onSimulatePhase?: (inputs: SliderInputs) => void;
 }
 
-export const RoadmapTable: React.FC<RoadmapTableProps> = ({ viewMode = 'carbon' }) => {
+export const RoadmapTable: React.FC<RoadmapTableProps> = ({
+  viewMode = 'carbon',
+  onSimulatePhase,
+}) => {
   const isFinancial = viewMode === 'financial';
 
   const items = [
@@ -23,6 +27,7 @@ export const RoadmapTable: React.FC<RoadmapTableProps> = ({ viewMode = 'carbon' 
       paybackPeriod: '0.2 Months',
       status: 'In Progress' as const,
       avgPaybackNum: 0.2,
+      sliderInputs: { fuelShiftPct: 0, tempReductionPct: 0, pcrResinPct: 0, scrapRecyclePct: 100 },
     },
     {
       phase: 'Phase 2',
@@ -35,6 +40,7 @@ export const RoadmapTable: React.FC<RoadmapTableProps> = ({ viewMode = 'carbon' 
       paybackPeriod: '7.5 Months',
       status: 'Planned' as const,
       avgPaybackNum: 7.5,
+      sliderInputs: { fuelShiftPct: 0, tempReductionPct: 0, pcrResinPct: 20, scrapRecyclePct: 100 },
     },
     {
       phase: 'Phase 3',
@@ -47,6 +53,7 @@ export const RoadmapTable: React.FC<RoadmapTableProps> = ({ viewMode = 'carbon' 
       paybackPeriod: '10.0 Months',
       status: 'Planned' as const,
       avgPaybackNum: 10.0,
+      sliderInputs: { fuelShiftPct: 50, tempReductionPct: 10, pcrResinPct: 20, scrapRecyclePct: 100 },
     },
     {
       phase: 'Phase 4',
@@ -59,6 +66,7 @@ export const RoadmapTable: React.FC<RoadmapTableProps> = ({ viewMode = 'carbon' 
       paybackPeriod: '10.5 Months',
       status: 'Planned' as const,
       avgPaybackNum: 10.5,
+      sliderInputs: { fuelShiftPct: 80, tempReductionPct: 15, pcrResinPct: 35, scrapRecyclePct: 100 },
     },
   ];
 
@@ -117,6 +125,7 @@ export const RoadmapTable: React.FC<RoadmapTableProps> = ({ viewMode = 'carbon' 
                 <th className="p-4">Annual CO₂ Cut</th>
                 <th className="p-4">Payback</th>
                 <th className="p-4">Status</th>
+                <th className="p-4 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200/80 dark:divide-white/[0.06]">
@@ -162,6 +171,16 @@ export const RoadmapTable: React.FC<RoadmapTableProps> = ({ viewMode = 'carbon' 
                     >
                       {row.status}
                     </Badge>
+                  </td>
+                  <td className="p-4 text-right whitespace-nowrap">
+                    {onSimulatePhase && (
+                      <button
+                        onClick={() => onSimulatePhase(row.sliderInputs)}
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white border border-emerald-500/30 transition-all font-mono shadow-xs"
+                      >
+                        Simulate Levers →
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
