@@ -61,16 +61,13 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     );
   };
 
-  // Critical real-time events for Right Column
+  // Critical real-time events for Right Column (Limited strictly to Title & 1-2 sentence Issue Summary <= 20 words)
   const criticalAlerts = [
     {
       id: 'kiln-overshoot',
       severity: 'p1',
       title: 'Kiln Thermal Overshoot Spike',
-      location: 'Stage 02 Furnace Burner #2',
-      metric: '1,418°C',
-      threshold: 'Max: 1,350°C (+68°C Overshoot)',
-      impact: '48 tCO₂e/mo waste',
+      summary: 'Furnace Burner #2 spiked to 1,418°C, triggering 48 tCO₂e/mo in excessive thermal fuel waste.',
       tabTarget: 'analytics_hub' as TabId,
       actionLabel: 'Fix Setpoint in 3D Analytics',
       badgeColor: 'bg-red-500 text-white animate-pulse',
@@ -79,11 +76,8 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     {
       id: 'uninsulated-furnace',
       severity: 'warning',
-      title: 'Uninsulated Furnace Shell Radiation',
-      location: 'Kiln Section B Refractory Shell',
-      metric: '380°C Outer Shell Temp',
-      threshold: 'Target: < 120°C',
-      impact: '₹1,20,000/mo thermal loss',
+      title: 'Uninsulated Furnace Radiation',
+      summary: 'Kiln refractory shell breach radiating 380°C heat loss costing ₹1,20,000 monthly.',
       tabTarget: 'simulation' as TabId,
       actionLabel: 'Inspect Twin Pipeline',
       badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
@@ -93,10 +87,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       id: 'grid-peak-tariff',
       severity: 'warning',
       title: 'Peak Grid Tariff Window Active',
-      location: 'Substation Transformer #1',
-      metric: '₹8.50 / kWh Rate',
-      threshold: 'Shift 35% load to biomass generator',
-      impact: 'Potential ₹45,000 daily spike',
+      summary: 'High tariff window active at ₹8.50/kWh. Biomass shift advised to avoid ₹45,000 daily spike.',
       tabTarget: 'simulator_hub' as TabId,
       actionLabel: 'Simulate Load Shift',
       badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
@@ -105,11 +96,8 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     {
       id: 'fuel-bill-unlogged',
       severity: 'hazard',
-      title: 'Unverified HFO Fuel Invoice Log',
-      location: 'Data Intake Queue',
-      metric: '12 KL Delivery Note Pending',
-      threshold: 'SEBI Scope 1 Audit gap',
-      impact: 'BRSR Compliance Pending',
+      title: 'Unverified Fuel Invoice Log',
+      summary: '12 KL Heavy Furnace Oil delivery note unlogged, creating a SEBI Scope 1 audit gap.',
       tabTarget: 'intake' as TabId,
       actionLabel: 'Scan Bill via OCR',
       badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
@@ -634,14 +622,10 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                       </span>
                     </div>
 
-                    <div className="text-[11px] text-slate-400 font-mono space-y-0.5">
-                      <div className="text-slate-300 font-semibold">{alert.location}</div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-red-400 font-bold">{alert.metric}</span>
-                        <span className="text-[10px] text-slate-500">{alert.impact}</span>
-                      </div>
-                      <div className="text-[10px] text-slate-400 italic">{alert.threshold}</div>
-                    </div>
+                    {/* Issue Summary (Truncated to 1-2 short sentences / 15-20 words max) */}
+                    <p className="text-[11.5px] text-slate-300 leading-snug line-clamp-2">
+                      {alert.summary}
+                    </p>
 
                     {/* Direct Actionable CTA button */}
                     <button
