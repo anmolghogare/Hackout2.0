@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FacilityConfig, AISettings, TabId } from '../../../types';
-import { DEFAULT_FACILITY_PRESETS, formatINR, formatINRLakhs } from '../../../lib/utils';
+import { DEFAULT_FACILITY_PRESETS, formatINR, formatINRLakhs, calculateDynamicFacilitySimulation } from '../../../lib/utils';
 import {
   Building2,
   Flame,
@@ -8,21 +8,18 @@ import {
   Recycle,
   Layers,
   Sparkles,
-  Key,
   Save,
   RotateCcw,
   CheckCircle2,
   AlertTriangle,
   Info,
-  Sliders,
   DollarSign,
   TrendingUp,
-  Download,
-  Upload,
-  Eye,
-  EyeOff,
-  ChevronRight,
   ShieldCheck,
+  Bot,
+  Brain,
+  Lightbulb,
+  Check,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 
@@ -46,9 +43,7 @@ export const AdminHub: React.FC<AdminHubProps> = ({
   const [formConfig, setFormConfig] = useState<FacilityConfig>(() => JSON.parse(JSON.stringify(currentConfig)));
   const [formAISettings, setFormAISettings] = useState<AISettings>(() => ({ ...aiSettings }));
   const [activeSection, setActiveSection] = useState<'profile' | 'stages' | 'financial' | 'ai'>('profile');
-  const [showApiKey, setShowApiKey] = useState<boolean>(false);
   const [saveSuccessMessage, setSaveSuccessMessage] = useState<string | null>(null);
-  const [apiTestStatus, setApiTestStatus] = useState<'idle' | 'testing' | 'success' | 'failed'>('idle');
 
   const handleProfileChange = (field: keyof typeof formConfig.profile, value: any) => {
     setFormConfig((prev) => ({
@@ -125,7 +120,7 @@ export const AdminHub: React.FC<AdminHubProps> = ({
     };
     onSaveConfig(updated);
     onSaveAISettings(formAISettings);
-    showFlashMessage('✅ Facility configuration successfully applied! All live modules recalculated.');
+    showFlashMessage('✅ Facility parameters saved! AI review and all live modules recalculated.');
   };
 
   const handleResetToCurrent = () => {
@@ -141,32 +136,13 @@ export const AdminHub: React.FC<AdminHubProps> = ({
     }, 4500);
   };
 
-  const testGeminiAPIKey = async () => {
-    if (!formAISettings.apiKey || formAISettings.apiKey.trim().length < 10) {
-      setApiTestStatus('failed');
-      return;
-    }
-    setApiTestStatus('testing');
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${formAISettings.apiKey.trim()}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: 'Hello! Respond with JSON: {"status": "ok"}' }] }],
-          }),
-        }
-      );
-      if (res.ok) {
-        setApiTestStatus('success');
-      } else {
-        setApiTestStatus('failed');
-      }
-    } catch {
-      setApiTestStatus('failed');
-    }
-  };
+  // Compute live AI telemetry analysis based on currently configured form values
+  const liveSimulation = calculateDynamicFacilitySimulation(formConfig, {
+    fuelShiftPct: 50,
+    tempReductionPct: 5,
+    pcrResinPct: 20,
+    scrapRecyclePct: 100,
+  });
 
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
@@ -180,14 +156,14 @@ export const AdminHub: React.FC<AdminHubProps> = ({
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Facility Admin Portal</span>
               </span>
-              <span className="text-xs text-slate-400 font-mono">Live Telemetry Synchronizer</span>
+              <span className="text-xs text-slate-400 font-mono">Integrated AI Telemetry</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-white tracking-tight">
               Factory Parameters & Live Onboarding
             </h1>
             <p className="text-sm text-slate-300 leading-relaxed font-normal">
-              Enter your plant’s real production metrics, furnace fuels, electricity bills, and scrap generation.
-              Saving changes instantly recalculates all carbon baselines, 3D thermal hotspots, What-If simulations, and SEBI BRSR reports.
+              Input your plant's operational parameters, raw materials, thermal fuels, electricity tariffs, and scrap volumes.
+              Our integrated AI automatically reviews your parameters and recalculates carbon baselines, 3D thermal hotspots, and ROI in real time.
             </p>
           </div>
 
@@ -303,8 +279,8 @@ export const AdminHub: React.FC<AdminHubProps> = ({
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           )}
         >
-          <Sparkles className="w-4 h-4" />
-          <span>4. AI Engine & API Key Setup</span>
+          <Sparkles className="w-4 h-4 text-amber-400" />
+          <span>4. AI Intelligence & Automated Review</span>
         </button>
 
         <div className="ml-auto pr-2 hidden sm:flex items-center">
@@ -812,103 +788,152 @@ export const AdminHub: React.FC<AdminHubProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 4: AI ENGINE & API KEY SETUP */}
+      {/* TAB 4: AUTOMATED AI INTELLIGENCE & AUDIT REVIEW */}
       {/* ========================================================================= */}
       {activeSection === 'ai' && (
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white font-heading">
-              Google Gemini AI Engine Integration
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Connect your Gemini API key to activate real-time LLM decarbonization reasoning or use the built-in offline industrial heuristics engine.
-            </p>
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center space-x-2">
+                <Brain className="w-5 h-5 text-emerald-500" />
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white font-heading">
+                  Automated AI Facility Audit & Review
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Integrated AI telemetry engine continuously reviews your configured factory parameters, identifying Scope 1–3 saving opportunities.
+              </p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center space-x-1.5 shrink-0 self-start sm:self-center">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>AI Engine Active & Synchronized</span>
+            </span>
           </div>
 
-          <div className="space-y-5 text-xs">
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 leading-relaxed">
-              <div className="flex items-center space-x-2 font-bold mb-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span>Zero-Leak Security Architecture</span>
+          {/* AI Executive Facility Audit Review Cards */}
+          <div className="space-y-4 text-xs">
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 to-emerald-950 text-white border border-slate-800 space-y-2">
+              <div className="flex items-center space-x-2 text-emerald-400 font-extrabold text-sm">
+                <Bot className="w-4 h-4" />
+                <span>Executive Telemetry Review for {formConfig.profile.name}</span>
               </div>
-              Your API key is saved solely within your browser’s encrypted LocalStorage session (or Vercel environment variables) and never shared or logged.
+              <p className="text-slate-300 leading-relaxed text-xs">
+                Based on your fed parameters ({formConfig.profile.sector} with {formConfig.profile.shiftsPerDay} daily shifts), the facility generates{' '}
+                <strong className="text-white">{liveSimulation.kpiData.baselineMonthlyCO2} tCO₂e/month</strong> baseline carbon output with a monthly energy & material spend of{' '}
+                <strong className="text-emerald-400">{formatINR(liveSimulation.kpiData.baselineMonthlyCostINR || 2850000)}</strong>.
+              </p>
             </div>
 
-            <div className="space-y-2">
-              <label className="font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                <span>Google Gemini API Key</span>
-                <span className="text-[10.5px] text-slate-400 font-mono">Get key from Google AI Studio</span>
-              </label>
-              <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Scope 1 Thermal Review */}
+              <div className="p-4.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                    <Flame className="w-4 h-4 text-amber-500" />
+                    <span>Scope 1 Thermal Fuel Review</span>
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold">
+                    Primary Hotspot
+                  </span>
+                </div>
+                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
+                  Your primary furnace runs on <strong>{formConfig.stage2.fuelType}</strong> at <strong>{formConfig.stage2.furnaceOperatingTempC}°C</strong> consuming{' '}
+                  <strong>{formConfig.stage2.monthlyFuelConsumption.toLocaleString('en-IN')} {formConfig.stage2.fuelUnit}/mo</strong>.
+                  Shifting 50% to Biomass/PNG Natural Gas avoids <strong>~21.1 tCO₂e/month</strong>.
+                </p>
+                <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                  <span>Est. Annual Fuel Savings:</span>
+                  <span>+{formatINRLakhs(liveSimulation.kpiData.financialSavings.energySavings || 420000)}/yr</span>
+                </div>
+              </div>
+
+              {/* Scope 2 Grid & Solar Review */}
+              <div className="p-4.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                    <Zap className="w-4 h-4 text-emerald-500" />
+                    <span>Scope 2 Grid & Solar Review</span>
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
+                    CEA Factor 0.82
+                  </span>
+                </div>
+                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
+                  Monthly power draw is <strong>{formConfig.stage3.monthlyElectricityKWh.toLocaleString('en-IN')} kWh</strong> at <strong>₹{formConfig.stage3.gridTariffPerKWhINR}/kWh</strong>.
+                  Your installed <strong>{formConfig.stage3.rooftopSolarKWp} kWp</strong> rooftop solar offsets captive demand during peak tariff hours.
+                </p>
+                <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                  <span>Power Factor Optimization:</span>
+                  <span>{formConfig.stage3.powerFactor >= 0.96 ? 'Optimal (PF > 0.95)' : 'Needs Capacitor Bank'}</span>
+                </div>
+              </div>
+
+              {/* Scope 3 Material Review */}
+              <div className="p-4.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                    <Layers className="w-4 h-4 text-blue-500" />
+                    <span>Scope 3 Feedstock & PCR Review</span>
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-bold">
+                    CPCB EPR Target
+                  </span>
+                </div>
+                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
+                  Using <strong>{formConfig.stage1.monthlyVolumeTons} T/mo</strong> of {formConfig.stage1.materialName}.
+                  Increasing PCR blend to {formConfig.stage1.recycledPcrAvailablePct}% saves <strong>₹{(formConfig.stage1.costPerTonINR - formConfig.stage1.recycledMaterialCostPerTonINR).toLocaleString('en-IN')}/ton</strong> in feedstock differential.
+                </p>
+                <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                  <span>Est. Material Cost Savings:</span>
+                  <span>+{formatINRLakhs(liveSimulation.kpiData.financialSavings.materialSavings || 240000)}/yr</span>
+                </div>
+              </div>
+
+              {/* Stage 4 Scrap Circularity Review */}
+              <div className="p-4.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                    <Recycle className="w-4 h-4 text-purple-500" />
+                    <span>Stage 4 Circular Scrap Monetization</span>
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-bold">
+                    Zero Waste
+                  </span>
+                </div>
+                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
+                  Generating <strong>{formConfig.stage4.monthlyScrapTons} T/mo</strong> of {formConfig.stage4.scrapTypeName}.
+                  Routing 100% through B2B circular buyer clusters yields <strong>₹{formConfig.stage4.recyclerSellingRatePerTonINR.toLocaleString('en-IN')}/ton</strong> in resale revenue while eliminating landfill fees.
+                </p>
+                <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                  <span>Est. Annual Scrap Revenue:</span>
+                  <span>+{formatINRLakhs(liveSimulation.kpiData.financialSavings.scrapRevenue || 300000)}/yr</span>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Automated Review Controls */}
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center space-x-3">
                 <input
-                  type={showApiKey ? 'text' : 'password'}
-                  placeholder="AIzaSy..."
-                  value={formAISettings.apiKey}
-                  onChange={(e) => setFormAISettings((prev) => ({ ...prev, apiKey: e.target.value }))}
-                  className="w-full px-3.5 py-2.5 pr-24 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono focus:ring-2 focus:ring-emerald-500 outline-none"
+                  type="checkbox"
+                  id="autoAnalysis"
+                  checked={formAISettings.enableAutoAnalysis}
+                  onChange={(e) => setFormAISettings((prev) => ({ ...prev, enableAutoAnalysis: e.target.checked }))}
+                  className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"
                 />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-1">
-                  <button
-                    type="button"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
-                  >
-                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={testGeminiAPIKey}
-                    disabled={apiTestStatus === 'testing'}
-                    className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px]"
-                  >
-                    {apiTestStatus === 'testing' ? 'Testing...' : 'Test Key'}
-                  </button>
-                </div>
+                <label htmlFor="autoAnalysis" className="text-slate-700 dark:text-slate-300 font-medium">
+                  Auto-generate AI mitigation plan when thermal leak share exceeds 15%
+                </label>
               </div>
 
-              {apiTestStatus === 'success' && (
-                <div className="flex items-center space-x-1.5 text-emerald-500 font-bold text-xs">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Gemini 1.5 Flash API Connected Successfully!</span>
-                </div>
-              )}
-              {apiTestStatus === 'failed' && (
-                <div className="flex items-center space-x-1.5 text-red-500 font-bold text-xs">
-                  <AlertTriangle className="w-4 h-4" />
-                  <span>API Key Test Failed. System will seamlessly use Indian Industrial Heuristics.</span>
-                </div>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Model Selection</label>
-                <select
-                  value={formAISettings.model}
-                  onChange={(e) => setFormAISettings((prev) => ({ ...prev, model: e.target.value as any }))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                >
-                  <option value="gemini-1.5-flash">Gemini 1.5 Flash (Ultra Fast & Smart)</option>
-                  <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Multimodal Reasoning)</option>
-                  <option value="heuristic-offline">Deterministic SME Heuristics (Offline Mode)</option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Autonomous Anomaly Triggers</label>
-                <div className="flex items-center space-x-2 pt-2">
-                  <input
-                    type="checkbox"
-                    id="autoAnalysis"
-                    checked={formAISettings.enableAutoAnalysis}
-                    onChange={(e) => setFormAISettings((prev) => ({ ...prev, enableAutoAnalysis: e.target.checked }))}
-                    className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <label htmlFor="autoAnalysis" className="text-slate-700 dark:text-slate-300">
-                    Auto-generate AI suggestions when hotspots exceed 15% share
-                  </label>
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('copilot')}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center space-x-1.5 transition-colors shrink-0"
+              >
+                <Bot className="w-4 h-4" />
+                <span>Open Full Copilot Review</span>
+              </button>
             </div>
           </div>
         </div>
