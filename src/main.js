@@ -2,7 +2,9 @@ import { App } from './App.js';
 import { initChartInstances } from './components/ChartsPanel.js';
 import { tourSteps } from './components/DemoTour.js';
 
-const API_BASE = 'http://localhost:5000/api';
+// Dynamic API Base URL (works locally & on deployed URL)
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = isLocal ? 'http://localhost:5000/api' : '/api';
 
 let appState = {
   kpiData: {
