@@ -216,7 +216,14 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     }
 
     try {
-      const aiRes = await queryAICopilot(prompt, facilityConfig, whatIf.hasMatches ? whatIf.newSliders : sliderInputs);
+      const historyContext = messages.slice(-4).map((m) => ({ sender: m.sender, text: m.text }));
+      const aiRes = await queryAICopilot(
+        prompt,
+        facilityConfig,
+        whatIf.hasMatches ? whatIf.newSliders : sliderInputs,
+        undefined,
+        historyContext
+      );
       if (aiRes) {
         if (aiRes.navigationTarget) {
           onNavigateTab(aiRes.navigationTarget as TabId);
