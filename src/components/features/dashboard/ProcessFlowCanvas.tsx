@@ -191,18 +191,18 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
         {/* ============================================================ */}
         {/* PIPELINE VISUALIZER: INPUT -> PROCESSING -> OUTPUT */}
         {/* ============================================================ */}
-        <div className="relative rounded-3xl p-6 sm:p-8 bg-[#0C0E17] border border-white/[0.08] shadow-2xl overflow-x-auto">
+        <div className="relative rounded-3xl p-6 sm:p-8 bg-slate-50/90 dark:bg-[#0C0E17] border border-slate-200/80 dark:border-white/[0.08] shadow-xl dark:shadow-2xl overflow-x-auto">
           {/* Section Headers: Input -> Processing -> Output */}
-          <div className="min-w-[860px] grid grid-cols-4 gap-4 mb-3 text-[11px] font-mono font-bold tracking-widest text-slate-400 uppercase">
-            <div className="flex items-center space-x-1.5 text-blue-400">
+          <div className="min-w-[860px] grid grid-cols-4 gap-4 mb-3 text-[11px] font-mono font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase">
+            <div className="flex items-center space-x-1.5 text-blue-600 dark:text-blue-400">
               <span className="w-2 h-2 rounded-full bg-blue-500" />
               <span>1. INPUT STAGE</span>
             </div>
-            <div className="col-span-2 flex items-center justify-center space-x-1.5 text-rose-400">
+            <div className="col-span-2 flex items-center justify-center space-x-1.5 text-rose-600 dark:text-rose-400">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
               <span>2. THERMAL & MECHANICAL PROCESSING (CRITICAL LEAK ZONE)</span>
             </div>
-            <div className="text-right flex items-center justify-end space-x-1.5 text-purple-400">
+            <div className="text-right flex items-center justify-end space-x-1.5 text-purple-600 dark:text-purple-400">
               <span className="w-2 h-2 rounded-full bg-purple-500" />
               <span>3. OUTPUT & RECOVERY</span>
             </div>
@@ -307,23 +307,23 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                     onMouseEnter={() => setHoveredStageIdx(idx)}
                     onMouseLeave={() => setHoveredStageIdx(null)}
                     className={cn(
-                      'p-5 rounded-2xl border transition-all duration-300 cursor-pointer backdrop-blur-xl relative group flex flex-col justify-between',
+                      'p-5 rounded-2xl border transition-all duration-300 cursor-pointer backdrop-blur-xl relative group flex flex-col justify-between shadow-xs',
                       isSelected
-                        ? 'bg-[#181C2C] ring-2 ring-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.3)] scale-105'
-                        : 'bg-[#121522] hover:bg-[#161A2A] hover:scale-102',
+                        ? 'bg-white dark:bg-[#181C2C] ring-2 ring-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.3)] scale-105'
+                        : 'bg-white/95 dark:bg-[#121522] hover:bg-slate-50 dark:hover:bg-[#161A2A] hover:scale-102',
                       isRedAlert
                         ? isSelected
                           ? 'border-rose-500 ambient-halo-danger'
-                          : 'border-rose-500/50 hover:border-rose-500'
+                          : 'border-rose-300 dark:border-rose-500/50 hover:border-rose-500'
                         : isEvaluate
-                        ? 'border-amber-500/50 hover:border-amber-500'
-                        : 'border-white/[0.08] hover:border-emerald-500/50'
+                        ? 'border-amber-300 dark:border-amber-500/50 hover:border-amber-500'
+                        : 'border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/50'
                     )}
                   >
                     {/* Header */}
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase">
+                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
                           STAGE 0{idx + 1}
                         </span>
                         <Badge variant={isRedAlert ? 'alert' : isEvaluate ? 'warning' : 'normal'}>
@@ -331,30 +331,30 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                         </Badge>
                       </div>
 
-                      <h4 className="text-sm font-bold text-white font-heading mb-1 group-hover:text-emerald-400 transition-colors">
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white font-heading mb-1 group-hover:text-emerald-500 transition-colors">
                         {stage.name}
                       </h4>
-                      <p className="text-xs text-slate-400 line-clamp-2 mb-4 leading-relaxed">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 leading-relaxed">
                         {stage.desc}
                       </p>
                     </div>
 
                     {/* Telemetry Metrics */}
-                    <div className="pt-3 border-t border-white/[0.08] space-y-1.5 font-mono text-xs">
+                    <div className="pt-3 border-t border-slate-200 dark:border-white/[0.08] space-y-1.5 font-mono text-xs">
                       <div className="flex justify-between items-center">
-                        <span className="text-slate-400 text-[11px]">Carbon Share</span>
+                        <span className="text-slate-500 dark:text-slate-400 text-[11px]">Carbon Share</span>
                         <span
                           className={cn(
                             'font-bold',
-                            isRedAlert ? 'text-rose-400 font-extrabold' : 'text-emerald-400'
+                            isRedAlert ? 'text-rose-600 dark:text-rose-400 font-extrabold' : 'text-emerald-600 dark:text-emerald-400'
                           )}
                         >
                           {stage.sharePercentage}%
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-slate-400 text-[11px]">Intensity</span>
-                        <span className="text-white font-bold">
+                        <span className="text-slate-500 dark:text-slate-400 text-[11px]">Intensity</span>
+                        <span className="text-slate-900 dark:text-white font-bold">
                           {isFinancial
                             ? formatINR(stage.financialMonthlyCost || 750000)
                             : `${stage.currentMonthlyCO2} tCO₂e/mo`}
@@ -362,7 +362,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                       </div>
 
                       {stage.alertPriority && (
-                        <div className="mt-2 pt-1 text-[10px] text-rose-400 font-bold uppercase tracking-wider flex items-center space-x-1">
+                        <div className="mt-2 pt-1 text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider flex items-center space-x-1">
                           <AlertTriangle className="w-3 h-3 animate-pulse" />
                           <span>{stage.alertPriority}: ACTION REQUIRED</span>
                         </div>

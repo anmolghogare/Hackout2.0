@@ -156,15 +156,15 @@ export const OCRIntakeHub: React.FC<OCRIntakeHubProps> = ({ onApplyIntakeBaselin
           </div>
 
           {/* OCR Extracted Results Card */}
-          <div className="p-6 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 flex flex-col justify-between shadow-2xl">
+          <div className="p-6 rounded-2xl bg-slate-50/90 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between shadow-xl dark:shadow-2xl">
             {parsedResult ? (
               <div className="space-y-4 animate-fadeIn">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
                   <div>
-                    <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold tracking-widest">
+                    <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-widest">
                       OCR EXTRACTION COMPLETE
                     </span>
-                    <h4 className="font-bold text-white text-base font-heading">
+                    <h4 className="font-bold text-slate-900 dark:text-white text-base font-heading">
                       {parsedResult.fileName}
                     </h4>
                   </div>
@@ -174,36 +174,36 @@ export const OCRIntakeHub: React.FC<OCRIntakeHubProps> = ({ onApplyIntakeBaselin
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-slate-400 block text-[10px]">PARSED VOLUME</span>
-                    <span className="text-emerald-400 font-bold text-sm">
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs">
+                    <span className="text-slate-500 dark:text-slate-400 block text-[10px]">PARSED VOLUME</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold text-sm">
                       {parsedResult.parsedVolume}
                     </span>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-slate-400 block text-[10px]">PARSED MONTHLY COST</span>
-                    <span className="text-purple-400 font-bold text-sm">
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs">
+                    <span className="text-slate-500 dark:text-slate-400 block text-[10px]">PARSED MONTHLY COST</span>
+                    <span className="text-purple-600 dark:text-purple-400 font-bold text-sm">
                       {parsedResult.parsedMonthlyCost}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-xs">
-                  <span className="text-[10px] text-rose-400 font-bold uppercase block mb-1">
+                <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-500/40 text-xs">
+                  <span className="text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase block mb-1">
                     DETECTED PROCESS HOTSPOT
                   </span>
-                  <p className="text-white font-medium">{parsedResult.detectedHotspot}</p>
+                  <p className="text-slate-900 dark:text-white font-medium">{parsedResult.detectedHotspot}</p>
                 </div>
 
                 {/* Parsed Line Items */}
                 <div>
-                  <span className="text-[10px] text-slate-400 font-mono uppercase block mb-2">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono uppercase block mb-2 font-bold">
                     PARSED OCR LINE ITEMS:
                   </span>
-                  <div className="p-3 rounded-xl bg-slate-950 font-mono text-[11px] space-y-1 text-slate-300 border border-slate-800">
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-950 font-mono text-[11px] space-y-1 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 shadow-xs">
                     {parsedResult.extractedTextLines.map((line, i) => (
                       <p key={i} className="flex items-center space-x-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500 shrink-0" />
                         <span>{line}</span>
                       </p>
                     ))}
@@ -212,7 +212,7 @@ export const OCRIntakeHub: React.FC<OCRIntakeHubProps> = ({ onApplyIntakeBaselin
 
                 <Button
                   variant="primary"
-                  className="w-full flex items-center justify-center space-x-2 pt-2"
+                  className="w-full flex items-center justify-center space-x-2 pt-2 shadow-sm"
                 >
                   <Zap className="w-4 h-4 fill-current" />
                   <span>Update Digital Twin Telemetry Canvas</span>
@@ -220,11 +220,11 @@ export const OCRIntakeHub: React.FC<OCRIntakeHubProps> = ({ onApplyIntakeBaselin
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-3 text-slate-500">
-                <Scan className="w-12 h-12 text-slate-700 animate-pulse" />
-                <h4 className="font-bold text-slate-300 font-heading text-sm">
+                <Scan className="w-12 h-12 text-slate-400 dark:text-slate-700 animate-pulse" />
+                <h4 className="font-bold text-slate-800 dark:text-slate-300 font-heading text-sm">
                   OCR Scanner Standby Mode
                 </h4>
-                <p className="text-xs text-slate-400 max-w-xs">
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs">
                   Upload a bill or select a test receipt on the left to trigger the glowing laser beam scanner and extract operational metrics.
                 </p>
               </div>

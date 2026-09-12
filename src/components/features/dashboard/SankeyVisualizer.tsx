@@ -101,11 +101,11 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
 
       <CardContent>
         {/* Interactive SVG Sankey Diagram */}
-        <div className="relative p-6 rounded-2xl bg-slate-900 dark:bg-[#08101e] border border-slate-800 mb-8 shadow-xl overflow-x-auto">
+        <div className="relative p-6 rounded-2xl bg-slate-50/90 dark:bg-[#08101e] border border-slate-200/80 dark:border-slate-800 mb-8 shadow-xl overflow-x-auto">
           <div className="min-w-[700px] relative py-4">
-            <h4 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center justify-between">
+            <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center justify-between">
               <span>SUPPLIER SOURCE NODES</span>
-              <span className="text-emerald-400">CIRCULAR BYPRODUCT STREAMS (DUAL GRADIENT)</span>
+              <span className="text-emerald-600 dark:text-emerald-400">CIRCULAR BYPRODUCT STREAMS (DUAL GRADIENT)</span>
               <span>RECEIVING CONSUMER NODES</span>
             </h4>
 
@@ -174,36 +174,36 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
                   onClick={() => setSelectedFlow(0)}
                   className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 0
-                      ? 'bg-emerald-950/90 border-emerald-500 shadow-lg shadow-emerald-500/20'
-                      : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/90 border-emerald-500 shadow-lg shadow-emerald-500/20'
+                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
                   }`}
                 >
-                  <span className="font-bold text-white block">Apex Packaging</span>
-                  <span className="text-[10px] text-emerald-400 font-mono">12T Trim Scrap/mo (Seller)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block">Apex Packaging</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">12T Trim Scrap/mo (Seller)</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(1)}
                   className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 1
-                      ? 'bg-amber-950/90 border-amber-500 shadow-lg shadow-amber-500/20'
-                      : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+                      ? 'bg-amber-50 dark:bg-amber-950/90 border-amber-500 shadow-lg shadow-amber-500/20'
+                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
                   }`}
                 >
-                  <span className="font-bold text-white block">GreenFuel Agro</span>
-                  <span className="text-[10px] text-amber-400 font-mono">50T Biomass/mo (Supplier)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block">GreenFuel Agro</span>
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400 font-mono">50T Biomass/mo (Supplier)</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(2)}
                   className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 2
-                      ? 'bg-blue-950/90 border-blue-500 shadow-lg shadow-blue-500/20'
-                      : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+                      ? 'bg-blue-50 dark:bg-blue-950/90 border-blue-500 shadow-lg shadow-blue-500/20'
+                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
                   }`}
                 >
-                  <span className="font-bold text-white block">ResinTech Synthetics</span>
-                  <span className="text-[10px] text-blue-400 font-mono">20T PCR Granules/mo</span>
+                  <span className="font-bold text-slate-900 dark:text-white block">ResinTech Synthetics</span>
+                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono">20T PCR Granules/mo</span>
                 </div>
               </div>
 
@@ -213,36 +213,36 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
                   onClick={() => setSelectedFlow(1)}
                   className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 1
-                      ? 'bg-amber-950/90 border-amber-500 shadow-lg'
-                      : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+                      ? 'bg-amber-50 dark:bg-amber-950/90 border-amber-500 shadow-lg'
+                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
                   }`}
                 >
-                  <span className="font-bold text-white block">Apex Furnace Unit</span>
-                  <span className="text-[10px] text-emerald-400 font-mono">Biomass Receiver (Factory A)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block">Apex Furnace Unit</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Biomass Receiver (Factory A)</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(2)}
                   className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 2
-                      ? 'bg-blue-950/90 border-blue-500 shadow-lg'
-                      : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+                      ? 'bg-blue-50 dark:bg-blue-950/90 border-blue-500 shadow-lg'
+                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
                   }`}
                 >
-                  <span className="font-bold text-white block">Apex Blending Line</span>
-                  <span className="text-[10px] text-emerald-400 font-mono">PCR Feedstock Receiver</span>
+                  <span className="font-bold text-slate-900 dark:text-white block">Apex Blending Line</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">PCR Feedstock Receiver</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(0)}
                   className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 0
-                      ? 'bg-cyan-950/90 border-cyan-500 shadow-lg shadow-cyan-500/20'
-                      : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+                      ? 'bg-cyan-50 dark:bg-cyan-950/90 border-cyan-500 shadow-lg shadow-cyan-500/20'
+                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
                   }`}
                 >
-                  <span className="font-bold text-white block">Apex Pipe Mfg</span>
-                  <span className="text-[10px] text-cyan-400 font-mono">Scrap Buyer (Factory B)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block">Apex Pipe Mfg</span>
+                  <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono">Scrap Buyer (Factory B)</span>
                 </div>
               </div>
             </div>
