@@ -168,12 +168,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Google Account Profile Button */}
         <button
           onClick={onOpenGoogleAuthModal}
-          className="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all shrink-0"
+          className="flex items-center space-x-2 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all shrink-0 max-h-10 cursor-pointer"
           title={activeGoogleUser ? `Google Account: ${activeGoogleUser.email}` : 'Sign in with Google'}
         >
           {activeGoogleUser ? (
             <>
-              <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 dark:shadow-[0_0_12px_rgba(16,185,129,0.5)] font-black text-xs flex items-center justify-center shrink-0 border border-emerald-500/30 dark:border-emerald-400/50">
+              <div
+                className="w-7 h-7 min-w-[28px] min-h-[28px] max-w-[28px] max-h-[28px] rounded-lg overflow-hidden shrink-0 border border-emerald-500/40 dark:border-emerald-400/60 bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 dark:shadow-[0_0_12px_rgba(16,185,129,0.5)] font-black text-xs flex items-center justify-center"
+                style={{ width: 28, height: 28, maxWidth: 28, maxHeight: 28 }}
+              >
                 {(activeGoogleUser.name || 'User').charAt(0).toUpperCase()}
               </div>
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 hidden lg:inline truncate max-w-[100px]">

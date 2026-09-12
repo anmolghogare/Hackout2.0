@@ -75,7 +75,6 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
     { id: 'sandbox', label: 'Scenario Matrix', category: 'Simulation & Engineering', icon: Layers },
 
     // 3. Circular Economy & Supply Chain
-    { id: 'circular', label: 'B2B Scrap Marketplace', category: 'Circular Economy', icon: Recycle, badge: 'B2B' },
     { id: 'sankey', label: 'Material & Energy Sankey', category: 'Circular Economy', icon: TrendingDown },
 
     // 4. Data Intake & Automation
