@@ -392,21 +392,6 @@ Generated At: ${new Date().toLocaleString('en-IN')}
           </button>
         </div>
       </div>
-          <Sparkles className="w-4 h-4 text-amber-400" />
-          <span>4. Automated AI Audit & Review Studio</span>
-        </button>
-
-        <div className="ml-auto pr-2 hidden sm:flex items-center">
-          <button
-            type="button"
-            onClick={onOpenProvenanceModal}
-            className="flex items-center space-x-1.5 text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Verify Regulatory Sources (CEA/IPCC)</span>
-          </button>
-        </div>
-      </div>
 
       {/* ========================================================================= */}
       {/* TAB 1: PLANT PROFILE & OPERATIONAL SHIFTS */}
