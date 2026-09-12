@@ -49,7 +49,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const tabTitles: Record<TabId, { title: string; category: string }> = {
     overview: { title: 'Executive Overview & Live Telemetry', category: 'Core Platform' },
     admin: { title: 'Facility Onboarding & Parameter Setup', category: 'Core Platform' },
-    intake: { title: 'OCR Smart Bill & Facility Ingestion', category: 'Core Platform' },
     sensors: { title: 'Real-Time IoT Sensor Array & Telemetry', category: 'Core Platform' },
     simulation: { title: 'Digital Twin Process Pipeline', category: 'Simulation & Engineering' },
     simulator_hub: { title: 'What-If ROI & Decarbonization Studio', category: 'Simulation & Engineering' },
@@ -57,6 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     sandbox: { title: 'Scenario Matrix & Sensitivity Testing', category: 'Simulation & Engineering' },
     circular: { title: 'B2B Byproduct & Scrap Marketplace', category: 'Circular Economy' },
     sankey: { title: 'Material & Energy Sankey Stream', category: 'Circular Economy' },
+    intake: { title: 'OCR Smart Bill & Ingestion Scanner', category: 'Data & AI' },
     copilot: { title: 'AI Engineering Intelligence Copilot', category: 'Data & AI' },
     roadmap: { title: 'Decarbonization CapEx & Payback Matrix', category: 'Compliance & Finance' },
     compliance: { title: 'SEBI BRSR Principle 6 Core Audit Pack', category: 'Compliance & Finance' },

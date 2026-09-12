@@ -89,31 +89,6 @@ export const DEFAULT_FACILITY_PRESETS: Record<string, FacilityConfig> = {
       costOfCapitalPct: 10.5,
       carbonOffsetCreditPriceINR: 1200, // ₹/tCO2e
     },
-    ocrConfig: {
-      enabled: true,
-      moduleName: 'OCR Utility Ingestion Engine',
-      sourceDirectoryPath: '/var/invoices/apex_packaging/utility_bills',
-      ingestionSchedule: 'Daily at 02:00 AM (CRON: 0 2 * * *)',
-      vaultApiCredentialKey: 'vault-enc-key-apex-live-0928',
-      autoSyncBaseline: true,
-      supportedDocumentFormats: ['PDF', 'PNG', 'JPG', 'WEBP'],
-      lastScanStatus: 'SUCCESS',
-      lastScanTimestamp: new Date().toISOString(),
-      lastParsedResult: {
-        fileName: 'Maharashtra_State_Electricity_Bill_Q3.pdf',
-        fileType: 'Utility Bill',
-        parsedVolume: '32,500 kWh / Month',
-        parsedMonthlyCost: '₹5,20,000 / Month',
-        detectedHotspot: 'Extrusion Line Electricity (CEA Grid Factor 0.82)',
-        confidenceScore: 98.4,
-        extractedTextLines: [
-          'CONSUMER: APEX PACKAGING PVT LTD (ACC #948271)',
-          'METER READING: 32,500 UNITS (HT-II INDUSTRIAL)',
-          'GRID EMISSIONS FACTOR: 0.82 kgCO2e/kWh',
-          'ESTIMATED CARBON INTENSITY: 26.65 tCO2e/Month',
-        ],
-      },
-    },
     updatedAt: new Date().toISOString(),
   },
 
@@ -345,19 +320,6 @@ export const SCIENTIFIC_SOURCES_REGISTRY: ScientificSourceItem[] = [
     officialUrl: 'https://www.sebi.gov.in',
     regulatoryBody: 'SEBI',
     description: 'Auditable standard format for reporting Scope 1, Scope 2, Scope 3 supply emissions, energy intensity per rupee of turnover, and circular waste diversion rates.',
-  },
-  {
-    id: 'ocr_ingestion_framework',
-    title: 'OCR Utility Ingestion & Facility Configuration Framework',
-    authority: 'ByteMe Automated Telemetry Ingestion Architecture',
-    referenceDoc: 'Facility Configuration Integrated Feature Module Protocol (v2.0)',
-    scope: 'Financial',
-    formula: 'Result = FacilityConfig.ocrConfig.Inputs(Path, Schedule, Key) → Execution(OCR Engine) → Extracted_Baseline_Data',
-    substitutedSample: 'Source: /var/invoices/utility_bills | Schedule: Daily | Result: 32,500 kWh parsed, 98.4% confidence',
-    verifiableValue: 'Deterministic Optical Character Extraction + Baseline Telemetry Synchronization',
-    officialUrl: 'https://byteme.ai/docs/facility-config/ocr-ingestion',
-    regulatoryBody: 'ByteMe Platform Standard',
-    description: 'Framework refactoring OCR utility ingestion settings directly into Facility Configuration as an integrated feature module, defining Inputs (Path, Schedule, Key) and Output (Parsed Result, Confidence, Text Logs).',
   },
 ];
 

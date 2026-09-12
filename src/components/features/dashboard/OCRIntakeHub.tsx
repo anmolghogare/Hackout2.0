@@ -84,12 +84,12 @@ export const OCRIntakeHub: React.FC<OCRIntakeHubProps> = ({ onApplyIntakeBaselin
               <span>OCR Smart Data Ingestion & Utility Bill Scanner</span>
             </CardTitle>
             <CardDescription className="mt-1">
-              Integrated Facility Configuration Module: Upload utility invoices or weighbridge receipts to run OCR extraction, auto-sync parameters, and update factory baseline telemetry.
+              Upload utility invoices or weighbridge receipts to auto-extract carbon telemetry and update factory baseline figures.
             </CardDescription>
           </div>
           <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 flex items-center space-x-1.5 self-start sm:self-center">
             <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Facility Config Module Active</span>
+            <span>AI Parser Active</span>
           </span>
         </div>
       </CardHeader>

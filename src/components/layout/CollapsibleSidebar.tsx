@@ -66,7 +66,6 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
     // 1. Core Platform
     { id: 'overview', label: 'Executive Overview', category: 'Core Platform', icon: Sparkles },
     { id: 'admin', label: 'Facility Configuration', category: 'Core Platform', icon: Building2 },
-    { id: 'intake', label: 'OCR Utility Ingestion', category: 'Core Platform', icon: Scan, badge: 'OCR' },
     { id: 'sensors', label: 'Real-Time IoT Sensors', category: 'Core Platform', icon: Radio, badge: 'Live' },
 
     // 2. Simulation & Engineering
@@ -80,6 +79,7 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
     { id: 'sankey', label: 'Material & Energy Sankey', category: 'Circular Economy', icon: TrendingDown },
 
     // 4. Data Intake & Automation
+    { id: 'intake', label: 'OCR Utility Ingestion', category: 'Data & AI', icon: Scan, badge: 'OCR' },
     { id: 'copilot', label: 'AI Intelligence Copilot', category: 'Data & AI', icon: Cpu },
 
     // 5. Compliance & Green Capital

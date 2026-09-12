@@ -82,13 +82,6 @@ export const DashboardPage: React.FC = () => {
       onApplyPreset={applyPreset}
       isBackendOnline={isBackendOnline}
     >
-      {/* Top Executive Metric Cards Bar (Rendered for deep functional tools) */}
-      {activeTab !== 'overview' && activeTab !== 'admin' && (
-        <div className="animate-fadeIn">
-          <KPICards kpiData={kpiData} viewMode={viewMode} />
-        </div>
-      )}
-
       {/* Google Identity Services Authentication Modal */}
       <GoogleAuthModal
         isOpen={isGoogleModalOpen}
@@ -153,6 +146,7 @@ export const DashboardPage: React.FC = () => {
             onSaveAISettings={saveAISettings}
             onNavigateTab={setActiveTab}
             onOpenProvenanceModal={() => setIsDataProvenanceModalOpen(true)}
+            viewMode={viewMode}
           />
         </div>
       )}

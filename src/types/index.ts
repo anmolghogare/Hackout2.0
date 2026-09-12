@@ -160,21 +160,6 @@ export interface FacilityFinancialContext {
   carbonOffsetCreditPriceINR: number;
 }
 
-export interface OCRFacilityConfig {
-  enabled: boolean;
-  moduleName: string;
-  // Inputs & Configuration
-  sourceDirectoryPath: string;
-  ingestionSchedule: string;
-  vaultApiCredentialKey: string;
-  autoSyncBaseline: boolean;
-  supportedDocumentFormats: string[];
-  // Execution & Output (Result)
-  lastScanStatus: 'SUCCESS' | 'WARNING' | 'FAILED' | 'IDLE';
-  lastScanTimestamp: string;
-  lastParsedResult?: OCRParsedResult;
-}
-
 export interface FacilityConfig {
   id: string;
   profile: FacilityProfile;
@@ -183,7 +168,6 @@ export interface FacilityConfig {
   stage3: FacilityStage3Inputs;
   stage4: FacilityStage4Inputs;
   financial: FacilityFinancialContext;
-  ocrConfig?: OCRFacilityConfig;
   updatedAt: string;
 }
 
