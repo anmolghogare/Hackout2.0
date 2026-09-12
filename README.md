@@ -105,5 +105,3 @@ The server will start on `http://localhost:5000`. Open [`index.html`](file:///Us
 - **Riyan Mansuri**
 
 ---
-
-*Submitted for HackOut'26 Hackathon.*
