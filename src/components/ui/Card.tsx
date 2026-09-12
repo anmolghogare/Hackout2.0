@@ -8,7 +8,7 @@ export const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 }) => (
   <div
     className={cn(
-      'rounded-2xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-[#0E131F] text-slate-900 dark:text-slate-100 shadow-xs hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-200',
+      'rounded-2xl border border-slate-200/80 dark:border-white/[0.07] bg-white dark:bg-[#10141C] text-slate-900 dark:text-slate-100 shadow-none hover:border-slate-300/90 dark:hover:border-white/[0.12] transition-colors duration-200',
       className
     )}
     {...props}
@@ -22,7 +22,7 @@ export const CardHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   children,
   ...props
 }) => (
-  <div className={cn('p-6 pb-3 flex flex-col space-y-1', className)} {...props}>
+  <div className={cn('p-7 pb-4 flex flex-col space-y-1.5', className)} {...props}>
     {children}
   </div>
 );
@@ -32,7 +32,7 @@ export const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   children,
   ...props
 }) => (
-  <h3 className={cn('text-base font-bold tracking-tight text-slate-900 dark:text-white', className)} {...props}>
+  <h3 className={cn('text-[17px] font-semibold tracking-tight text-slate-900 dark:text-white', className)} {...props}>
     {children}
   </h3>
 );
@@ -42,7 +42,7 @@ export const CardDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement
   children,
   ...props
 }) => (
-  <p className={cn('text-xs text-slate-500 dark:text-slate-400 font-normal', className)} {...props}>
+  <p className={cn('text-sm text-slate-500 dark:text-slate-400 font-normal leading-relaxed', className)} {...props}>
     {children}
   </p>
 );
@@ -52,7 +52,7 @@ export const CardContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   children,
   ...props
 }) => (
-  <div className={cn('p-6 pt-0', className)} {...props}>
+  <div className={cn('p-7 pt-0', className)} {...props}>
     {children}
   </div>
 );
@@ -62,7 +62,7 @@ export const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   children,
   ...props
 }) => (
-  <div className={cn('p-6 pt-0 flex items-center', className)} {...props}>
+  <div className={cn('p-7 pt-0 flex items-center', className)} {...props}>
     {children}
   </div>
 );
