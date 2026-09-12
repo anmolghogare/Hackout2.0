@@ -45,8 +45,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         activeTab={activeTab}
         onTabChange={onTabChange}
         onOpenCopilotModal={onOpenCopilotModal}
+        onOpenBRSRModal={onOpenBRSRModal}
         onOpenAuditExportModal={onOpenAuditExportModal}
-        onStartJudgeTour={onStartJudgeTour}
         viewMode={viewMode}
       />
 
