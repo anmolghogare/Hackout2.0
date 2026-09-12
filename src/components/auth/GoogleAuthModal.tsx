@@ -56,9 +56,9 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   const [newName, setNewName] = useState('');
 
   // Environment Client ID or stored custom client ID
-  const envClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+  const envClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '421007877682-1qu3qtria81ul2k0ce37ihma45kd8n25.apps.googleusercontent.com';
   const [customClientId, setCustomClientId] = useState<string>(() => {
-    return localStorage.getItem('byteme_custom_google_client_id') || envClientId || '';
+    return localStorage.getItem('byteme_custom_google_client_id') || envClientId;
   });
   const [isEditingKey, setIsEditingKey] = useState(false);
 
