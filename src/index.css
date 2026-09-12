@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* 
   Modern Dark Glassmorphism Design System 
   Industrial Emission Leak-Point Detector & Circular Alternative Recommender 
@@ -5,6 +9,7 @@
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 
 :root {
   /* Color Tokens */
