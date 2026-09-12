@@ -12,6 +12,7 @@ import { CopilotPanel } from '../components/features/dashboard/CopilotPanel';
 import { CopilotCommandModal } from '../components/features/dashboard/CopilotCommandModal';
 import { BRSRExportModal } from '../components/features/dashboard/BRSRExportModal';
 import { AuditReportExportModal } from '../components/features/dashboard/AuditReportExportModal';
+import { KPICards } from '../components/features/dashboard/KPICards';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
 import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
 import { RoadmapTable } from '../components/features/dashboard/RoadmapTable';

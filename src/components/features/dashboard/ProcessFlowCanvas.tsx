@@ -22,21 +22,63 @@ import { formatINR, formatNumber } from '../../../lib/utils';
 import { cn } from '../../../lib/utils';
 
 export interface ProcessFlowCanvasProps {
-  stages: ProcessStage[];
-  viewMode: ViewMode;
+  stages?: ProcessStage[];
+  viewMode?: ViewMode;
   onSelectStageForSimulation?: (stageIdx: number) => void;
 }
 
+const DEFAULT_STAGES: ProcessStage[] = [
+  {
+    name: '1. RAW MATERIAL',
+    desc: 'Virgin Polymer Resin (100T/mo)',
+    currentMonthlyCO2: 10,
+    financialMonthlyCost: 750000,
+    sharePercentage: 10,
+    status: 'NORMAL',
+    provenanceFormula: 'CO₂ = 2.80 tCO₂e/T × ResinTons × (1 - PCR_Substitution)',
+  },
+  {
+    name: '2. FURNACE HEATING',
+    desc: 'Heavy Furnace Oil (1400°C)',
+    currentMonthlyCO2: 48,
+    financialMonthlyCost: 1400000,
+    sharePercentage: 48,
+    status: 'RED ALERT',
+    alertPriority: 'PRIORITY 1',
+    provenanceFormula: 'CO₂ = HeavyOil_Liters × 3.12 kgCO₂e/L × (1 - 0.44 × FuelShift)',
+  },
+  {
+    name: '3. PROCESSING LINE',
+    desc: 'Extrusion Line Operations',
+    currentMonthlyCO2: 25,
+    financialMonthlyCost: 500000,
+    sharePercentage: 25,
+    status: 'EVALUATE',
+    provenanceFormula: 'CO₂ = Electricity_kWh × CEA_Grid_Factor (0.82 kgCO₂e/kWh)',
+  },
+  {
+    name: '4. WASTE SCRAP',
+    desc: 'Off-cut Trim Scrap (12T/mo)',
+    currentMonthlyCO2: 17,
+    financialMonthlyCost: 200000,
+    sharePercentage: 17,
+    status: 'RED ALERT',
+    alertPriority: 'PRIORITY 2',
+    provenanceFormula: 'CO₂ = UnrecycledScrapTons × LandfillFactor (1.41 tCO₂e/T)',
+  },
+];
+
 export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
-  stages,
-  viewMode,
+  stages = [],
+  viewMode = 'carbon',
   onSelectStageForSimulation,
 }) => {
-  const [activeStageIdx, setActiveStageIdx] = useState<number>(1); // Default furnace hotspot
+  const [activeStageIdx, setActiveStageIdx] = useState<number>(1);
   const [hoveredStageIdx, setHoveredStageIdx] = useState<number | null>(null);
-  const [selectedHotspotSlice, setSelectedHotspotSlice] = useState<number | null>(1);
+  const [_selectedHotspotSlice, _setSelectedHotspotSlice] = useState<number | null>(1);
 
   const isFinancial = viewMode === 'financial';
+  const displayStages = (stages && stages.length > 0) ? stages : DEFAULT_STAGES;
 
   // Hotspot details
   const hotspotBreakdowns = [
@@ -110,8 +152,8 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
     },
   ];
 
-  const currentStage = stages[activeStageIdx] || stages[1];
-  const activeBreakdown = hotspotBreakdowns[activeStageIdx] || hotspotBreakdowns[1];
+  const currentStage = displayStages[activeStageIdx] || displayStages[0];
+  const activeBreakdown = hotspotBreakdowns[activeStageIdx] || hotspotBreakdowns[0];
 
   return (
     <Card className="mb-10 overflow-hidden theme-transition shadow-2xl border border-slate-200/80 dark:border-white/[0.08]">
@@ -253,7 +295,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
 
             {/* 4 Interactive Process Nodes */}
             <div className="relative z-10 grid grid-cols-4 gap-6">
-              {stages.map((stage, idx) => {
+              {displayStages.map((stage, idx) => {
                 const isSelected = activeStageIdx === idx;
                 const isRedAlert = stage.status === 'RED ALERT';
                 const isEvaluate = stage.status === 'EVALUATE';
