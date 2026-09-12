@@ -432,108 +432,60 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         </main>
 
         {/* ------------------------------------------------------------ */}
-        {/* RIGHT COLUMN: Condensed Hotspots & Hazards (3 cols) */}
+        {/* RIGHT COLUMN: Condensed Urgent Hotspot & Hazard (3 cols) */}
         {/* ------------------------------------------------------------ */}
         <aside className="lg:col-span-3 flex flex-col">
-          <div className="rounded-2xl p-5 bg-[#111827] border border-red-500/50 shadow-[0_0_20px_rgba(255,59,48,0.2)] space-y-4 flex-1 flex flex-col justify-between relative overflow-hidden">
+          <div className="rounded-2xl p-4 sm:p-5 bg-[#111827] border border-red-500/50 shadow-[0_0_20px_rgba(255,59,48,0.2)] space-y-4 flex-1 flex flex-col justify-between relative overflow-hidden">
             {/* Ambient Red Glow Halo Effect */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-28 h-28 bg-red-500/10 rounded-full blur-2xl pointer-events-none" />
 
-            <div>
+            <div className="space-y-3">
               {/* Header with Pulsing Red Beacon */}
-              <div className="flex items-center justify-between border-b border-red-500/30 pb-3 mb-3">
+              <div className="flex items-center justify-between border-b border-red-500/30 pb-2.5">
                 <div className="flex items-center space-x-2">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF3B30]" />
                   </span>
                   <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-red-400">
-                    URGENT HOTSPOTS & HAZARDS
+                    URGENT HOTSPOT
                   </h3>
                 </div>
                 <span className="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/40 uppercase animate-pulse">
-                  Active Alerts
+                  P1 CRITICAL
                 </span>
               </div>
 
-              {/* Condensed High-Priority Alert Cards */}
-              <div className="space-y-3">
-                {/* Alert 1: Kiln Thermal Overshoot Spike */}
-                <div
-                  onClick={() => onNavigate('analytics_hub')}
-                  className="p-3.5 rounded-xl bg-slate-950/80 border border-red-500/30 space-y-2 hover:border-red-500/70 transition-all cursor-pointer group"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 shrink-0">
-                        <Thermometer className="w-3.5 h-3.5" />
-                      </div>
-                      <h4 className="text-xs font-bold text-white group-hover:text-red-400 transition-colors">
-                        Kiln Thermal Overshoot Spike
-                      </h4>
-                    </div>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-red-500 text-white shrink-0 animate-pulse">
-                      P1 HIGH
-                    </span>
+              {/* Single Highest Priority Issue Card */}
+              <div className="p-3.5 rounded-xl bg-slate-950/90 border border-red-500/40 space-y-2.5">
+                <div className="flex items-center space-x-2">
+                  <div className="p-1.5 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 shrink-0">
+                    <Thermometer className="w-4 h-4 text-red-400 animate-pulse" />
                   </div>
-
-                  <p className="text-[11px] text-slate-300 leading-snug line-clamp-2">
-                    Furnace Burner #2 spiked to 1,418°C, triggering 48 tCO₂e/mo in excessive thermal fuel waste.
-                  </p>
-
-                  <div className="flex items-center justify-between text-[10px] font-mono pt-1 text-slate-400">
-                    <span>Loss: ₹12,400/day</span>
-                    <span className="text-red-400 font-bold flex items-center space-x-0.5">
-                      <span>3D Analytics</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </div>
+                  <h4 className="text-xs font-extrabold text-white font-heading">
+                    Kiln Thermal Overshoot Spike
+                  </h4>
                 </div>
 
-                {/* Alert 2: Uninsulated Furnace Radiation */}
-                <div
-                  onClick={() => onNavigate('simulation')}
-                  className="p-3.5 rounded-xl bg-slate-950/80 border border-amber-500/30 space-y-2 hover:border-amber-500/70 transition-all cursor-pointer group"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
-                        <ShieldAlert className="w-3.5 h-3.5" />
-                      </div>
-                      <h4 className="text-xs font-bold text-white group-hover:text-amber-400 transition-colors">
-                        Uninsulated Furnace Radiation
-                      </h4>
-                    </div>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 shrink-0">
-                      WARN
-                    </span>
-                  </div>
+                <p className="text-[11.5px] text-slate-300 leading-snug">
+                  Furnace Burner #2 spiked to <strong className="text-red-400 font-mono">1,418°C</strong> (48 tCO₂e/mo excessive fuel waste).
+                </p>
 
-                  <p className="text-[11px] text-slate-300 leading-snug line-clamp-2">
-                    Kiln refractory shell breach radiating 380°C heat loss costing ₹1,20,000 monthly.
-                  </p>
-
-                  <div className="flex items-center justify-between text-[10px] font-mono pt-1 text-slate-400">
-                    <span>Loss: ₹1.20L/mo</span>
-                    <span className="text-amber-400 font-bold flex items-center space-x-0.5">
-                      <span>Inspect Twin</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between text-[10.5px] font-mono text-slate-400 pt-1 border-t border-slate-900">
+                  <span>Sensor #K2-A</span>
+                  <span className="text-rose-400 font-bold">₹12,400 / day loss</span>
                 </div>
               </div>
             </div>
 
-            {/* SEBI Compliance Status Bar */}
-            <div className="pt-3 border-t border-red-500/30">
-              <div className="p-2.5 rounded-xl bg-slate-950/90 border border-emerald-500/30 text-xs flex items-center justify-between">
-                <div className="flex items-center space-x-1.5 text-emerald-400 font-bold font-mono text-[10.5px]">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>SEBI BRSR Core</span>
-                </div>
-                <span className="text-[10px] font-mono text-emerald-400 font-bold">94.2% Audit</span>
-              </div>
-            </div>
+            {/* Direct Single Link Navigating to the Problem */}
+            <button
+              onClick={() => onNavigate('analytics_hub')}
+              className="w-full py-2 px-3 rounded-xl bg-red-600/25 hover:bg-red-600/40 text-red-200 hover:text-white text-xs font-extrabold font-heading flex items-center justify-center space-x-2 transition-colors border border-red-500/50 shadow-md group"
+            >
+              <span>Fix Setpoint in 3D Analytics</span>
+              <ArrowRight className="w-4 h-4 text-red-400 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </aside>
       </div>
