@@ -121,18 +121,18 @@ export interface FacilityStage1Inputs {
   materialName: string;
   monthlyVolumeTons: number;
   costPerTonINR: number;
-  virginEmissionFactor: number; // tCO2e/ton (e.g. 2.80 for polymer resin, 2.30 for steel billets)
+  virginEmissionFactor: number;
   recycledPcrAvailablePct: number;
   recycledMaterialCostPerTonINR: number;
 }
 
 export interface FacilityStage2Inputs {
   fuelType: 'Heavy Furnace Oil' | 'PNG Natural Gas' | 'High Speed Diesel' | 'Biomass Briquettes' | 'Electric Arc Induction';
-  monthlyFuelConsumption: number; // Liters or SCM
+  monthlyFuelConsumption: number;
   fuelUnit: 'Liters' | 'SCM' | 'kg' | 'kWh';
   fuelCostPerUnitINR: number;
   furnaceOperatingTempC: number;
-  fuelEmissionFactor: number; // kgCO2e/unit (e.g. 3.12 for HFO, 1.88 for PNG)
+  fuelEmissionFactor: number;
   thermalEfficiencyPct: number;
 }
 
@@ -140,7 +140,7 @@ export interface FacilityStage3Inputs {
   monthlyElectricityKWh: number;
   contractDemandKVA: number;
   gridTariffPerKWhINR: number;
-  gridEmissionFactor: number; // kgCO2e/kWh (CEA India Baseline 0.82)
+  gridEmissionFactor: number;
   rooftopSolarKWp: number;
   powerFactor: number;
 }
@@ -150,7 +150,7 @@ export interface FacilityStage4Inputs {
   monthlyScrapTons: number;
   disposalOrLandfillCostPerTonINR: number;
   recyclerSellingRatePerTonINR: number;
-  landfillEmissionFactor: number; // tCO2e/ton
+  landfillEmissionFactor: number;
 }
 
 export interface FacilityFinancialContext {
@@ -173,7 +173,7 @@ export interface FacilityConfig {
 
 export interface AISettings {
   apiKey: string;
-  model: 'gemini-1.5-flash' | 'gemini-1.5-pro' | 'heuristic-offline';
+  model: 'gemini-2.0-flash' | 'gemini-2.5-flash' | 'gemini-1.5-flash' | 'gemini-1.5-pro' | 'heuristic-offline';
   enableAutoAnalysis: boolean;
   temperature: number;
 }
@@ -238,4 +238,3 @@ declare global {
     };
   }
 }
-
