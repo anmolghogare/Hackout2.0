@@ -39,11 +39,12 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   onStartJudgeTour,
   onOpenBRSRModal,
 }) => {
-  // Time-based greeting state
+  // Time-based greeting & clock state
   const [greeting, setGreeting] = useState('');
   const [userRole, setUserRole] = useState('Operations Lead');
   const [lastRefreshed, setLastRefreshed] = useState('Just now');
   const [selectedAlertForPopup, setSelectedAlertForPopup] = useState<(typeof criticalAlerts)[0] | null>(null);
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -56,6 +57,9 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     } else {
       setGreeting('Good night');
     }
+
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
   }, []);
 
   const handleRefreshStats = () => {
@@ -391,6 +395,47 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         {/* CENTER COLUMN: Main Workflow & Operational Cards (6 cols) */}
         {/* ============================================================ */}
         <main className="lg:col-span-6 space-y-6 w-full min-w-0 flex flex-col justify-start relative isolate">
+          {/* CENTRAL WELCOME BACK GREETINGS COMPONENT */}
+          <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#0d1322] via-[#090d18] to-[#0c111d] border border-slate-800/90 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            {/* Subtle Ambient Emerald Glow */}
+            <div className="absolute top-0 right-0 w-40 h-full bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="flex items-center space-x-3.5 relative z-10">
+              <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shrink-0 shadow-sm">
+                <Sparkles className="w-5 h-5 animate-pulse text-emerald-400" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-[9.5px] font-mono font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    Industrial Intelligence Active
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">Unit #4 • Pune</span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-black font-heading text-white tracking-tight mt-0.5">
+                  Welcome back, <span className="text-emerald-400">{userRole}</span>!
+                </h2>
+              </div>
+            </div>
+
+            {/* Date & Time Access Metadata Display */}
+            <div className="flex flex-col sm:items-end font-mono text-right relative z-10 pl-11 sm:pl-0">
+              <div className="flex items-center space-x-1.5 text-xs font-extrabold text-slate-200">
+                <Clock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>
+                  {currentTime.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </span>
+              </div>
+              <div className="text-[10px] font-medium text-slate-400/90 mt-0.5 tracking-wider">
+                Time of Access: <span className="text-emerald-400 font-bold">{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+              </div>
+            </div>
+          </div>
+
           {/* STAKEHOLDER ALIGNMENT OPERATIONAL DECISION CARDS */}
           <section className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
