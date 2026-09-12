@@ -207,3 +207,35 @@ export type TabId =
   | 'roadmap'
   | 'compliance'
   | 'carbon_credits';
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string;
+            callback: (response: { credential: string }) => void;
+            auto_select?: boolean;
+            cancel_on_tap_outside?: boolean;
+          }) => void;
+          renderButton: (
+            parent: HTMLElement | null,
+            options: {
+              theme?: 'outline' | 'filled_blue' | 'filled_black';
+              size?: 'large' | 'medium' | 'small';
+              type?: 'standard' | 'icon';
+              shape?: 'square' | 'circle' | 'pill' | 'rectangular';
+              text?: string;
+              logo_alignment?: 'left' | 'center';
+              width?: number;
+            }
+          ) => void;
+          prompt: (notification?: (notification: unknown) => void) => void;
+          revoke: (hint: string, done: () => void) => void;
+        };
+      };
+    };
+  }
+}
+

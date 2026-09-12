@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Check, Plus, ShieldCheck, LogOut, UserCheck, Mail } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Check, Plus, ShieldCheck, LogOut, UserCheck, Mail, Key, Globe, ExternalLink, RefreshCw } from 'lucide-react';
 import { GoogleUser } from '../../types';
 
 export interface GoogleAuthModalProps {
@@ -21,6 +21,27 @@ const BOY_AVATARS = [
   'https://images.unsplash.com/photo-1628157582853-a796fa650a6a?w=150&auto=format&fit=crop&q=80',
 ];
 
+/**
+ * Decodes standard Google OAuth 2.0 JWT ID token payload safely.
+ */
+function parseJwt(token: string) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (err) {
+    console.error('Failed to parse Google OAuth JWT Token:', err);
+    return null;
+  }
+}
+
 export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   isOpen,
   onClose,
@@ -33,6 +54,67 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [newName, setNewName] = useState('');
+
+  // Environment Client ID or stored custom client ID
+  const envClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+  const [customClientId, setCustomClientId] = useState<string>(() => {
+    return localStorage.getItem('byteme_custom_google_client_id') || envClientId || '';
+  });
+  const [isEditingKey, setIsEditingKey] = useState(false);
+
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const activeClientId = customClientId.trim() || envClientId;
+  const isClientIdConfigured = Boolean(
+    activeClientId && !activeClientId.includes('your_google_client_id_here')
+  );
+
+  // Initialize official Google Identity Services GIS button
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (window.google?.accounts?.id && isClientIdConfigured) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: activeClientId,
+          callback: (response: { credential: string }) => {
+            const payload = parseJwt(response.credential);
+            if (payload) {
+              const newUser: GoogleUser = {
+                id: `google-${payload.sub || Date.now()}`,
+                name: payload.name || payload.given_name || payload.email?.split('@')[0] || 'Google User',
+                email: payload.email,
+                avatar: payload.picture || '',
+                verified: payload.email_verified ?? true,
+              };
+              onAddAccount(newUser);
+              onSelectAccount(newUser);
+            }
+          },
+        });
+
+        if (googleBtnRef.current) {
+          googleBtnRef.current.innerHTML = '';
+          window.google.accounts.id.renderButton(googleBtnRef.current, {
+            theme: 'outline',
+            size: 'large',
+            type: 'standard',
+            shape: 'pill',
+            text: 'signin_with',
+            logo_alignment: 'left',
+            width: 320,
+          });
+        }
+      } catch (e) {
+        console.error('Google Identity Services Initialization Error:', e);
+      }
+    }
+  }, [isOpen, activeClientId, isClientIdConfigured]);
+
+  const handleSaveCustomClientId = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('byteme_custom_google_client_id', customClientId.trim());
+    setIsEditingKey(false);
+  };
 
   if (!isOpen) return null;
 
@@ -89,11 +171,10 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-md bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100 transition-all">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100 transition-all max-h-[90vh] flex flex-col">
         {/* Header with official Google Branding */}
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
+        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40 shrink-0">
           <div className="flex items-center space-x-3">
-            {/* Google Colorful G SVG */}
             <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 p-1.5 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-full h-full">
                 <path
@@ -119,7 +200,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                 Google Authentication
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Sign in or switch connected Google Account
+                Official Google Identity OAuth 2.0 Sign In
               </p>
             </div>
           </div>
@@ -132,39 +213,123 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-6 space-y-5 overflow-y-auto flex-1">
           {/* Active Account Banner if logged in */}
           {activeUser && (
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 dark:shadow-[0_0_15px_rgba(16,185,129,0.5)] font-black text-base flex items-center justify-center shrink-0 border border-emerald-500/30 dark:border-emerald-400/50">
-                  {(activeUser.name || 'User').charAt(0).toUpperCase()}
-                </div>
-                <div>
+            <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
+              <div className="flex items-center space-x-3 truncate">
+                {activeUser.avatar ? (
+                  <img
+                    src={activeUser.avatar}
+                    alt={activeUser.name}
+                    className="w-10 h-10 rounded-full border border-emerald-500 bg-white shrink-0 object-cover"
+                    style={{ width: '40px', height: '40px', minWidth: '40px', minHeight: '40px' }}
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-base flex items-center justify-center shrink-0 border border-emerald-500/30">
+                    {(activeUser.name || 'User').charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="truncate">
                   <div className="flex items-center space-x-1.5">
-                    <span className="font-bold text-sm text-slate-900 dark:text-white font-heading">
+                    <span className="font-bold text-sm text-slate-900 dark:text-white font-heading truncate">
                       {activeUser.name}
                     </span>
-                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                   </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate block">
                     {activeUser.email}
                   </span>
                 </div>
               </div>
 
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500 text-white font-bold uppercase tracking-wider">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500 text-white font-bold uppercase tracking-wider shrink-0 ml-2">
                 Active
               </span>
             </div>
           )}
 
-          {/* Add New Google Account Form */}
+          {/* Official Google OAuth 2.0 Live Widget Container */}
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3 text-center">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
+                <Globe className="w-3.5 h-3.5 text-blue-500" />
+                <span>Real Google OAuth 2.0 Auth</span>
+              </span>
+              <button
+                onClick={() => setIsEditingKey(!isEditingKey)}
+                className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center space-x-1"
+              >
+                <Key className="w-3 h-3" />
+                <span>{isEditingKey ? 'Close Config' : 'Client ID Config'}</span>
+              </button>
+            </div>
+
+            {/* Client ID Configuration Panel */}
+            {isEditingKey ? (
+              <form onSubmit={handleSaveCustomClientId} className="space-y-2 text-left pt-2">
+                <label className="text-[11px] text-slate-500 dark:text-slate-400 block">
+                  Google OAuth Client ID (<code className="text-emerald-600 font-mono">VITE_GOOGLE_CLIENT_ID</code>):
+                </label>
+                <input
+                  type="text"
+                  value={customClientId}
+                  onChange={(e) => setCustomClientId(e.target.value)}
+                  placeholder="xxxx-xxxx.apps.googleusercontent.com"
+                  className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[10px] text-slate-400">
+                    File location: <code className="text-slate-300 font-mono">.env</code> in project root
+                  </span>
+                  <button
+                    type="submit"
+                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
+                  >
+                    Save & Apply
+                  </button>
+                </div>
+              </form>
+            ) : isClientIdConfigured ? (
+              <div className="space-y-3 pt-1">
+                <p className="text-xs text-slate-600 dark:text-slate-300">
+                  Click below to log in with your official Google Account:
+                </p>
+                <div className="flex justify-center min-h-[44px]">
+                  <div ref={googleBtnRef} id="googleSignInButton" className="flex justify-center"></div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-left space-y-2 text-xs">
+                <div className="flex items-center space-x-1.5 font-bold">
+                  <Key className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>Google Client ID Pending Configuration</span>
+                </div>
+                <p className="text-[11.5px] leading-relaxed text-slate-600 dark:text-slate-300">
+                  To enable live Google Sign-In popups, add your Google OAuth Client ID to the <code className="font-mono bg-amber-500/20 px-1 py-0.5 rounded text-amber-800 dark:text-amber-200">.env</code> file at:
+                </p>
+                <code className="block p-2 rounded-lg bg-slate-900 text-emerald-400 font-mono text-[11px] break-all border border-slate-800">
+                  VITE_GOOGLE_CLIENT_ID=your_id.apps.googleusercontent.com
+                </code>
+                <a
+                  href="https://console.cloud.google.com/apis/credentials"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline pt-1"
+                >
+                  <span>Get Client ID from Google Cloud Console</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* Add New Google Account Custom Form */}
           {isAddingNew ? (
             <form onSubmit={handleCreateAccount} className="space-y-4 animate-fadeIn">
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
                 <h4 className="text-xs font-bold font-mono text-slate-500 uppercase tracking-wider">
-                  Add Google Account:
+                  Add Account Manually:
                 </h4>
 
                 <div>
@@ -217,10 +382,10 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
               {/* Account Selector List */}
               <div>
                 <span className="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                  Connected Google Accounts:
+                  Connected Accounts:
                 </span>
 
-                <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                   {accounts.length > 0 ? (
                     accounts.map((user) => {
                       const isCurrent = activeUser?.id === user.id;
@@ -229,16 +394,25 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                         <div
                           key={user.id}
                           onClick={() => onSelectAccount(user)}
-                          className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                          className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                             isCurrent
                               ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500 shadow-sm'
                               : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                           }`}
                         >
                           <div className="flex items-center space-x-3 truncate">
-                            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 dark:shadow-[0_0_10px_rgba(16,185,129,0.4)] font-black text-xs flex items-center justify-center shrink-0 border border-emerald-500/30">
-                              {(user.name || 'User').charAt(0).toUpperCase()}
-                            </div>
+                            {user.avatar ? (
+                              <img
+                                src={user.avatar}
+                                alt={user.name}
+                                className="w-8 h-8 rounded-full border border-emerald-500 bg-white shrink-0 object-cover"
+                                style={{ width: '32px', height: '32px', minWidth: '32px', minHeight: '32px' }}
+                              />
+                            ) : (
+                              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-xs flex items-center justify-center shrink-0 border border-emerald-500/30">
+                                {(user.name || 'User').charAt(0).toUpperCase()}
+                              </div>
+                            )}
                             <div className="truncate">
                               <span className="font-bold text-xs text-slate-900 dark:text-white block truncate font-heading">
                                 {user.name}
@@ -261,7 +435,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                     })
                   ) : (
                     <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-center text-xs text-slate-400">
-                      No Google accounts linked yet. Select a sample profile below or add your Google account.
+                      No Google accounts linked yet. Use Google Auth above or add an account.
                     </div>
                   )}
                 </div>
@@ -270,17 +444,20 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
               {/* Sample Quick Login Presets */}
               <div>
                 <span className="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                  Quick One-Click Google Auth Presets:
+                  Quick Auth Profiles:
                 </span>
                 <div className="space-y-1.5">
                   {samplePresets.map((preset) => (
                     <button
                       key={preset.id}
-                      onClick={() => onAddAccount(preset)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 text-left transition-all flex items-center justify-between text-xs"
+                      onClick={() => {
+                        onAddAccount(preset);
+                        onSelectAccount(preset);
+                      }}
+                      className="w-full p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 text-left transition-all flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center space-x-2.5 truncate">
-                        <div className="w-6 h-6 rounded-md bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-[11px] flex items-center justify-center shrink-0">
+                        <div className="w-6 h-6 rounded-full bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-[11px] flex items-center justify-center shrink-0">
                           {(preset.name || 'User').charAt(0).toUpperCase()}
                         </div>
                         <span className="font-medium text-slate-800 dark:text-slate-200 truncate">
@@ -288,7 +465,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                         </span>
                       </div>
                       <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold font-mono">
-                        + Add
+                        Select
                       </span>
                     </button>
                   ))}
@@ -302,7 +479,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                   className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-sm"
                 >
                   <Plus className="w-4 h-4 text-emerald-400" />
-                  <span>Add Google Account</span>
+                  <span>Add Account</span>
                 </button>
 
                 {activeUser && (
@@ -321,7 +498,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
         </div>
 
         {/* Footer Security Badge */}
-        <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 text-center text-[10.5px] text-slate-400 font-mono flex items-center justify-center space-x-1.5">
+        <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 text-center text-[10.5px] text-slate-400 font-mono flex items-center justify-center space-x-1.5 shrink-0">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
           <span>OAuth 2.0 Google Identity Services Secured</span>
         </div>
