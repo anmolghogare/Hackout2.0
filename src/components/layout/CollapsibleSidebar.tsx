@@ -201,48 +201,68 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
           isCollapsed ? 'lg:w-20' : 'lg:w-64'
         )}
       >
-        {/* Brand Header - Always shows Logo + Name */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 shrink-0">
-          <div className="flex items-center space-x-3 overflow-hidden">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-heading font-extrabold text-lg shadow-md shadow-emerald-600/20 shrink-0">
-              B
-            </div>
-            {(!isCollapsed || isMobileOpen) && (
-              <div className="flex flex-col truncate">
-                <div className="flex items-center space-x-1.5">
-                  <span className="font-heading font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
-                    ByteMe
-                  </span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full font-mono font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30">
-                    v2.0
-                  </span>
-                </div>
-                <span className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">
-                  Carbon Decision Intelligence
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Desktop Collapse / Mobile Close Button */}
-          <div className="flex items-center">
-            {isMobileOpen ? (
-              <button
-                onClick={onCloseMobile}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            ) : (
+        {/* Brand Header - Never clips ByteMe logo under any zoom or mobile state */}
+        <div
+          className={cn(
+            'h-16 flex items-center border-b border-slate-200 dark:border-slate-800 shrink-0 transition-all',
+            isCollapsed && !isMobileOpen ? 'px-2 justify-center' : 'px-4 justify-between'
+          )}
+        >
+          {isCollapsed && !isMobileOpen ? (
+            /* Collapsed Desktop Rail: Fully centered logo with expand action */
+            <div className="flex items-center justify-center w-full">
               <button
                 onClick={onToggleCollapse}
-                className="hidden lg:flex p-1.5 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-heading font-extrabold text-xl shadow-md shadow-emerald-600/20 shrink-0 hover:scale-105 active:scale-95 transition-transform"
+                title="Expand sidebar (ByteMe v2.0)"
               >
-                {isCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+                B
               </button>
-            )}
-          </div>
+            </div>
+          ) : (
+            /* Expanded or Mobile Slidebar: Full ByteMe branding with close / collapse toggle */
+            <>
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-heading font-extrabold text-xl shadow-md shadow-emerald-600/20 shrink-0">
+                  B
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="font-heading font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
+                      ByteMe
+                    </span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-mono font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 shrink-0">
+                      v2.0
+                    </span>
+                  </div>
+                  <span className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">
+                    Carbon Decision Intelligence
+                  </span>
+                </div>
+              </div>
+
+              {/* Desktop Collapse / Mobile Close Button */}
+              <div className="flex items-center shrink-0 ml-2">
+                {isMobileOpen ? (
+                  <button
+                    onClick={onCloseMobile}
+                    className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    title="Close sidebar"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={onToggleCollapse}
+                    className="hidden lg:flex p-1.5 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    title="Collapse sidebar"
+                  >
+                    <PanelLeftClose className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Navigation Item Scrollable Area */}

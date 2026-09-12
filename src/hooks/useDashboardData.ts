@@ -14,9 +14,16 @@ const DEFAULT_GOOGLE_USER: GoogleUser = {
   id: 'g-default-1',
   name: 'Anmol Ghogare',
   email: 'anmol.ghogare@gmail.com',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Anmol',
+  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
   verified: true,
 };
+
+const BOY_FALLBACK_AVATARS = [
+  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+];
 
 export function useDashboardData() {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
@@ -31,11 +38,37 @@ export function useDashboardData() {
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState<boolean>(false);
   const [googleAccounts, setGoogleAccounts] = useState<GoogleUser[]>(() => {
     const saved = localStorage.getItem('byteme_google_users');
-    return saved ? JSON.parse(saved) : [DEFAULT_GOOGLE_USER];
+    if (saved) {
+      try {
+        const parsed: GoogleUser[] = JSON.parse(saved);
+        return parsed.map((u, i) => ({
+          ...u,
+          avatar: !u.avatar || u.avatar.includes('dicebear')
+            ? BOY_FALLBACK_AVATARS[i % BOY_FALLBACK_AVATARS.length]
+            : u.avatar,
+        }));
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+    return [DEFAULT_GOOGLE_USER];
   });
   const [activeGoogleUser, setActiveGoogleUser] = useState<GoogleUser | null>(() => {
     const saved = localStorage.getItem('byteme_active_google_user');
-    return saved ? JSON.parse(saved) : DEFAULT_GOOGLE_USER;
+    if (saved) {
+      try {
+        const parsed: GoogleUser = JSON.parse(saved);
+        return {
+          ...parsed,
+          avatar: !parsed.avatar || parsed.avatar.includes('dicebear')
+            ? DEFAULT_GOOGLE_USER.avatar
+            : parsed.avatar,
+        };
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+    return DEFAULT_GOOGLE_USER;
   });
 
   const selectGoogleAccount = (user: GoogleUser) => {

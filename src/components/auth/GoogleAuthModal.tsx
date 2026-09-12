@@ -12,6 +12,15 @@ export interface GoogleAuthModalProps {
   onSignOut: () => void;
 }
 
+const BOY_AVATARS = [
+  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1628157582853-a796fa650a6a?w=150&auto=format&fit=crop&q=80',
+];
+
 export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   isOpen,
   onClose,
@@ -31,18 +40,13 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
     e.preventDefault();
     if (!newEmail.trim() || !newName.trim()) return;
 
-    const initials = newName
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+    const boyAvatar = BOY_AVATARS[newName.trim().length % BOY_AVATARS.length];
 
     const user: GoogleUser = {
       id: `google-${Date.now()}`,
       name: newName.trim(),
       email: newEmail.trim().toLowerCase(),
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(newName)}`,
+      avatar: boyAvatar,
       verified: true,
     };
 
@@ -57,21 +61,28 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
       id: 'preset-1',
       name: 'Anmol Ghogare',
       email: 'anmol.ghogare@gmail.com',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Anmol',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
       verified: true,
     },
     {
       id: 'preset-2',
       name: 'Rohan Gohil',
       email: 'rohan.gohil@byteme.io',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan',
+      avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
       verified: true,
     },
     {
       id: 'preset-3',
-      name: 'ESG Lead Auditor',
-      email: 'audit.lead@sebi-brsr.gov.in',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Audit',
+      name: 'Aarav Sharma',
+      email: 'aarav.sharma@byteme.io',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      verified: true,
+    },
+    {
+      id: 'preset-4',
+      name: 'Karan Patel',
+      email: 'karan.patel@apex-packaging.com',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
       verified: true,
     },
   ];
