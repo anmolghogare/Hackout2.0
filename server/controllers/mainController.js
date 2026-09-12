@@ -186,52 +186,62 @@ exports.getCopilotResponse = async (req, res) => {
     const { prompt = "" } = req.body;
     const queryLower = prompt.toLowerCase().trim();
 
+    if (!queryLower) {
+      return res.json({
+        success: true,
+        data: {
+          userPrompt: "",
+          type: "greeting",
+          text: "👋 Hello! I am your ByteMe AI Assistant. How can I assist you with Apex Packaging's carbon emissions, ROI simulation, or circular waste monetization today?",
+          aiTitle: "ByteMe AI Assistant",
+          summary: "Industrial Carbon Decision Intelligence Platform",
+          referenceStandards: "IPCC 2006 & CEA India Grid v19",
+          actionItems: null,
+          totalImpact: null
+        }
+      });
+    }
+
+    // Intent Detection
+    const greetingKeywords = ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'who are you', 'help', 'what can you do', 'thanks', 'thank you', 'namaste', 'greetings', 'yo', 'sup'];
+    const isGreeting = greetingKeywords.some(w => queryLower === w || queryLower.startsWith(w + ' ') || queryLower.endsWith(' ' + w) || queryLower === w + '!');
+
+    const isNavigation = (queryLower.includes('go to') || queryLower.includes('navigate') || queryLower.includes('open') || queryLower.includes('show tab') || queryLower.includes('take me to') || queryLower.includes('switch to')) &&
+      (queryLower.includes('simulator') || queryLower.includes('roi') || queryLower.includes('heatmap') || queryLower.includes('thermal') || queryLower.includes('ocr') || queryLower.includes('scanner') || queryLower.includes('digital twin') || queryLower.includes('canvas') || queryLower.includes('sandbox') || queryLower.includes('scenario') || queryLower.includes('sankey') || queryLower.includes('waste') || queryLower.includes('circular') || queryLower.includes('matrix') || queryLower.includes('roadmap') || queryLower.includes('overview') || queryLower.includes('context'));
+
     // Check if external Gemini API key is configured
     const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
 
-    if (apiKey && queryLower.length > 5) {
+    if (apiKey && queryLower.length > 0) {
       try {
-        const systemPrompt = `You are the AI Sustainability & Decarbonization Copilot for Apex Packaging Pvt. Ltd., an SME manufacturing facility processing 100 Tons/month of virgin polymer resin, operating a heavy furnace oil thermal heating system (1400°C), generating 12 Tons/month of off-cut scrap waste.
-Refer strictly to official IPCC 2006 and CEA India Grid Database factors (CEA Grid: 0.82 kgCO2e/kWh, Furnace Oil: 3.12 kgCO2e/L, Virgin LLDPE: 2.80 tCO2e/Ton, PNG: 1.95 kgCO2e/m3).
-Do not hallucinate random numbers.
+        const systemPrompt = `You are the AI Sustainability Assistant for Apex Packaging Pvt. Ltd. (SME manufacturing facility in India: 100T/month virgin polymer resin, 1400°C furnace oil heating, 12T/month off-cut scrap).
+Refer strictly to official IPCC 2006 & CEA India factors (CEA Grid: 0.82 kgCO2e/kWh, Furnace Oil: 3.12 kgCO2e/L, Virgin LLDPE: 2.80 tCO2e/Ton, PNG: 1.95 kgCO2e/m3).
 
-User Question: "${prompt}"
+User Input: "${prompt}"
 
-Return ONLY a valid JSON object with exact structure:
+Rules:
+1. If the input is a GREETING (e.g. "hi", "hello", "hey", "thanks"), respond with a polite 1-2 sentence text greeting introducing yourself. Set "actionItems": null, "totalImpact": null. DO NOT generate fake action steps or audit tables for greetings.
+2. If the user asks a REAL QUESTION about emissions, furnace heating, PCR substitution, scrap sales, payback, costs, or IPCC/CEA factors, answer with accurate calculations and set structured "actionItems" and "totalImpact".
+3. If user requests NAVIGATION (e.g. "take me to 3D heatmap"), mention navigating and set "navigationTarget" to one of: ["overview", "simulator_hub", "analytics_hub", "intake", "simulation", "sandbox", "circular", "roadmap"].
+
+Return ONLY valid JSON format:
 {
   "userPrompt": "${prompt}",
-  "aiTitle": "AI Operational Decarbonization Action Plan",
-  "summary": "Concise 2-sentence summary grounded in facility data & IPCC/CEA factors",
-  "referenceStandards": "IPCC 2006 Guidelines & CEA India Grid Emission Factor v19",
-  "actionItems": [
-    {
-      "step": 1,
-      "title": "Action title",
-      "co2Impact": "CO2 Reduction: X%",
-      "financialImpact": "Annual Savings: ₹Y / year",
-      "paybackPeriod": "Z Months"
-    }
-  ],
-  "totalImpact": {
-    "co2ReductionPct": "X% Total CO2 Cut",
-    "annualProfitIncrease": "+₹Y / year Net Profit Increase",
-    "paybackPeriodMonths": "~Z Months Average Payback"
-  },
-  "recommendation": {
-    "action": "Primary Recommended Action",
-    "impactCO2": "CO2 impact snippet",
-    "roi": "Financial ROI snippet"
-  },
-  "text": "Full explanation text for the chatbot stream"
+  "type": "greeting | question | navigation",
+  "text": "Your direct message to the user",
+  "navigationTarget": null,
+  "aiTitle": "Heading for response",
+  "summary": "Brief summary",
+  "referenceStandards": "IPCC 2006 Guidelines & CEA India Grid v19",
+  "actionItems": null or [ { "step": 1, "title": "...", "co2Impact": "...", "financialImpact": "...", "paybackPeriod": "..." } ],
+  "totalImpact": null or { "co2ReductionPct": "...", "annualProfitIncrease": "...", "paybackPeriodMonths": "..." }
 }`;
 
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         const fetchRes = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: systemPrompt }] }]
-          })
+          body: JSON.stringify({ contents: [{ parts: [{ text: systemPrompt }] }] })
         });
 
         if (fetchRes.ok) {
@@ -244,156 +254,240 @@ Return ONLY a valid JSON object with exact structure:
           }
         }
       } catch (err) {
-        console.warn("External Gemini API call failed, using intelligent server-side engine:", err.message);
+        console.warn("External Gemini API call error:", err.message);
       }
     }
 
-    // Server-Side Intelligent Decision Engine (Zero hallucination, grounded in facility dataset & IPCC/CEA factors)
-    let responseData = {
-      userPrompt: prompt,
-      aiTitle: "Live AI Copilot Operational Action Plan",
-      summary: "AI Engine continuously monitoring facility throughput, energy mix, and scrap production against global emission databases (IPCC, CEA India).",
-      referenceStandards: "IPCC 2006 Guidelines & CEA India Grid Emission Factor Database v19",
-      actionItems: [
-        {
-          step: 1,
-          title: "Reduce furnace thermal overshoot by 5%",
-          co2Impact: "CO₂ Reduction: -9%",
-          financialImpact: "Annual Energy Savings: ₹3,50,000 / year",
-          paybackPeriod: "4.2 Months"
-        },
-        {
-          step: 2,
-          title: "Substitute 20% virgin resin with certified PCR scrap",
-          co2Impact: "CO₂ Reduction: -7%",
-          financialImpact: "Financial Impact: Cost-Neutral Material Shift",
-          paybackPeriod: "7.5 Months"
-        },
-        {
-          step: 3,
-          title: "Route 12T/mo off-cut scrap to Factory B via Circular Network",
-          co2Impact: "CO₂ Reduction: -5%",
-          financialImpact: "Scrap Sales Revenue: +₹3,00,000 / year",
-          paybackPeriod: "Immediate"
-        }
-      ],
-      totalImpact: {
-        co2ReductionPct: "21% Total CO₂ Reduction",
-        annualProfitIncrease: "+₹6,50,000 / year Net Operational Profit Increase",
-        paybackPeriodMonths: "~10.5 Months Average Payback"
-      },
-      recommendation: {
-        action: "Furnace Thermal Optimization & 20% PCR Substitution",
-        impactCO2: "Abates ~28.8 tCO₂e/mo",
-        roi: "+₹6,50,000/yr savings, Payback ~10.5 Months"
-      },
-      text: "Based on Apex Packaging's baseline telemetry (100T/mo resin, 1400°C thermal furnace), implementing thermal overshoot reduction and routing 12T/mo off-cut scrap to Factory B delivers 21% total CO₂ reduction while boosting annual net profit by ₹6.5 Lakh/year."
-    };
+    // SERVER-SIDE ZERO-HALLUCINATION INTENT ROUTER (when no API key or fallback)
 
-    if (queryLower.includes("payback") || queryLower.includes("cost") || queryLower.includes("investment") || queryLower.includes("roi") || queryLower.includes("png")) {
-      responseData.aiTitle = "Financial ROI & Capital Payback Matrix (Apex Packaging)";
-      responseData.summary = "Capital allocation breakdown for thermal energy fuel transition (Heavy Furnace Oil -> PNG/Biomass) and material substitution.";
-      responseData.actionItems = [
-        {
-          step: 1,
-          title: "Furnace Thermal Heating Optimization & 50% PNG Switch",
-          co2Impact: "CO₂ Reduction: -30 tCO₂e / year",
-          financialImpact: "Capital Cost: ₹3,30,000 | Annual Savings: ₹3,50,000/yr",
-          paybackPeriod: "6.0 Months"
-        },
-        {
-          step: 2,
-          title: "40% PCR Polymer Resin Substitution Blend",
-          co2Impact: "CO₂ Reduction: -120 tCO₂e / year",
-          financialImpact: "Capital Cost: ₹10,00,000 | Annual Savings: ₹2,40,000/yr",
-          paybackPeriod: "14.0 Months"
-        },
-        {
-          step: 3,
-          title: "Inline Scrap Re-granulation & B2B Matchmaking",
-          co2Impact: "CO₂ Reduction: -45 tCO₂e / year",
-          financialImpact: "Capital Cost: ₹7,00,000 | Annual Revenue: ₹3,00,000/yr",
-          paybackPeriod: "9.0 Months"
+    // Path 1: Greetings & Small Talk
+    if (isGreeting) {
+      return res.json({
+        success: true,
+        data: {
+          userPrompt: prompt,
+          type: "greeting",
+          text: `👋 Hello! I am your ByteMe AI Assistant for Apex Packaging Pvt. Ltd. How can I help you today? You can ask me about furnace emissions, PCR resin substitution, waste monetization, or navigating to any dashboard module!`,
+          aiTitle: "ByteMe AI Assistant",
+          summary: "Apex Packaging Operational Decarbonization Intelligence",
+          referenceStandards: "IPCC 2006 & CEA India Grid Database v19",
+          actionItems: null,
+          totalImpact: null,
+          navigationTarget: null
         }
-      ];
-      responseData.totalImpact = {
-        co2ReductionPct: "195 tCO₂e / yr (21% Facility Cut)",
-        annualProfitIncrease: "Total Capital Investment: ₹20,30,000 (~20.3 Lakhs INR)",
-        paybackPeriodMonths: "~10.5 Months Average Payback"
-      };
-      responseData.text = "Capital payback across recommended actions averages 10.5 months. Total investment of ₹20.3 Lakhs eliminates 195 tons of CO₂ annually while generating strong recurring financial cash flow.";
-    } else if (queryLower.includes("scrap") || queryLower.includes("waste") || queryLower.includes("b2b") || queryLower.includes("circular") || queryLower.includes("dumping")) {
-      responseData.aiTitle = "B2B Waste-to-Resource Circular Monetization Model";
-      responseData.summary = "Replaces linear disposal (Factory ➔ Waste ➔ Landfill) with active B2B waste-to-resource exchange network.";
-      responseData.actionItems = [
-        {
-          step: 1,
-          title: "Divert 12 Tons/month Off-cut Polymer Scrap from Landfill",
-          co2Impact: "Landfill Waste Diversion: -85%",
-          financialImpact: "Saved Landfill Fee: +₹2,16,000 / year (₹1,500/Ton)",
-          paybackPeriod: "Immediate"
-        },
-        {
-          step: 2,
-          title: "Supply Secondary Polymer Feedstock to Factory B (Pipe Manufacturer)",
-          co2Impact: "Net Facility Carbon Cut: -42%",
-          financialImpact: "Scrap Sales Revenue: +₹3,00,000 / year",
-          paybackPeriod: "Immediate"
-        },
-        {
-          step: 3,
-          title: "Offer Feedstock at 30% Discount below Virgin Resin Rate to Buyer",
-          co2Impact: "Scope 3 Circular Value Creation",
-          financialImpact: "Buyer Cost Discount: 30% below virgin polymer",
-          paybackPeriod: "Win-Win Network"
-        }
-      ];
-      responseData.totalImpact = {
-        co2ReductionPct: "42% Net Scrap Intensity Reduction",
-        annualProfitIncrease: "+₹5,16,000 Total Value Created / year",
-        paybackPeriodMonths: "Immediate Cash Positive"
-      };
-      responseData.text = "Routing 12T/mo polymer scrap to Factory B eliminates ₹2.16L/yr in landfill fees while generating ₹3.0L/yr in direct scrap sales revenue.";
-    } else if (queryLower.includes("factor") || queryLower.includes("cea") || queryLower.includes("ipcc") || queryLower.includes("emission") || queryLower.includes("grid")) {
-      responseData.aiTitle = "Audit-Grade Carbon Emission Factor References (India Context)";
-      responseData.summary = "Activity-based emission factor database derived from IPCC 2006 Guidelines & CEA India Grid Emission Factor Database v19.";
-      responseData.actionItems = [
-        {
-          step: 1,
-          title: "CEA Grid Electricity Intensity",
-          co2Impact: "Grid Emission Factor: 0.82 kgCO₂e / kWh",
-          financialImpact: "Extrusion Line Scope 2 Baseline",
-          paybackPeriod: "Audit Standard"
-        },
-        {
-          step: 2,
-          title: "Heavy Furnace Oil Thermal Combustion",
-          co2Impact: "Combustion Factor: 3.12 kgCO₂e / Liter",
-          financialImpact: "Scope 1 Direct Thermal Emissions",
-          paybackPeriod: "Audit Standard"
-        },
-        {
-          step: 3,
-          title: "Virgin LLDPE Resin Embodied Footprint",
-          co2Impact: "Upstream Factor: 2.80 tCO₂e / Ton",
-          financialImpact: "Scope 3 Material Supply Chain",
-          paybackPeriod: "Audit Standard"
-        }
-      ];
-      responseData.totalImpact = {
-        co2ReductionPct: "ISO 14064 Compliance Score: 99%",
-        annualProfitIncrease: "SEBI BRSR Core Audit Ready",
-        paybackPeriodMonths: "Auditable Calculation Engine"
-      };
-      responseData.text = "All baseline calculations strictly adhere to CEA India (0.82 kgCO2e/kWh) and IPCC 2006 factors (3.12 kgCO2e/L furnace oil), ensuring auditable SEBI BRSR compliance.";
+      });
     }
 
+    // Path 2: Module Navigation Requests
+    if (isNavigation) {
+      let navTarget = "overview";
+      let tabName = "Facility Context";
+      if (queryLower.includes("simulator") || queryLower.includes("roi") || queryLower.includes("slider")) {
+        navTarget = "simulator_hub"; tabName = "ROI Simulator Playground";
+      } else if (queryLower.includes("heatmap") || queryLower.includes("thermal") || queryLower.includes("analytics")) {
+        navTarget = "analytics_hub"; tabName = "3D Thermal Analytics & Heatmap";
+      } else if (queryLower.includes("ocr") || queryLower.includes("scanner") || queryLower.includes("bill")) {
+        navTarget = "intake"; tabName = "OCR Smart Bill Scanner";
+      } else if (queryLower.includes("digital twin") || queryLower.includes("canvas") || queryLower.includes("flow")) {
+        navTarget = "simulation"; tabName = "Digital Twin Process Flow Canvas";
+      } else if (queryLower.includes("sandbox") || queryLower.includes("scenario") || queryLower.includes("plan")) {
+        navTarget = "sandbox"; tabName = "Scenario Sandbox Matrix";
+      } else if (queryLower.includes("sankey") || queryLower.includes("waste") || queryLower.includes("circular")) {
+        navTarget = "circular"; tabName = "B2B Waste Sankey Network";
+      } else if (queryLower.includes("matrix") || queryLower.includes("roadmap") || queryLower.includes("brsr")) {
+        navTarget = "roadmap"; tabName = "ROI Matrix & BRSR Audit";
+      }
+
+      return res.json({
+        success: true,
+        data: {
+          userPrompt: prompt,
+          type: "navigation",
+          text: `Opening the ${tabName} module for you now!`,
+          navigationTarget: navTarget,
+          aiTitle: `Navigating to ${tabName}`,
+          summary: `Module navigation triggered for ${tabName}`,
+          referenceStandards: "ByteMe Platform Router",
+          actionItems: null,
+          totalImpact: null
+        }
+      });
+    }
+
+    // Path 3: Financial ROI & Payback Questions
+    if (queryLower.includes("payback") || queryLower.includes("cost") || queryLower.includes("investment") || queryLower.includes("roi") || queryLower.includes("png") || queryLower.includes("money") || queryLower.includes("capex")) {
+      return res.json({
+        success: true,
+        data: {
+          userPrompt: prompt,
+          type: "question",
+          text: "Here is the financial ROI and capital payback breakdown for Apex Packaging's decarbonization interventions:",
+          aiTitle: "Financial ROI & Capital Payback Matrix (Apex Packaging)",
+          summary: "Capital allocation breakdown for thermal energy fuel transition (Heavy Furnace Oil -> PNG/Biomass) and material substitution.",
+          referenceStandards: "IPCC 2006 & CEA India Grid v19",
+          actionItems: [
+            {
+              step: 1,
+              title: "Furnace Thermal Heating Optimization & 50% PNG Switch",
+              co2Impact: "CO₂ Reduction: -30 tCO₂e / year",
+              financialImpact: "Capital Cost: ₹3,30,000 | Annual Savings: ₹3,50,000/yr",
+              paybackPeriod: "6.0 Months"
+            },
+            {
+              step: 2,
+              title: "40% PCR Polymer Resin Substitution Blend",
+              co2Impact: "CO₂ Reduction: -120 tCO₂e / year",
+              financialImpact: "Capital Cost: ₹10,00,000 | Annual Savings: ₹2,40,000/yr",
+              paybackPeriod: "14.0 Months"
+            },
+            {
+              step: 3,
+              title: "Inline Scrap Re-granulation & B2B Matchmaking",
+              co2Impact: "CO₂ Reduction: -45 tCO₂e / year",
+              financialImpact: "Capital Cost: ₹7,00,000 | Annual Revenue: ₹3,00,000/yr",
+              paybackPeriod: "9.0 Months"
+            }
+          ],
+          totalImpact: {
+            co2ReductionPct: "195 tCO₂e / yr (21% Facility Cut)",
+            annualProfitIncrease: "Total Capital Investment: ₹20,30,000 (~20.3 Lakhs INR)",
+            paybackPeriodMonths: "~10.5 Months Average Payback"
+          },
+          navigationTarget: null
+        }
+      });
+    }
+
+    // Path 4: Scrap & Circular Economy Questions
+    if (queryLower.includes("scrap") || queryLower.includes("waste") || queryLower.includes("b2b") || queryLower.includes("circular") || queryLower.includes("dumping") || queryLower.includes("monetize") || queryLower.includes("buyer")) {
+      return res.json({
+        success: true,
+        data: {
+          userPrompt: prompt,
+          type: "question",
+          text: "Here is how Apex Packaging monetizes 12 Tons/month off-cut polymer scrap via B2B waste-to-resource exchange:",
+          aiTitle: "B2B Waste-to-Resource Circular Monetization Model",
+          summary: "Replaces linear disposal (Factory ➔ Waste ➔ Landfill) with active B2B waste-to-resource exchange network.",
+          referenceStandards: "IPCC 2006 Guidelines",
+          actionItems: [
+            {
+              step: 1,
+              title: "Divert 12 Tons/month Off-cut Polymer Scrap from Landfill",
+              co2Impact: "Landfill Waste Diversion: -85%",
+              financialImpact: "Saved Landfill Fee: +₹2,16,000 / year (₹1,500/Ton)",
+              paybackPeriod: "Immediate"
+            },
+            {
+              step: 2,
+              title: "Supply Secondary Polymer Feedstock to Factory B (Pipe Manufacturer)",
+              co2Impact: "Net Facility Carbon Cut: -42%",
+              financialImpact: "Scrap Sales Revenue: +₹3,00,000 / year",
+              paybackPeriod: "Immediate"
+            },
+            {
+              step: 3,
+              title: "Offer Feedstock at 30% Discount below Virgin Resin Rate to Buyer",
+              co2Impact: "Scope 3 Circular Value Creation",
+              financialImpact: "Buyer Cost Discount: 30% below virgin polymer",
+              paybackPeriod: "Win-Win Network"
+            }
+          ],
+          totalImpact: {
+            co2ReductionPct: "42% Net Scrap Intensity Reduction",
+            annualProfitIncrease: "+₹5,16,000 Total Value Created / year",
+            paybackPeriodMonths: "Immediate Cash Positive"
+          },
+          navigationTarget: null
+        }
+      });
+    }
+
+    // Path 5: Emission Factors & Research Standards
+    if (queryLower.includes("factor") || queryLower.includes("cea") || queryLower.includes("ipcc") || queryLower.includes("emission") || queryLower.includes("grid") || queryLower.includes("baseline") || queryLower.includes("reference")) {
+      return res.json({
+        success: true,
+        data: {
+          userPrompt: prompt,
+          type: "question",
+          text: "Apex Packaging's emissions are calculated using official IPCC 2006 Guidelines and CEA India Grid Database factors:",
+          aiTitle: "Audit-Grade Carbon Emission Factor References (India Context)",
+          summary: "Activity-based emission factor database derived from IPCC 2006 Guidelines & CEA India Grid Emission Factor Database v19.",
+          referenceStandards: "IPCC 2006 & CEA India Grid Database v19",
+          actionItems: [
+            {
+              step: 1,
+              title: "CEA Grid Electricity Intensity",
+              co2Impact: "Grid Emission Factor: 0.82 kgCO₂e / kWh",
+              financialImpact: "Extrusion Line Scope 2 Baseline",
+              paybackPeriod: "Audit Standard"
+            },
+            {
+              step: 2,
+              title: "Heavy Furnace Oil Thermal Combustion",
+              co2Impact: "Combustion Factor: 3.12 kgCO₂e / Liter",
+              financialImpact: "Scope 1 Direct Thermal Emissions",
+              paybackPeriod: "Audit Standard"
+            },
+            {
+              step: 3,
+              title: "Virgin LLDPE Resin Embodied Footprint",
+              co2Impact: "Upstream Factor: 2.80 tCO₂e / Ton",
+              financialImpact: "Scope 3 Material Supply Chain",
+              paybackPeriod: "Audit Standard"
+            }
+          ],
+          totalImpact: {
+            co2ReductionPct: "ISO 14064 Compliance Score: 99%",
+            annualProfitIncrease: "SEBI BRSR Core Audit Ready",
+            paybackPeriodMonths: "Auditable Calculation Engine"
+          },
+          navigationTarget: null
+        }
+      });
+    }
+
+    // Path 6: Default Question Path (Decarbonization Action Plan)
     return res.json({
       success: true,
-      data: responseData,
-      response: responseData.text,
-      recommendation: responseData.recommendation
+      data: {
+        userPrompt: prompt,
+        type: "question",
+        text: `Based on Apex Packaging's baseline telemetry (100T/mo virgin resin, 1400°C heavy furnace oil heating, 12T/mo trim scrap), here is your recommended 21% decarbonization action plan:`,
+        aiTitle: "Live AI Copilot Operational Action Plan",
+        summary: "AI Engine continuously monitoring facility throughput, energy mix, and scrap production against global emission databases (IPCC, CEA India).",
+        referenceStandards: "IPCC 2006 Guidelines & CEA India Grid Emission Factor Database v19",
+        actionItems: [
+          {
+            step: 1,
+            title: "Reduce furnace thermal overshoot by 5%",
+            co2Impact: "CO₂ Reduction: -9%",
+            financialImpact: "Annual Energy Savings: ₹3,50,000 / year",
+            paybackPeriod: "4.2 Months"
+          },
+          {
+            step: 2,
+            title: "Substitute 20% virgin resin with certified PCR scrap",
+            co2Impact: "CO₂ Reduction: -7%",
+            financialImpact: "Financial Impact: Cost-Neutral Material Shift",
+            paybackPeriod: "7.5 Months"
+          },
+          {
+            step: 3,
+            title: "Route 12T/mo off-cut scrap to Factory B via Circular Network",
+            co2Impact: "CO₂ Reduction: -5%",
+            financialImpact: "Scrap Sales Revenue: +₹3,00,000 / year",
+            paybackPeriod: "Immediate"
+          }
+        ],
+        totalImpact: {
+          co2ReductionPct: "21% Total CO₂ Reduction",
+          annualProfitIncrease: "+₹6,50,000 / year Net Operational Profit Increase",
+          paybackPeriodMonths: "~10.5 Months Average Payback"
+        },
+        navigationTarget: null
+      }
     });
+
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

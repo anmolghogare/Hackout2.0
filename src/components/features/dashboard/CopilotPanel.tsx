@@ -81,8 +81,8 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = () => {
         {
           id: (Date.now() + 1).toString(),
           sender: 'assistant',
-          text: apiResult.data.text || apiResult.data.summary || 'Here is your structured AI operational action plan:',
-          structuredData: apiResult.data,
+          text: apiResult.data.text || apiResult.data.summary || 'Here is your response:',
+          structuredData: (apiResult.data.actionItems && apiResult.data.actionItems.length > 0) ? apiResult.data : null,
           rec: apiResult.data.recommendation,
         },
       ]);
