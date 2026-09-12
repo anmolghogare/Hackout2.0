@@ -137,11 +137,9 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
           {activeUser && (
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <img
-                  src={activeUser.avatar}
-                  alt={activeUser.name}
-                  className="w-10 h-10 rounded-full border-2 border-emerald-500 bg-white"
-                />
+                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 dark:shadow-[0_0_15px_rgba(16,185,129,0.5)] font-black text-base flex items-center justify-center shrink-0 border border-emerald-500/30 dark:border-emerald-400/50">
+                  {(activeUser.name || 'User').charAt(0).toUpperCase()}
+                </div>
                 <div>
                   <div className="flex items-center space-x-1.5">
                     <span className="font-bold text-sm text-slate-900 dark:text-white font-heading">
@@ -238,11 +236,9 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                           }`}
                         >
                           <div className="flex items-center space-x-3 truncate">
-                            <img
-                              src={user.avatar}
-                              alt={user.name}
-                              className="w-8 h-8 rounded-full bg-slate-100 shrink-0"
-                            />
+                            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 dark:shadow-[0_0_10px_rgba(16,185,129,0.4)] font-black text-xs flex items-center justify-center shrink-0 border border-emerald-500/30">
+                              {(user.name || 'User').charAt(0).toUpperCase()}
+                            </div>
                             <div className="truncate">
                               <span className="font-bold text-xs text-slate-900 dark:text-white block truncate font-heading">
                                 {user.name}
@@ -284,7 +280,9 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                       className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 text-left transition-all flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center space-x-2.5 truncate">
-                        <img src={preset.avatar} alt={preset.name} className="w-6 h-6 rounded-full" />
+                        <div className="w-6 h-6 rounded-md bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-[11px] flex items-center justify-center shrink-0">
+                          {(preset.name || 'User').charAt(0).toUpperCase()}
+                        </div>
                         <span className="font-medium text-slate-800 dark:text-slate-200 truncate">
                           {preset.name} ({preset.email})
                         </span>

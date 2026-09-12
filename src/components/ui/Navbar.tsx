@@ -173,11 +173,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           {activeGoogleUser ? (
             <>
-              <img
-                src={activeGoogleUser.avatar}
-                alt={activeGoogleUser.name}
-                className="w-5.5 h-5.5 rounded-full border border-emerald-500 bg-white shrink-0 object-cover"
-              />
+              <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 dark:shadow-[0_0_12px_rgba(16,185,129,0.5)] font-black text-xs flex items-center justify-center shrink-0 border border-emerald-500/30 dark:border-emerald-400/50">
+                {(activeGoogleUser.name || 'User').charAt(0).toUpperCase()}
+              </div>
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 hidden lg:inline truncate max-w-[100px]">
                 {activeGoogleUser.name.split(' ')[0]}
               </span>
