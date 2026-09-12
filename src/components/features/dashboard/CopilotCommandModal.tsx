@@ -81,18 +81,21 @@ export const CopilotCommandModal: React.FC<CopilotCommandModalProps> = ({
 
     const apiResult = await queryCopilot(textToSend);
 
-    if (apiResult && apiResult.response) {
+    const data = apiResult?.data || apiResult;
+    const resText = data?.text || data?.summary || apiResult?.response;
+
+    if (apiResult && resText) {
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           sender: 'assistant',
-          text: apiResult.response,
-          rec: apiResult.recommendation
+          text: resText,
+          rec: data.recommendation
             ? {
-                ...apiResult.recommendation,
-                preset: apiResult.recommendation.sliderPreset || { fuelShiftPct: 50 },
-                provenance: apiResult.recommendation.provenance || {
+                ...data.recommendation,
+                preset: data.recommendation.sliderPreset || { fuelShiftPct: 50 },
+                provenance: data.recommendation.provenance || {
                   badge: 'IPCC Verified',
                   formula: 'CO₂ = Baseline - (Baseline × ReductionPct)',
                 },

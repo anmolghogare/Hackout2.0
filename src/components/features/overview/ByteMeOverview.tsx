@@ -467,16 +467,6 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
 
               {/* Call-to-Actions */}
               <div className="pt-2 flex flex-wrap items-center gap-3">
-                {onStartJudgeTour && (
-                  <Button
-                    variant="primary"
-                    onClick={onStartJudgeTour}
-                    className="flex items-center space-x-2 px-5 py-2.5 text-xs font-bold shadow-md"
-                  >
-                    <PlayCircle className="w-4 h-4 fill-current" />
-                    <span>Start 3-Min Judge Tour</span>
-                  </Button>
-                )}
 
                 <Button
                   variant="outline"

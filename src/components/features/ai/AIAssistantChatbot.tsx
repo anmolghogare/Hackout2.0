@@ -36,11 +36,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     {
       id: 'welcome',
       sender: 'assistant',
-      text: "👋 Hi! I'm your ByteMe Assistant. I can guide you through the platform, jump directly to any module, or run live simulations for you.",
-      actionChip: {
-        label: '🚀 Start 3-Min Judge Demo',
-        action: () => onStartJudgeTour && onStartJudgeTour(),
-      },
+      text: "👋 Hi! I'm your ByteMe Assistant. I can guide you through the platform, answer questions on facility carbon emissions & ROI, or run live simulations for you.",
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -65,7 +61,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     setQuery('');
     setIsTyping(true);
 
-    const lower = prompt.toLowerCase();
+    const lower = prompt.toLowerCase().trim();
 
     if (lower.includes('home') || lower.includes('about') || lower.includes('overview')) {
       setTimeout(() => {
@@ -96,26 +92,6 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
         ]);
         setIsTyping(false);
       }, 300);
-      return;
-    }
-
-    if (lower.includes('tour') || lower.includes('demo') || lower.includes('judge')) {
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: (Date.now() + 1).toString(),
-            sender: 'assistant',
-            text: 'Launching the guided 3-minute judge demo walkthrough across all modules!',
-            actionChip: {
-              label: 'Step Through Demo Now',
-              action: () => onStartJudgeTour && onStartJudgeTour(),
-            },
-          },
-        ]);
-        if (onStartJudgeTour) onStartJudgeTour();
-        setIsTyping(false);
-      }, 400);
       return;
     }
 
@@ -174,13 +150,30 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
 
     try {
       const res = await queryCopilot(prompt);
-      if (res && res.response) {
+      const data = res?.data || res;
+      const resText = data?.text || res?.response || data?.summary;
+
+      if (resText) {
+        if (data?.navigationTarget) {
+          onNavigateTab(data.navigationTarget as TabId);
+        }
+
+        let formattedText = resText;
+        if (data?.actionItems && Array.isArray(data.actionItems) && data.actionItems.length > 0) {
+          formattedText += '\n\n**Action Plan:**\n' + data.actionItems.map((item: any) =>
+            `• **Step ${item.step}: ${item.title}**\n  - ${item.co2Impact || ''}\n  - ${item.financialImpact || ''}`
+          ).join('\n');
+        }
+        if (data?.totalImpact) {
+          formattedText += `\n\n**Total Impact:** ${data.totalImpact.co2ReductionPct || ''} CO₂ reduction, ${data.totalImpact.annualProfitIncrease || ''} savings.`;
+        }
+
         setMessages((prev) => [
           ...prev,
           {
             id: (Date.now() + 1).toString(),
             sender: 'assistant',
-            text: res.response,
+            text: formattedText,
           },
         ]);
       } else {
@@ -192,17 +185,23 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     setIsTyping(false);
   };
 
-  const fallbackResponse = (_prompt: string) => {
+  const fallbackResponse = (promptStr: string) => {
+    const lower = promptStr.toLowerCase().trim();
+    let text = "I am your ByteMe AI Assistant. You can ask questions about facility emissions, ROI payback, circular waste monetization, or SEBI BRSR reporting.";
+
+    const greetings = ['hi', 'hello', 'hey', 'greetings', 'namaste', 'good morning', 'good afternoon', 'good evening'];
+    if (greetings.some((g) => lower === g || lower.startsWith(g + ' ') || lower.endsWith(' ' + g))) {
+      text = "👋 Hello! How can I assist you with Apex Packaging's carbon emissions reduction, ROI modeling, or circular waste network today?";
+    } else if (lower.includes('emiss') || lower.includes('carbon') || lower.includes('co2') || lower.includes('furnace')) {
+      text = "At Apex Packaging, Stage 2 Furnace Heating generates 48 tCO₂e/month (the largest hotspot). Shifting 50% furnace fuel to biomass briquettes reduces emissions by 28.8% with ₹6.5 Lakhs/year net operational savings.";
+    }
+
     setMessages((prev) => [
       ...prev,
       {
         id: (Date.now() + 1).toString(),
         sender: 'assistant',
-        text: `At Apex Packaging (Pune), the largest emission hotspot is Stage 2 (Furnace Heating: 48 tCO₂e/mo) followed by Scrap Waste (17 tCO₂e/mo). Shifting 50% furnace fuel to biomass briquettes cuts emissions by 28.8% with an estimated ₹6.5 Lakhs/year in net savings.`,
-        actionChip: {
-          label: 'Apply 50% Biomass Shift',
-          action: () => onApplyPreset({ fuelShiftPct: 50, tempReductionPct: 5 }),
-        },
+        text,
       },
     ]);
   };
