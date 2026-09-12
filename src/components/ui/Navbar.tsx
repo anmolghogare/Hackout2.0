@@ -71,7 +71,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-30 w-full h-16 border-b border-slate-200/80 dark:border-white/[0.08] bg-white/95 dark:bg-[#0D0F18]/95 backdrop-blur-xl transition-colors duration-300 px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-xs">
       {/* Left: Sidebar Toggle & Top Priority Alert Indicator */}
       <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 mr-3">
-        {/* Mobile Hamburger Drawer Trigger */}
         <button
           onClick={onToggleSidebarMobile}
           className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] lg:hidden transition-colors shrink-0"
@@ -117,9 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         )}
       </div>
 
-      {/* Right: High-Level Controls (Search, Rupee Toggle, Export, Theme) */}
       <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
-        {/* Scientific Sources Badge Modal Trigger */}
         {onOpenProvenanceModal && (
           <button
             onClick={onOpenProvenanceModal}
@@ -131,7 +128,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         )}
 
-        {/* Rupee-to-Carbon Shift Toggle */}
         <div className="flex items-center bg-slate-100 dark:bg-white/[0.04] p-1 rounded-xl border border-slate-200 dark:border-white/[0.08]">
           <button
             onClick={onToggleViewMode}
@@ -162,7 +158,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Global Command Terminal Trigger (Cmd + K) */}
         <button
           onClick={onOpenCopilotModal}
           className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 hover:text-slate-900 dark:hover:text-white transition-all shrink-0"
@@ -172,7 +167,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="font-mono text-[11px]">Cmd + K</span>
         </button>
 
-        {/* BRSR Audit Modal Button */}
         <button
           onClick={onOpenBRSRModal}
           className="hidden 2xl:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all shrink-0"
@@ -182,7 +176,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span>BRSR Audit</span>
         </button>
 
-        {/* Executive Export Button */}
         <button
           onClick={onOpenAuditExportModal}
           className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-white/[0.08] dark:text-slate-100 hover:bg-slate-800 dark:hover:bg-white/[0.12] border border-slate-700/50 dark:border-white/[0.1] transition-all shadow-xs shrink-0"
@@ -192,7 +185,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="hidden sm:inline">Export</span>
         </button>
 
-        {/* Google Account Profile Button */}
         <button
           onClick={onOpenGoogleAuthModal}
           className="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all shrink-0 cursor-pointer"
@@ -232,7 +224,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
         </button>
 
-        {/* Theme Toggle Button */}
         <ThemeToggle />
       </div>
     </header>
