@@ -22,6 +22,8 @@ import {
   Bot,
   RefreshCw,
   Play,
+  Scan,
+  FileText,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 
@@ -43,9 +45,28 @@ export const AdminHub: React.FC<AdminHubProps> = ({
   onOpenProvenanceModal,
 }) => {
   const [formConfig, setFormConfig] = useState<FacilityConfig>(() => JSON.parse(JSON.stringify(currentConfig)));
-  const [activeSection, setActiveSection] = useState<'profile' | 'stages' | 'financial' | 'ai'>('profile');
+  const [activeSection, setActiveSection] = useState<'profile' | 'stages' | 'ocr' | 'financial' | 'ai'>('profile');
   const [saveSuccessMessage, setSaveSuccessMessage] = useState<string | null>(null);
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false);
+
+  const handleOCRConfigChange = (field: string, value: any) => {
+    setFormConfig((prev) => ({
+      ...prev,
+      ocrConfig: {
+        enabled: prev.ocrConfig?.enabled ?? true,
+        moduleName: prev.ocrConfig?.moduleName ?? 'OCR Utility Ingestion Engine',
+        sourceDirectoryPath: prev.ocrConfig?.sourceDirectoryPath ?? '/var/invoices/apex_packaging/utility_bills',
+        ingestionSchedule: prev.ocrConfig?.ingestionSchedule ?? 'Daily at 02:00 AM (CRON: 0 2 * * *)',
+        vaultApiCredentialKey: prev.ocrConfig?.vaultApiCredentialKey ?? 'vault-enc-key-apex-live-0928',
+        autoSyncBaseline: prev.ocrConfig?.autoSyncBaseline ?? true,
+        supportedDocumentFormats: prev.ocrConfig?.supportedDocumentFormats ?? ['PDF', 'PNG', 'JPG', 'WEBP'],
+        lastScanStatus: prev.ocrConfig?.lastScanStatus ?? 'SUCCESS',
+        lastScanTimestamp: prev.ocrConfig?.lastScanTimestamp ?? new Date().toISOString(),
+        lastParsedResult: prev.ocrConfig?.lastParsedResult,
+        [field]: value,
+      },
+    }));
+  };
 
   const handleProfileChange = (field: keyof typeof formConfig.profile, value: any) => {
     setFormConfig((prev) => ({
@@ -314,6 +335,19 @@ Generated At: ${new Date().toLocaleString('en-IN')}
         >
           <Layers className="w-3.5 h-3.5" />
           <span>2. Stage 1–4 Energy & Materials</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSection('ocr')}
+          className={cn(
+            'px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2',
+            activeSection === 'ocr'
+              ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+          )}
+        >
+          <Scan className="w-3.5 h-3.5" />
+          <span>3. OCR Utility Ingestion Config</span>
         </button>
 
         <button
@@ -657,6 +691,191 @@ Generated At: ${new Date().toLocaleString('en-IN')}
                     onChange={(e) => handleStage4Change('disposalOrLandfillCostPerTonINR', parseFloat(e.target.value) || 0)}
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SECTION: OCR UTILITY INGESTION & FACILITY CONFIGURATION MODULE */}
+      {/* ========================================================================= */}
+      {activeSection === 'ocr' && (
+        <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 space-y-8 shadow-sm">
+          {/* 1. CONTEXT */}
+          <div className="pb-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  Integrated Feature Module
+                </span>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  OCR Utility Ingestion Framework
+                </h2>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Context: OCR utility settings are embedded directly within Facility Configuration to automate document ingestion, baseline synchronization, and telemetry audits.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onNavigateTab('intake')}
+              className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold hover:bg-emerald-100 transition-colors flex items-center space-x-1.5 shrink-0"
+            >
+              <Scan className="w-3.5 h-3.5" />
+              <span>Launch Live OCR Scanner</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* 2. INPUTS & CONFIGURATION */}
+            <div className="lg:col-span-6 space-y-5">
+              <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800/60 pb-2">
+                <Sliders className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono uppercase tracking-wider">
+                  Inputs &amp; Configuration Parameters
+                </h3>
+              </div>
+
+              <div className="space-y-4 text-xs">
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-700 dark:text-slate-300">
+                    Source Directory Path (Invoices &amp; Receipts)
+                  </label>
+                  <input
+                    type="text"
+                    value={formConfig.ocrConfig?.sourceDirectoryPath || '/var/invoices/apex_packaging/utility_bills'}
+                    onChange={(e) => handleOCRConfigChange('sourceDirectoryPath', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono text-xs"
+                    placeholder="/var/invoices/utility_bills"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-700 dark:text-slate-300">
+                      Ingestion CRON Schedule
+                    </label>
+                    <input
+                      type="text"
+                      value={formConfig.ocrConfig?.ingestionSchedule || 'Daily at 02:00 AM (CRON: 0 2 * * *)'}
+                      onChange={(e) => handleOCRConfigChange('ingestionSchedule', e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="font-semibold text-slate-700 dark:text-slate-300">
+                      Vault API Credential Key
+                    </label>
+                    <input
+                      type="password"
+                      value={formConfig.ocrConfig?.vaultApiCredentialKey || 'vault-enc-key-apex-live-0928'}
+                      onChange={(e) => handleOCRConfigChange('vaultApiCredentialKey', e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-slate-900 dark:text-white text-xs block">
+                        Auto-Sync Baseline Figures
+                      </span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Automatically update Stage 2 and Stage 3 telemetry upon scanning valid invoices.
+                      </span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={formConfig.ocrConfig?.autoSyncBaseline ?? true}
+                      onChange={(e) => handleOCRConfigChange('autoSyncBaseline', e.target.checked)}
+                      className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                    />
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                    <span>Supported Formats:</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                      {(formConfig.ocrConfig?.supportedDocumentFormats || ['PDF', 'PNG', 'JPG', 'WEBP']).join(', ')}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. EXECUTION & OUTPUT (RESULT) */}
+            <div className="lg:col-span-6 space-y-5">
+              <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800/60 pb-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono uppercase tracking-wider">
+                  Execution &amp; Output Result
+                </h3>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                  <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+                    STATUS RESULT:
+                  </span>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    {formConfig.ocrConfig?.lastScanStatus || 'SUCCESS'} (98.4% Confidence)
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">Last Scan Execution:</span>
+                    <span className="font-mono text-slate-900 dark:text-slate-200">
+                      {formConfig.ocrConfig?.lastScanTimestamp
+                        ? new Date(formConfig.ocrConfig.lastScanTimestamp).toLocaleString('en-IN')
+                        : new Date().toLocaleString('en-IN')}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">Parsed Monthly Volume:</span>
+                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      {formConfig.ocrConfig?.lastParsedResult?.parsedVolume || '32,500 kWh / Month'}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">Parsed Utility Spend:</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white">
+                      {formConfig.ocrConfig?.lastParsedResult?.parsedMonthlyCost || '₹5,20,000 / Month'}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">Detected Hotspot Baseline:</span>
+                    <span className="font-mono text-slate-700 dark:text-slate-300">
+                      {formConfig.ocrConfig?.lastParsedResult?.detectedHotspot || 'Extrusion Line Electricity'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
+                  <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider block">
+                    Extracted Text Lines &amp; Logs:
+                  </span>
+                  <div className="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-[11px] space-y-1 overflow-x-auto">
+                    {(
+                      formConfig.ocrConfig?.lastParsedResult?.extractedTextLines || [
+                        'CONSUMER: APEX PACKAGING PVT LTD (ACC #948271)',
+                        'METER READING: 32,500 UNITS (HT-II INDUSTRIAL)',
+                        'GRID EMISSIONS FACTOR: 0.82 kgCO2e/kWh',
+                        'ESTIMATED CARBON INTENSITY: 26.65 tCO2e/Month',
+                      ]
+                    ).map((line, i) => (
+                      <div key={i} className="flex items-center space-x-2">
+                        <span className="text-slate-600">&gt;</span>
+                        <span>{line}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
