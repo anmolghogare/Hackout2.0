@@ -273,7 +273,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn pb-12">
       {/* 3-COLUMN GRID SYSTEM LAYOUT */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* ============================================================ */}
         {/* LEFT COLUMN: Minimalist Statistics Panel (3 cols) */}
         {/* ============================================================ */}
@@ -390,7 +390,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         {/* ============================================================ */}
         {/* CENTER COLUMN: Main Workflow & Operational Cards (6 cols) */}
         {/* ============================================================ */}
-        <main className="lg:col-span-6 space-y-6">
+        <main className="lg:col-span-6 space-y-6 w-full min-w-0 flex flex-col justify-start relative isolate">
           {/* STAKEHOLDER ALIGNMENT OPERATIONAL DECISION CARDS */}
           <section className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
