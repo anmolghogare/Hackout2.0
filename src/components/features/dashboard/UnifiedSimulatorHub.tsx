@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SliderInputs, ViewMode } from '../../../types';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card';
 import { SlidersHorizontal, RotateCcw, Zap, Thermometer, Flame, Recycle, Sparkles, ShieldCheck, Layers } from 'lucide-react';
@@ -19,7 +19,6 @@ export const UnifiedSimulatorHub: React.FC<UnifiedSimulatorHubProps> = ({
   onReset,
   viewMode = 'carbon',
 }) => {
-  const [splitPos, setSplitPos] = useState(50); // 0 to 100% split slider
   const isFinancial = viewMode === 'financial';
 
   // Compute live state
@@ -62,6 +61,10 @@ export const UnifiedSimulatorHub: React.FC<UnifiedSimulatorHubProps> = ({
   const pcrCut = Number((10 * (sliderInputs.pcrResinPct / 50) * 0.40).toFixed(1));
   const scrapCut = Number((17 * (sliderInputs.scrapRecyclePct / 100) * 0.85).toFixed(1));
   const finalEmissions = Number((baseline - fuelCut - tempCut - pcrCut - scrapCut).toFixed(1));
+
+  // FIX: Drive splitPos from actual emission ratio so the split bar updates with sliders.
+  // Before (left) width = finalEmissions / baseline as a percentage, clamped 10–90.
+  const splitPos = Math.min(90, Math.max(10, Math.round((finalEmissions / baseline) * 100)));
 
   const waterfallSteps = [
     { label: 'Baseline', val: baseline, color: 'bg-rose-500', isTotal: true },
@@ -270,7 +273,7 @@ export const UnifiedSimulatorHub: React.FC<UnifiedSimulatorHubProps> = ({
                   Baseline vs Optimized Split
                 </span>
                 <span className="text-xs font-mono text-slate-400">
-                  Slider Split: {splitPos}%
+                  Optimized: {splitPos}% of Baseline
                 </span>
               </div>
 
@@ -305,15 +308,7 @@ export const UnifiedSimulatorHub: React.FC<UnifiedSimulatorHubProps> = ({
                 </div>
               </div>
 
-              {/* Interactive Split Control Slider */}
-              <input
-                type="range"
-                min="10"
-                max="90"
-                value={splitPos}
-                onChange={(e) => setSplitPos(Number(e.target.value))}
-                className="w-full mt-4 h-2 bg-slate-200 dark:bg-white/[0.1] rounded-lg appearance-none cursor-pointer accent-emerald-500"
-              />
+              {/* Split position is now driven by slider inputs — no manual drag needed */}
             </div>
 
             <div className="pt-3 border-t border-slate-200/80 dark:border-white/[0.06] text-xs text-slate-500 dark:text-slate-400 font-mono flex justify-between">
