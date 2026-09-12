@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { BaseLayout } from '../components/layout/BaseLayout';
-import { KPICards } from '../components/features/dashboard/KPICards';
-import { JudgeTourBanner } from '../components/features/dashboard/JudgeTourBanner';
 import { ByteMeOverview } from '../components/features/overview/ByteMeOverview';
 import { ViewHeaderBanner } from '../components/ui/ViewHeaderBanner';
 import { UnifiedSimulatorHub } from '../components/features/dashboard/UnifiedSimulatorHub';
@@ -98,7 +96,7 @@ export const DashboardPage: React.FC = () => {
       {/* 1. HOME / PRODUCT OVERVIEW (Clean, Spacious, Narrative-Led) */}
       {/* ============================================================ */}
       {activeTab === 'overview' && (
-        <ByteMeOverview onNavigate={setActiveTab} onStartJudgeTour={startJudgeTour} />
+        <ByteMeOverview onNavigate={setActiveTab} />
       )}
 
       {/* ============================================================ */}
