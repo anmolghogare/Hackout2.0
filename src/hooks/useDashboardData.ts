@@ -22,7 +22,7 @@ const INITIAL_SLIDERS: SliderInputs = {
 
 const DEFAULT_AI_SETTINGS: AISettings = {
   apiKey: '',
-  model: 'gemini-1.5-flash',
+  model: 'gemini-2.0-flash',
   enableAutoAnalysis: true,
   temperature: 0.2,
 };
@@ -41,7 +41,6 @@ export function useDashboardData() {
   const [isBRSRModalOpen, setIsBRSRModalOpen] = useState<boolean>(false);
   const [isDataProvenanceModalOpen, setIsDataProvenanceModalOpen] = useState<boolean>(false);
 
-  // Facility Configuration State with LocalStorage Persistence
   const [facilityConfig, setFacilityConfig] = useState<FacilityConfig>(() => {
     const saved = localStorage.getItem('byteme_facility_config');
     if (saved) {
@@ -54,7 +53,6 @@ export function useDashboardData() {
     return DEFAULT_FACILITY_PRESETS.apex_packaging;
   });
 
-  // AI Configuration Settings with LocalStorage Persistence
   const [aiSettings, setAISettings] = useState<AISettings>(() => {
     const saved = localStorage.getItem('byteme_ai_settings');
     if (saved) {
@@ -67,20 +65,11 @@ export function useDashboardData() {
     return DEFAULT_AI_SETTINGS;
   });
 
-  const saveFacilityConfig = (newConfig: FacilityConfig) => {
-    setFacilityConfig(newConfig);
-    localStorage.setItem('byteme_facility_config', JSON.stringify(newConfig));
-    if (activeGoogleUser?.id) {
-      localStorage.setItem(`byteme_facility_config_${activeGoogleUser.id}`, JSON.stringify(newConfig));
-    }
-  };
-
   const saveAISettings = (newSettings: AISettings) => {
     setAISettings(newSettings);
     localStorage.setItem('byteme_ai_settings', JSON.stringify(newSettings));
   };
 
-  // Google Authentication State
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState<boolean>(false);
   const [googleAccounts, setGoogleAccounts] = useState<GoogleUser[]>(() => {
     const saved = localStorage.getItem('byteme_google_users');
@@ -113,7 +102,6 @@ export function useDashboardData() {
     return null;
   });
 
-  // Load per-user facility config whenever active Google account changes
   useEffect(() => {
     if (activeGoogleUser?.id) {
       const userConfigKey = `byteme_facility_config_${activeGoogleUser.id}`;
@@ -178,11 +166,9 @@ export function useDashboardData() {
     localStorage.removeItem('byteme_google_users');
   };
 
-  // Judge Tour State
   const [isJudgeTourActive, setIsJudgeTourActive] = useState<boolean>(false);
   const [judgeTourStep, setJudgeTourStep] = useState<number>(0);
 
-  // Saved Scenarios Sandbox State
   const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>(() => {
     const defaultA = calculateDynamicFacilitySimulation(facilityConfig, {
       fuelShiftPct: 50,
@@ -203,7 +189,7 @@ export function useDashboardData() {
         sliderInputs: { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 },
         savedKpi: defaultA.kpiData,
         createdAt: 'Just now',
-        capexEst: '₹15,40,000',
+        capexEst: '\u20b915,40,000',
         paybackMonths: '7.5 Months',
       },
       {
@@ -212,13 +198,12 @@ export function useDashboardData() {
         sliderInputs: { fuelShiftPct: 80, tempReductionPct: 10, pcrResinPct: 35, scrapRecyclePct: 100 },
         savedKpi: defaultB.kpiData,
         createdAt: '10 mins ago',
-        capexEst: '₹35,00,000',
+        capexEst: '\u20b935,00,000',
         paybackMonths: '10.0 Months',
       },
     ];
   });
 
-  // Computed simulation state dynamically calculated from facilityConfig
   const [kpiData, setKpiData] = useState<KPIData>(
     () => calculateDynamicFacilitySimulation(facilityConfig, INITIAL_SLIDERS).kpiData
   );
@@ -226,7 +211,6 @@ export function useDashboardData() {
     () => calculateDynamicFacilitySimulation(facilityConfig, INITIAL_SLIDERS).stages
   );
 
-  // Recalculate simulation state when sliders or facilityConfig change
   const recalculateSimulation = useCallback(async (inputs: SliderInputs, config: FacilityConfig) => {
     setIsLoading(true);
     const remoteResult = await fetchSimulationResult(inputs);
@@ -277,7 +261,7 @@ export function useDashboardData() {
       sliderInputs: { ...sliderInputs },
       savedKpi: { ...kpiData },
       createdAt: 'Just now',
-      capexEst: sliderInputs.fuelShiftPct > 60 ? '₹35,00,000' : '₹15,40,000',
+      capexEst: sliderInputs.fuelShiftPct > 60 ? '\u20b935,00,000' : '\u20b915,40,000',
       paybackMonths: '8.2 Months',
     };
     setSavedScenarios((prev) => [newScenario, ...prev]);
@@ -287,7 +271,6 @@ export function useDashboardData() {
     setSavedScenarios((prev) => prev.filter((s) => s.id !== id));
   };
 
-  // Automated 3-Min Judge Demo Flow
   const judgeTourSteps: { tab: TabId; title: string; desc: string }[] = [
     { tab: 'admin', title: '1. Facility Admin & Onboarding', desc: 'Configure factory profiles, fuels, tariffs, and Gemini API connection in seconds.' },
     { tab: 'intake', title: '2. OCR Smart Bill Intake', desc: 'Drag-and-drop utility bills with laser scanning animation to auto-fill plant baselines.' },
