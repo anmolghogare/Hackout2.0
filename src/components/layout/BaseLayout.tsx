@@ -72,7 +72,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         />
 
         {/* Expansive Main Content Canvas Shell */}
-        <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-8">
+        <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-8 min-w-0 flex flex-col justify-start relative isolate">
           {children}
         </main>
 
