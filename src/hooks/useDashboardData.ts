@@ -67,13 +67,7 @@ export function useDashboardData() {
     return DEFAULT_AI_SETTINGS;
   });
 
-  const saveFacilityConfig = (newConfig: FacilityConfig) => {
-    setFacilityConfig(newConfig);
-    localStorage.setItem('byteme_facility_config', JSON.stringify(newConfig));
-    if (activeGoogleUser?.id) {
-      localStorage.setItem(`byteme_facility_config_${activeGoogleUser.id}`, JSON.stringify(newConfig));
-    }
-  };
+
 
   const saveAISettings = (newSettings: AISettings) => {
     setAISettings(newSettings);
