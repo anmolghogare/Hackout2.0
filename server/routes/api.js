@@ -1,8 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { getStatus, handleData } = require('../controllers/mainController');
+const {
+  getBaseline,
+  calculateSimulation,
+  getCopilotResponse,
+  getCircularMatches,
+  getRoadmap
+} = require('../controllers/mainController');
 
-router.get('/status', getStatus);
-router.post('/data', handleData);
+router.get('/facility/baseline', getBaseline);
+router.post('/simulation/calculate', calculateSimulation);
+router.post('/copilot/query', getCopilotResponse);
+router.get('/circular/matches', getCircularMatches);
+router.get('/roadmap', getRoadmap);
 
 module.exports = router;
