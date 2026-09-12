@@ -16,6 +16,18 @@ export function renderHeader(kpiData = {}) {
             Target Implementation Entity: <span class="entity-tag">Apex Packaging Pvt. Ltd.</span> (Mid-Size SME Plastics & Packaging, India)
           </div>
         </div>
+
+        <div style="display:flex; gap:8px;">
+          <button class="pill-btn" id="btn-preset-baseline" style="background:rgba(239, 68, 68, 0.15); color:var(--danger); border-color:var(--danger);">
+            🚨 Preset: Baseline (Red Alert)
+          </button>
+          <button class="pill-btn" id="btn-preset-moderate" style="background:rgba(6, 182, 212, 0.15); color:var(--secondary); border-color:var(--secondary);">
+            ⚡ Preset: Moderate (-21% CO₂)
+          </button>
+          <button class="pill-btn" id="btn-preset-aggressive" style="background:rgba(16, 185, 129, 0.15); color:var(--primary); border-color:var(--primary);">
+            🌱 Preset: Aggressive (-42% CO₂)
+          </button>
+        </div>
       </div>
 
       <div class="kpi-grid">

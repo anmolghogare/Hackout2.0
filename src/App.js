@@ -1,6 +1,7 @@
 import { renderHeader } from './components/Header.js';
 import { renderProcessSimulation } from './components/ProcessSimulation.js';
 import { renderWhatIfSliders } from './components/WhatIfSliders.js';
+import { renderChartsPanel } from './components/ChartsPanel.js';
 import { renderCopilotPanel } from './components/CopilotPanel.js';
 import { renderCircularNetwork } from './components/CircularNetwork.js';
 import { renderRoadmapTable } from './components/RoadmapTable.js';
@@ -23,7 +24,7 @@ export function App(state = {}) {
           🏭 Process Heatmap & Red Alert
         </button>
         <button class="tab-btn" data-tab="tab-whatif">
-          🎛️ What-If Scale & Substitution
+          🎛️ What-If Scale & Empirical Charts
         </button>
         <button class="tab-btn" data-tab="tab-copilot">
           🤖 AI Sustainability Copilot
@@ -42,9 +43,10 @@ export function App(state = {}) {
           ${renderProcessSimulation(stages)}
         </div>
 
-        <!-- Tab 2: What-If Scale & Sliders -->
+        <!-- Tab 2: What-If Scale & Charts -->
         <div id="tab-whatif" class="tab-content">
           ${renderWhatIfSliders(sliderInputs)}
+          ${renderChartsPanel()}
           ${renderProcessSimulation(stages)}
         </div>
 

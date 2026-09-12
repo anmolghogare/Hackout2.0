@@ -1,4 +1,5 @@
 import { App } from './App.js';
+import { initChartInstances } from './components/ChartsPanel.js';
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -26,6 +27,8 @@ function render() {
   if (root) {
     root.innerHTML = App(appState);
     attachEventListeners();
+    // Initialize Chart.js rendering after DOM update
+    setTimeout(initChartInstances, 50);
   }
 }
 
@@ -43,7 +46,7 @@ async function init() {
   render();
 }
 
-// Attach Tab & Interactive Event Listeners
+// Attach Tab, Slider & Preset Event Listeners
 function attachEventListeners() {
   // Tab Navigation
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -55,6 +58,11 @@ function attachEventListeners() {
       e.currentTarget.classList.add('active');
       const contentEl = document.getElementById(targetTab);
       if (contentEl) contentEl.classList.add('active');
+
+      // Re-trigger chart rendering when switching to What-If tab
+      if (targetTab === 'tab-whatif') {
+        setTimeout(initChartInstances, 50);
+      }
     });
   });
 
@@ -77,11 +85,38 @@ function attachEventListeners() {
   bindSlider('slider-pcr', 'val-pcr', 'pcrResinPct');
   bindSlider('slider-scrap', 'val-scrap', 'scrapRecyclePct');
 
+  // Preset Buttons
+  const presetBaseline = document.getElementById('btn-preset-baseline');
+  if (presetBaseline) {
+    presetBaseline.addEventListener('click', () => applyPreset(0, 0, 0, 0));
+  }
+
+  const presetModerate = document.getElementById('btn-preset-moderate');
+  if (presetModerate) {
+    presetModerate.addEventListener('click', () => applyPreset(50, 5, 20, 100));
+  }
+
+  const presetAggressive = document.getElementById('btn-preset-aggressive');
+  if (presetAggressive) {
+    presetAggressive.addEventListener('click', () => applyPreset(80, 10, 40, 100));
+  }
+
   // AI Copilot Ask Button
   const askBtn = document.getElementById('btn-copilot-ask');
   if (askBtn) {
     askBtn.addEventListener('click', handleCopilotQuery);
   }
+}
+
+// Apply Preset Demo Scenarios
+function applyPreset(fuel, temp, pcr, scrap) {
+  appState.sliderInputs = {
+    fuelShiftPct: fuel,
+    tempReductionPct: temp,
+    pcrResinPct: pcr,
+    scrapRecyclePct: scrap
+  };
+  triggerSimulationRecalculation();
 }
 
 // Trigger Live What-If Recalculation API
@@ -95,14 +130,14 @@ async function triggerSimulationRecalculation() {
     if (res.ok) {
       const data = await res.json();
       const results = data.results;
-      
+
       appState.kpiData = {
         baselineMonthlyCO2: results.baselineMonthlyCO2,
         monthlyCO2SavedTons: results.monthlyCO2SavedTons,
         co2ReductionPercentage: results.co2ReductionPercentage,
         financialSavings: results.financialSavings
       };
-      
+
       appState.stages = results.updatedStages || [];
       render();
     }
@@ -127,7 +162,6 @@ async function handleCopilotQuery() {
       const data = await res.json();
       appState.copilotData = data;
       render();
-      // Switch to Copilot tab to view output
       const copilotTabBtn = document.querySelector('[data-tab="tab-copilot"]');
       if (copilotTabBtn) copilotTabBtn.click();
     }
