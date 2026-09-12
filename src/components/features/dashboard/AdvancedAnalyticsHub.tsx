@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card';
 import { Badge } from '../../ui/Badge';
 import { Button } from '../../ui/Button';
-import { Flame, Activity, TrendingUp, AlertTriangle, Info, Sparkles, Zap, Layers, RefreshCw } from 'lucide-react';
+import { Flame, Activity, TrendingUp, AlertTriangle, Info, Sparkles } from 'lucide-react';
 import { AnomalyLog, ViewMode } from '../../../types';
-import { formatINR } from '../../../lib/utils';
 
 export interface AdvancedAnalyticsHubProps {
   onOpenAnomalyCopilot?: (anomaly: AnomalyLog) => void;

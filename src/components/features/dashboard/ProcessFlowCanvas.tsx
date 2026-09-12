@@ -5,7 +5,6 @@ import { Badge } from '../../ui/Badge';
 import {
   Flame,
   AlertTriangle,
-  ArrowRight,
   Zap,
   Layers,
   Sparkles,
