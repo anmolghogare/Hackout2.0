@@ -27,20 +27,9 @@ const DEFAULT_AI_SETTINGS: AISettings = {
   temperature: 0.2,
 };
 
-const DEFAULT_GOOGLE_USER: GoogleUser = {
-  id: 'g-default-1',
-  name: 'Anmol Ghogare',
-  email: 'anmol.ghogare@gmail.com',
-  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  verified: true,
+const isRealGoogleOAuthUser = (u: GoogleUser | null): boolean => {
+  return Boolean(u && u.id && u.id.startsWith('google-') && u.email);
 };
-
-const BOY_FALLBACK_AVATARS = [
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-];
 
 export function useDashboardData() {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
@@ -81,6 +70,9 @@ export function useDashboardData() {
   const saveFacilityConfig = (newConfig: FacilityConfig) => {
     setFacilityConfig(newConfig);
     localStorage.setItem('byteme_facility_config', JSON.stringify(newConfig));
+    if (activeGoogleUser?.id) {
+      localStorage.setItem(`byteme_facility_config_${activeGoogleUser.id}`, JSON.stringify(newConfig));
+    }
   };
 
   const saveAISettings = (newSettings: AISettings) => {
@@ -95,9 +87,11 @@ export function useDashboardData() {
     if (saved) {
       try {
         const parsed: GoogleUser[] = JSON.parse(saved);
-        return parsed.filter(u => u && u.email && !u.id.startsWith('preset-'));
+        const valid = parsed.filter(isRealGoogleOAuthUser);
+        localStorage.setItem('byteme_google_users', JSON.stringify(valid));
+        return valid;
       } catch (e) {
-        // ignore parse error
+        // ignore
       }
     }
     return [];
@@ -108,13 +102,14 @@ export function useDashboardData() {
     if (saved) {
       try {
         const parsed: GoogleUser = JSON.parse(saved);
-        if (parsed && parsed.email && !parsed.id.startsWith('preset-')) {
+        if (isRealGoogleOAuthUser(parsed)) {
           return parsed;
         }
       } catch (e) {
-        // ignore parse error
+        // ignore
       }
     }
+    localStorage.removeItem('byteme_active_google_user');
     return null;
   });
 
@@ -178,7 +173,9 @@ export function useDashboardData() {
 
   const signOutGoogleAccount = () => {
     setActiveGoogleUser(null);
+    setGoogleAccounts([]);
     localStorage.removeItem('byteme_active_google_user');
+    localStorage.removeItem('byteme_google_users');
   };
 
   // Judge Tour State
