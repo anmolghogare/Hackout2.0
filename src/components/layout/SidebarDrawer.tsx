@@ -53,7 +53,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
 }) => {
   const navGroups: NavGroup[] = [
     {
-      category: 'Executive Overview',
+      category: 'Executive Overview & Facility Setup',
       items: [
         {
           id: 'overview',
@@ -61,6 +61,20 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
           description: 'Apex Packaging facility baseline & operational profile',
           icon: Building2,
           badge: 'SME Context',
+        },
+        {
+          id: 'admin',
+          label: 'Facility Configuration',
+          description: 'Factory parameters, fuel types, tariffs, and AI engine setup',
+          icon: Sliders,
+          badge: 'Setup',
+        },
+        {
+          id: 'intake',
+          label: 'OCR Utility Ingestion',
+          description: 'Laser OCR extraction for utility bills & material logs',
+          icon: Scan,
+          badge: 'OCR Ingestion',
         },
         {
           id: 'simulator_hub',
@@ -91,15 +105,8 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
       ],
     },
     {
-      category: 'Data Intake & Sandbox',
+      category: 'Scenario Planning & Sandbox',
       items: [
-        {
-          id: 'intake',
-          label: 'OCR Smart Bill Scanner',
-          description: 'Laser OCR extraction for utility bills & material logs',
-          icon: Scan,
-          badge: 'OCR Intake',
-        },
         {
           id: 'sandbox',
           label: 'Scenario Sandbox Matrix',
