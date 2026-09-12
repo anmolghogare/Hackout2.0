@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TabId } from '../../../types';
 import { Card } from '../../ui/Card';
+import { Button } from '../../ui/Button';
 import {
   Sparkles,
   Zap,
@@ -11,23 +12,21 @@ import {
   Recycle,
   ShieldCheck,
   ArrowRight,
-  Coins,
-  Users,
-  Target,
   ChevronRight,
-  PlayCircle,
-  Globe,
-  Radio,
   Clock,
   RefreshCw,
-  Thermometer,
-  ShieldAlert,
-  StickyNote,
-  X,
-  Leaf,
-  BookOpen,
+  Building2,
+  TrendingDown,
+  Coins,
+  CheckCircle2,
+  AlertTriangle,
+  FileCheck,
+  Cpu,
+  BarChart3,
+  ExternalLink,
+  Users,
+  Compass,
 } from 'lucide-react';
-import { Button } from '../../ui/Button';
 import { cn } from '../../../lib/utils';
 
 export interface ByteMeOverviewProps {
@@ -41,26 +40,10 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   onStartJudgeTour,
   onOpenBRSRModal,
 }) => {
-  // Time-based greeting & clock state
-  const [greeting, setGreeting] = useState('');
-  const [userRole, setUserRole] = useState('Operations Lead');
   const [lastRefreshed, setLastRefreshed] = useState('Just now');
-  const [selectedAlertForPopup, setSelectedAlertForPopup] = useState<(typeof criticalAlerts)[0] | null>(null);
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
-  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      setGreeting('Good morning');
-    } else if (hour < 17) {
-      setGreeting('Good afternoon');
-    } else if (hour < 22) {
-      setGreeting('Good evening');
-    } else {
-      setGreeting('Good night');
-    }
-
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -71,489 +54,287 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     );
   };
 
-  // Critical real-time events for Right Column with full statistical data pop-up stats
-  const criticalAlerts = [
+  // Proof metrics
+  const keyProofMetrics = [
     {
-      id: 'kiln-overshoot',
-      severity: 'p1',
-      title: 'Kiln Thermal Overshoot Spike',
-      summary: 'Furnace Burner #2 spiked to 1,418°C, triggering 48 tCO₂e/mo in excessive thermal fuel waste.',
-      tabTarget: 'analytics_hub' as TabId,
-      actionLabel: 'Fix Setpoint in 3D Analytics',
-      badgeColor: 'bg-red-500 text-white animate-pulse',
-      icon: Thermometer,
-      stats: {
-        urgencyLevel: 'CRITICAL • P1 IMMEDIATE ACTION',
-        urgencyScore: '98/100',
-        peakTemperature: '1,418 °C (Limit: 1,250 °C)',
-        thermalEfficiency: '54.2% (-22% deviation)',
-        monthlyCarbonWaste: '48.0 tCO₂e / mo',
-        financialLossRate: '₹12,400 / day (₹3.72L / mo)',
-        sensorNode: 'Sensor #K2-A (Zone 3 Flue)',
-        confidenceScore: '99.4% AI Telemetry Match',
-        rootCause: 'Refractory shell insulation degradation & burner nozzle fuel-air ratio drift.',
-      },
+      label: 'Total Capex Investment',
+      value: '₹20.3L',
+      subtext: '5 ranked interventions',
+      icon: Coins,
     },
     {
-      id: 'uninsulated-furnace',
-      severity: 'warning',
-      title: 'Uninsulated Furnace Radiation',
-      summary: 'Kiln refractory shell breach radiating 380°C heat loss costing ₹1,20,000 monthly.',
-      tabTarget: 'simulation' as TabId,
-      actionLabel: 'Inspect Twin Pipeline',
-      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
-      icon: ShieldAlert,
-      stats: {
-        urgencyLevel: 'HIGH WARNING • OPERATIONAL HAZARD',
-        urgencyScore: '84/100',
-        peakTemperature: '380 °C Surface Loss',
-        thermalEfficiency: '68.5% (-14% efficiency)',
-        monthlyCarbonWaste: '21.5 tCO₂e / mo',
-        financialLossRate: '₹4,000 / day (₹1.20L / mo)',
-        sensorNode: 'FLIR Thermal IR Array #4',
-        confidenceScore: '96.8% AI Image Match',
-        rootCause: 'External insulation wall cracking along main combustion line junction.',
-      },
+      label: 'Net Annual Carbon Cut',
+      value: '195 tCO₂e',
+      subtext: 'Verified Scope 1 & 2',
+      icon: TrendingDown,
     },
     {
-      id: 'grid-peak-tariff',
-      severity: 'warning',
-      title: 'Peak Grid Tariff Window Active',
-      summary: 'High tariff window active at ₹8.50/kWh. Biomass shift advised to avoid ₹45,000 daily spike.',
-      tabTarget: 'simulator_hub' as TabId,
-      actionLabel: 'Simulate Load Shift',
-      badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
+      label: 'Capital Payback Period',
+      value: '10.5 mos',
+      subtext: 'Balance-sheet ROI',
       icon: Zap,
-      stats: {
-        urgencyLevel: 'MODERATE • FINANCIAL TARIFF ALERT',
-        urgencyScore: '76/100',
-        peakTemperature: 'Grid Tariff Peak: ₹8.50/kWh',
-        thermalEfficiency: 'Grid PF: 0.94 (Optimal >0.98)',
-        monthlyCarbonWaste: '18.2 tCO₂e / mo',
-        financialLossRate: '₹45,000 Peak Surge / day',
-        sensorNode: 'Smart Tariff Meter #Grid-01',
-        confidenceScore: '100% Tariff Grid Stream',
-        rootCause: 'Peak hour power draw during state discom high tariff window (18:00 - 22:00 IST).',
-      },
     },
     {
-      id: 'fuel-bill-unlogged',
-      severity: 'hazard',
-      title: 'Unverified Fuel Invoice Log',
-      summary: '12 KL Heavy Furnace Oil delivery note unlogged, creating a SEBI Scope 1 audit gap.',
-      tabTarget: 'intake' as TabId,
-      actionLabel: 'Scan Bill via OCR',
-      badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-      icon: Scan,
-      stats: {
-        urgencyLevel: 'AUDIT RISK • SCOPE 1 DATA GAP',
-        urgencyScore: '71/100',
-        peakTemperature: '12 KL Delivery Unlogged',
-        thermalEfficiency: 'Audit Readiness: 94.2%',
-        monthlyCarbonWaste: '37.4 tCO₂e Unverified',
-        financialLossRate: 'SEBI Audit Penalty Risk',
-        sensorNode: 'Fuel Intake Terminal #B-2',
-        confidenceScore: '92.1% Invoice OCR Alert',
-        rootCause: 'Manual delivery note pending OCR scan ingestion in ByteMe intake portal.',
-      },
+      label: 'Footprint Reduction',
+      value: '42.0%',
+      subtext: 'vs factory baseline',
+      icon: Activity,
+    },
+    {
+      label: 'Landfill Waste Diverted',
+      value: '85.0%',
+      subtext: 'Polymer scrap monetized',
+      icon: Recycle,
     },
   ];
 
-  // Target Audience profiles
-  const targetAudience = [
+  // 5 Core Functionalities
+  const coreFunctionalities = [
+    {
+      num: '01',
+      title: 'Digital Factory Process Simulation',
+      tagline: 'Physics-Based Empirical Process Pipeline',
+      description:
+        'Simulate material and energy flow across Input Feedstock, High-Temperature Thermal Furnaces, Polymer Extrusion, and Byproduct Recovery with live mass-energy balance calculations.',
+      mechanism: 'Simulates 4 sequential stages with real-time empirical equations for specific heat and grid power draw.',
+      impactMetric: 'Pinpoints 48 tCO₂e/mo furnace leak',
+      tabTarget: 'simulation' as TabId,
+      actionLabel: 'Inspect Process Pipeline',
+      icon: Flame,
+    },
+    {
+      num: '02',
+      title: 'Emission Hotspots & Red Alert System',
+      tagline: 'Automated Thermal Leak-Point Diagnostics',
+      description:
+        'Continuous telemetry monitoring identifies physical heat breaches, including 1,418°C kiln burner thermal overshoots and 380°C refractory wall radiation losses costing ₹12,400 daily.',
+      mechanism: 'Calibrated against FLIR thermal infrared imaging curves and Zone 3 flue gas sensor telemetry.',
+      impactMetric: '₹3.72L/mo preventable fuel loss',
+      tabTarget: 'analytics_hub' as TabId,
+      actionLabel: 'View 3D Hotspot Diagnostics',
+      icon: Activity,
+    },
+    {
+      num: '03',
+      title: 'AI Sustainability Copilot',
+      tagline: 'Server-Side Natural Language Carbon Reasoning',
+      description:
+        'Accepts natural language operational queries and returns structured, costed action plans grounded strictly in facility telemetry, IPCC 2006 guidelines, and CEA India Grid v19 factors.',
+      mechanism: 'Server-side key vault with deterministic zero-hallucination fallback engine for 99.9% uptime.',
+      impactMetric: 'Zero hallucinated numbers',
+      tabTarget: 'copilot' as TabId,
+      actionLabel: 'Launch AI Copilot Engine',
+      icon: Sparkles,
+    },
+    {
+      num: '04',
+      title: 'Fuel & Material Substitution What-If Scale',
+      tagline: 'Live Capital Waterfall & Abatement Curve',
+      description:
+        'Interactive empirical sliders allowing plant managers to model fuel shifts (Biomass, RDF), temperature setpoint tuning, rooftop solar integration, and post-consumer recycled (PCR) resin blends.',
+      mechanism: 'Calculates dynamic carbon abatement curves, monthly operational savings, and net payback schedule.',
+      impactMetric: 'Instant split ROI comparison',
+      tabTarget: 'simulator_hub' as TabId,
+      actionLabel: 'Run What-If ROI Simulator',
+      icon: Zap,
+    },
+    {
+      num: '05',
+      title: 'AI Waste-to-Resource Matching Network',
+      tagline: 'Algorithmic B2B Circular Byproduct Marketplace',
+      description:
+        'Transforms manufacturing off-cut plastic and trim scrap into recurring revenue via automated algorithmic matchmaking with nearby industrial cluster buyers, eliminating landfill tipping fees.',
+      mechanism: 'Calculates 30% virgin feedstock discount, avoided ₹1,500/Ton tipping fees, and net logistics costs.',
+      impactMetric: '+₹3.0L/yr Byproduct Revenue',
+      tabTarget: 'circular' as TabId,
+      actionLabel: 'Explore Circular Sankey Stream',
+      icon: Recycle,
+    },
+  ];
+
+  // Ranked ROI Action Items
+  const roiActionItems = [
+    {
+      rank: 1,
+      name: 'Kiln Burner Air-Fuel Ratio Tuning & Setpoint Fix',
+      type: 'Process Optimization',
+      capex: '₹0.80L',
+      annualCO2: '48.0 tCO₂e',
+      annualSavings: '₹3.72L',
+      payback: '2.6 mos',
+    },
+    {
+      rank: 2,
+      name: 'B2B Polymer Trim Scrap Cluster Off-Take Match',
+      type: 'Circular Economy',
+      capex: '₹2.00L',
+      annualCO2: '32.0 tCO₂e',
+      annualSavings: '₹3.00L',
+      payback: '8.0 mos',
+    },
+    {
+      rank: 3,
+      name: 'Furnace Heavy Oil to Biomass Pellet Fuel Shift',
+      type: 'Fuel Switch',
+      capex: '₹6.00L',
+      annualCO2: '52.0 tCO₂e',
+      annualSavings: '₹4.80L',
+      payback: '15.0 mos',
+    },
+    {
+      rank: 4,
+      name: '150 kW On-Site Rooftop Solar Net-Metering',
+      type: 'Renewable Power',
+      capex: '₹8.00L',
+      annualCO2: '37.0 tCO₂e',
+      annualSavings: '₹3.60L',
+      payback: '26.7 mos',
+    },
+    {
+      rank: 5,
+      name: 'Refractory Shell Ceramic Fiber Insulation',
+      type: 'Thermal Retrofit',
+      capex: '₹3.50L',
+      annualCO2: '26.0 tCO₂e',
+      annualSavings: '₹1.44L',
+      payback: '29.1 mos',
+    },
+  ];
+
+  // Beneficiaries
+  const stakeholders = [
     {
       role: 'Plant & Operations Managers',
       tag: 'Manufacturing Ops',
-      icon: Flame,
-      color: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-      description:
-        'Eliminate uninsulated furnace radiation, track kiln thermal loss, and receive proactive alerts before high-temperature burner overshoots trigger costly downtime.',
-      metrics: 'Cut Thermal Fuel OPEX by ~28%',
-      tabTarget: 'simulation' as TabId,
-      actionLabel: 'Inspect Twin Pipeline',
+      benefit: 'Eliminate uninsulated furnace radiation and receive proactive burner overshoot alerts to avoid costly downtime.',
+      kpi: 'Cut Thermal OPEX by ~28%',
+      action: 'Inspect Twin Pipeline',
+      target: 'simulation' as TabId,
     },
     {
       role: 'ESG & Compliance Directors',
       tag: 'Regulatory & Audit',
-      icon: ShieldCheck,
-      color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-      description:
-        'Instantly compile verified SEBI BRSR Principle 6 Core audit packs and ISO 14064 GHG Scope 1-3 reports with zero external consulting overhead.',
-      metrics: '1-Click Audit Readiness',
-      tabTarget: 'roadmap' as TabId,
-      actionLabel: 'Open BRSR Roadmap',
+      benefit: 'Instantly generate verified SEBI BRSR Principle 6 Core audit packs and ISO 14064 GHG Scope 1-3 reports with zero consulting overhead.',
+      kpi: '1-Click Audit Filing',
+      action: 'Open BRSR Roadmap',
+      target: 'roadmap' as TabId,
     },
     {
       role: 'CFOs & Financial Controllers',
-      tag: 'Capital & Cashflow',
-      icon: Coins,
-      color: 'bg-slate-800 text-slate-300 border-slate-700',
-      description:
-        'Translate abstract carbon emissions into actionable balance-sheet savings in ₹ INR. Evaluate real-time payback schedules and subsidy tax credits.',
-      metrics: 'Payback Under 10.5 Months',
-      tabTarget: 'simulator_hub' as TabId,
-      actionLabel: 'Calculate Live ROI',
+      tag: 'Capital Allocation',
+      benefit: 'Translate carbon metrics into balance-sheet savings in ₹ INR with real-time payback schedules and tax credit models.',
+      kpi: 'Sub-11 Month Payback',
+      action: 'Calculate Live ROI',
+      target: 'simulator_hub' as TabId,
     },
     {
       role: 'Circular Economy Recyclers',
-      tag: 'Supply Chain & Waste',
-      icon: Recycle,
-      color: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
-      description:
-        'Transform off-cut plastic and polymer trim waste into recurring revenue through algorithmic B2B off-take matchmaking within industrial clusters.',
-      metrics: 'Divert 100% Scrap Landfill',
-      tabTarget: 'circular' as TabId,
-      actionLabel: 'View Sankey Stream',
+      tag: 'Secondary Raw Materials',
+      benefit: 'Source pre-qualified industrial polymer trim and scrap directly from local manufacturers at discounted feedstock pricing.',
+      kpi: '85% Landfill Diversion',
+      action: 'View Waste Sankey',
+      target: 'circular' as TabId,
     },
   ];
 
-  // Core platform pillars
-  const featurePillars = [
-    {
-      id: 'simulation' as TabId,
-      title: 'Digital Twin Process Pipeline',
-      badge: 'Telemetry',
-      badgeColor: 'text-rose-400 border-rose-500/30 bg-rose-500/10',
-      icon: Flame,
-      headline: 'Interactive Material-to-Output Telemetry',
-      summary:
-        'Track material flows through Input, Thermal Processing, and Recovery stages with animated SVG particle streams and radial hotspot drilldowns.',
-      benefit: 'Pinpoints the exact 48 tCO₂e/mo furnace burner leak point.',
-    },
-    {
-      id: 'simulator_hub' as TabId,
-      title: 'Unified What-If ROI Simulator',
-      badge: 'Interactive',
-      badgeColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
-      icon: Zap,
-      headline: 'Live Dynamic Recalculation & Waterfall',
-      summary:
-        'Move operational sliders for fuel shift, temperature tuning, and PCR resin to recalculate real-time carbon abatement and financial cash flow.',
-      benefit: 'Instant split comparison between baseline and optimized metrics.',
-    },
-    {
-      id: 'analytics_hub' as TabId,
-      title: '3D Thermal Hotspot Diagnostics',
-      badge: 'Analytics',
-      badgeColor: 'text-slate-300 border-slate-700 bg-slate-800',
-      icon: Activity,
-      headline: 'Heatmap Gradients & Anomaly Detection',
-      summary:
-        'Interactive 3D furnace thermal mapping, temperature distribution histograms, and multi-sensor correlation matrices with AI leak alerts.',
-      benefit: 'Detects 1418°C burner spikes before thermal insulation breaches.',
-    },
-    {
-      id: 'intake' as TabId,
-      title: 'OCR Smart Bill Scanner',
-      badge: 'Data Intake',
-      badgeColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
-      icon: Scan,
-      headline: 'Zero-Effort Utility Ingestion',
-      summary:
-        'Upload electricity, fuel oil, and natural gas utility invoices to automatically extract billing line-items, consumption kWh, and emission factors.',
-      benefit: 'Eliminates tedious manual spreadsheet data entry.',
-    },
-    {
-      id: 'sandbox' as TabId,
-      title: 'Scenario Sandbox Comparison',
-      badge: 'Planning',
-      badgeColor: 'text-amber-400 border-amber-500/30 bg-amber-500/10',
-      icon: Layers,
-      headline: 'Multi-Scenario Sensitivity Matrix',
-      summary:
-        'Save and compare alternative decarbonization scenarios (Conservative, Aggressive Net-Zero, Regulatory Cap) side-by-side.',
-      benefit: 'Confidently present risk-adjusted scenarios to executive boards.',
-    },
-    {
-      id: 'circular' as TabId,
-      title: 'B2B Circular Waste Stream Sankey',
-      badge: 'Logistics',
-      badgeColor: 'text-teal-400 border-teal-500/30 bg-teal-500/10',
-      icon: Recycle,
-      headline: 'Algorithmic Byproduct Monetization',
-      summary:
-        'Interactive Sankey diagram visualizing waste diversion flows alongside a geographical B2B cluster network for raw material trading.',
-      benefit: 'Monetizes 12 Tons/mo of polymer   return (
-    <div className="space-y-8 animate-fadeIn pb-12">
+  return (
+    <div className="w-full space-y-10 animate-fadeIn pb-16 font-sans">
       {/* ============================================================ */}
-      {/* 1. TOP SECTION (3-COLUMN EQUAL-HEIGHT ROW) */}
+      {/* 1. HERO SECTION                                              */}
       {/* ============================================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* ------------------------------------------------------------ */}
-        {/* LEFT COLUMN: Condensed Site Statistics (3 cols) */}
-        {/* ------------------------------------------------------------ */}
-        <aside className="lg:col-span-3 flex flex-col">
-          <div className="rounded-2xl p-5 bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#1F2937] shadow-xl space-y-5 flex-1 flex flex-col justify-between">
-            <div>
-              {/* Title Header with Live Green Indicator */}
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#1F2937] pb-3 mb-4">
-                <div className="flex items-center space-x-2">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-                  </span>
-                  <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                    SITE OVERVIEW STATISTICS
-                  </h3>
-                </div>
-                <span className="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase">
-                  LIVE
-                </span>
-              </div>
-
-              {/* Major High-Level KPI 1: Active Plant Telemetry */}
-              <div className="space-y-3">
-                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-[#1F2937] space-y-1">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono block">Active Plant Telemetry</span>
-                  <p className="text-xs font-bold text-slate-900 dark:text-white font-heading truncate">
-                    Apex Packaging Pvt. Ltd.
-                  </p>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono block">Pune Unit #4 • 4 Sensor Nodes</span>
-                </div>
-
-                {/* Major High-Level KPI 2: Grid Load & Power Factor */}
-                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-[#1F2937] space-y-1.5">
-                  <div className="flex items-center justify-between text-xs min-w-0">
-                    <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate">Grid Load & Power Factor</span>
-                    <span className="font-mono font-extrabold text-cyan-600 dark:text-[#06B6D4] tracking-wider whitespace-nowrap shrink-0">420 kW • PF 0.96</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-cyan-500 rounded-full w-[65%]" />
-                  </div>
-                  <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                    <span>CEA Grid Factor</span>
-                    <span className="text-slate-800 dark:text-slate-200 font-bold">0.82 kgCO₂e/kWh</span>
-                  </div>
-                </div>
-
-                {/* Major High-Level KPI 3: Net MT CO2e Emissions */}
-                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-[#1F2937] space-y-1.5">
-                  <div className="flex items-center justify-between text-xs min-w-0">
-                    <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate">Net MT CO₂e Emissions</span>
-                    <span className="font-mono font-extrabold text-rose-600 dark:text-rose-400 tracking-wider whitespace-nowrap shrink-0">100 tCO₂e/mo</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-rose-500 rounded-full w-[80%]" />
-                  </div>
-                  <div className="flex items-center justify-between text-[10px] font-mono">
-                    <span className="text-slate-500 dark:text-slate-400">Net Financial Savings</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">₹6.5L / yr Net ROI</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Live refresh status bar */}
-            <div className="pt-3 border-t border-slate-200 dark:border-[#1F2937]">
-              <button
-                onClick={handleRefreshStats}
-                className="w-full py-1.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-[10.5px] font-mono flex items-center justify-center space-x-1.5 transition-colors border border-slate-200 dark:border-[#1F2937]"
-              >
-                <RefreshCw className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                <span>Refreshed: {lastRefreshed}</span>
-              </button>
-            </div>
+      <section className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 sm:p-10 shadow-xs transition-colors">
+        <div className="max-w-4xl space-y-6">
+          {/* Status Chip & Facility Badge */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Pilot Facility: Apex Packaging Pvt. Ltd. (Pune, India)</span>
+            </span>
+            <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-mono">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>Plastics & Polymer Manufacturing</span>
+            </span>
           </div>
-        </aside>
 
-        {/* ------------------------------------------------------------ */}
-        {/* CENTER COLUMN: ByteMe Hero & Welcome Section (6 cols) */}
-        {/* ------------------------------------------------------------ */}
-        <main className="lg:col-span-6 flex flex-col">
-          <div className="rounded-2xl p-6 sm:p-8 bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#1F2937] shadow-xl relative overflow-hidden flex-1 flex flex-col justify-between space-y-6">
-            {/* Subtle Cyan Ambient Glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-[#06B6D4]/10 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 space-y-5">
-              {/* Top Badge Tag */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-cyan-500/10 dark:bg-[#06B6D4]/15 text-cyan-600 dark:text-[#06B6D4] border border-cyan-500/30 text-xs font-mono font-bold tracking-wide">
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-600 dark:text-[#06B6D4]" />
-                  <span>ByteMe v2.0 • Carbon Decision Intelligence</span>
-                </span>
-                <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-white/[0.05] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 text-xs font-mono font-medium">
-                  <Globe className="w-3 h-3 text-slate-500 dark:text-slate-400" />
-                  <span>SME Manufacturing</span>
-                </span>
-              </div>
-
-              {/* Dynamic Header */}
-              <div className="space-y-2">
-                <h2 className="text-xl sm:text-2xl font-black font-heading text-slate-900 dark:text-white tracking-tight">
-                  Welcome back, <span className="text-cyan-600 dark:text-[#06B6D4]">{userRole}</span>!
-                </h2>
-                <h1 className="text-2xl sm:text-3xl font-black font-heading tracking-tight text-slate-900 dark:text-white leading-tight">
-                  Transforming Industrial Emission Leaks into{' '}
-                  <span className="bg-gradient-to-r from-cyan-600 to-emerald-600 dark:from-[#06B6D4] dark:to-emerald-400 bg-clip-text text-transparent">
-                    Measurable Financial ROI
-                  </span>
-                </h1>
-              </div>
-
-              {/* Value Summary */}
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                Indian SME manufacturers face mounting pressure from SEBI BRSR mandates and rising fuel costs. <strong className="text-slate-900 dark:text-white font-semibold">ByteMe</strong> bridges compliance with balance-sheet profitability through an automated digital twin, physics-backed thermal diagnostics, and real-time circular byproduct trading.
-              </p>
-            </div>
-
-            {/* Primary Action Buttons */}
-            <div className="relative z-10 pt-2 flex flex-wrap items-center gap-3">
-              <Button
-                variant="primary"
-                onClick={() => onNavigate('simulation')}
-                className="flex items-center space-x-2 px-5 py-2.5 text-xs font-bold shadow-md bg-cyan-500 hover:bg-cyan-600 dark:bg-[#06B6D4] dark:hover:bg-[#06B6D4]/80 text-white dark:text-slate-950 border-none"
-              >
-                <Flame className="w-4 h-4 text-white dark:text-slate-950" />
-                <span>Digital Twin Pipeline</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Button>
-
-              <Button
-                variant="secondary"
-                onClick={() => onNavigate('simulator_hub')}
-                className="flex items-center space-x-2 px-5 py-2.5 text-xs font-medium border border-slate-200 dark:border-[#1F2937] text-slate-800 dark:text-slate-200"
-              >
-                <Zap className="w-4 h-4 text-cyan-600 dark:text-[#06B6D4]" />
-                <span>ROI Simulator</span>
-              </Button>
-
-              {onStartJudgeTour && (
-                <Button
-                  variant="outline"
-                  onClick={onStartJudgeTour}
-                  className="flex items-center space-x-2 px-4 py-2.5 text-xs font-medium border-slate-200 dark:border-[#1F2937] text-slate-700 dark:text-slate-300"
-                >
-                  <PlayCircle className="w-4 h-4" />
-                  <span>3-Min Tour</span>
-                </Button>
-              )}
-            </div>
+          {/* Primary Product Value Headline */}
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+              Industrial Emission Leak-Point Detector &amp;{' '}
+              <span className="text-emerald-600 dark:text-emerald-400">Circular Recommender</span>
+            </h1>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              ByteMe identifies hidden thermal and electrical carbon leak points in SME factories, modeling costed, ROI-ranked circular interventions to cut emissions by 42% while delivering sub-11-month financial payback.
+            </p>
           </div>
-        </main>
 
-        {/* ------------------------------------------------------------ */}
-        {/* RIGHT COLUMN: Condensed Urgent Hotspot & Hazard (3 cols) */}
-        {/* ------------------------------------------------------------ */}
-        <aside className="lg:col-span-3 flex flex-col">
-          <div className="rounded-2xl p-4 sm:p-5 bg-white dark:bg-[#111827] border border-red-500/50 shadow-[0_0_20px_rgba(255,59,48,0.2)] space-y-4 flex-1 flex flex-col justify-between relative overflow-hidden">
-            {/* Ambient Red Glow Halo Effect */}
-            <div className="absolute top-0 right-0 w-28 h-28 bg-red-500/10 rounded-full blur-2xl pointer-events-none" />
-
-            <div className="space-y-3">
-              {/* Header with Pulsing Red Beacon */}
-              <div className="flex items-center justify-between border-b border-red-500/30 pb-2.5">
-                <div className="flex items-center space-x-2">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF3B30]" />
-                  </span>
-                  <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-red-600 dark:text-red-400">
-                    URGENT HOTSPOT
-                  </h3>
-                </div>
-                <span className="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/40 uppercase animate-pulse">
-                  P1 CRITICAL
-                </span>
-              </div>
-
-              {/* Single Highest Priority Issue Card */}
-              <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-950/90 border border-red-200 dark:border-red-500/40 space-y-2.5">
-                <div className="flex items-center space-x-2">
-                  <div className="p-1.5 rounded-lg bg-red-500/15 text-red-500 dark:text-red-400 border border-red-500/30 shrink-0">
-                    <Thermometer className="w-4 h-4 text-red-500 dark:text-red-400 animate-pulse" />
-                  </div>
-                  <h4 className="text-xs font-extrabold text-slate-900 dark:text-white font-heading">
-                    Kiln Thermal Overshoot Spike
-                  </h4>
-                </div>
-
-                <p className="text-[11.5px] text-slate-700 dark:text-slate-300 leading-snug">
-                  Furnace Burner #2 spiked to <strong className="text-red-600 dark:text-red-400 font-mono">1,418°C</strong> (48 tCO₂e/mo excessive fuel waste).
-                </p>
-
-                <div className="flex items-center justify-between text-[10.5px] font-mono text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-900">
-                  <span>Sensor #K2-A</span>
-                  <span className="text-rose-600 dark:text-rose-400 font-bold">₹12,400 / day loss</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Direct Single Link Navigating to the Problem */}
-            <button
-              onClick={() => onNavigate('analytics_hub')}
-              className="w-full py-2 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 dark:bg-red-600/25 dark:hover:bg-red-600/40 text-red-600 dark:text-red-200 hover:text-red-700 dark:hover:text-white text-xs font-extrabold font-heading flex items-center justify-center space-x-2 transition-colors border border-red-500/40 shadow-md group"
+          {/* Primary Action Buttons */}
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => onNavigate('simulation')}
+              className="flex items-center space-x-2"
             >
-              <span>Fix Setpoint in 3D Analytics</span>
-              <ArrowRight className="w-4 h-4 text-red-500 dark:text-red-400 group-hover:translate-x-1 transition-transform" />
-            </button>
+              <span>Launch Digital Twin Pipeline</span>
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => onNavigate('simulator_hub')}
+              className="flex items-center space-x-2"
+            >
+              <Zap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>What-If ROI Simulator</span>
+            </Button>
+
+            {onStartJudgeTour && (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={onStartJudgeTour}
+                className="flex items-center space-x-2"
+              >
+                <Compass className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <span>Start 60s Guided Tour</span>
+              </Button>
+            )}
           </div>
-        </aside>
-      </div>
+        </div>
+      </section>
 
       {/* ============================================================ */}
-      {/* 2. BOTTOM SECTION (FULL-WIDTH INTERACTIVE PLATFORM MODULES) */}
+      {/* 2. KEY PROOF NUMBERS (BENCHMARK STATS BAR)                   */}
       {/* ============================================================ */}
-      <section className="w-full space-y-6 pt-6 border-t border-slate-200 dark:border-[#1F2937]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-[#1F2937] pb-4">
-          <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-[#06B6D4] border border-cyan-500/30 shadow-sm">
-              <Target className="w-5 h-5 text-cyan-600 dark:text-[#06B6D4] animate-pulse" />
-            </div>
-            <div>
-              <h3 className="text-lg font-black font-heading text-slate-900 dark:text-white uppercase tracking-wider">
-                INTERACTIVE PLATFORM MODULES
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
-                Role-based operational tools for plant managers, ESG directors, CFOs, and circular recyclers.
-              </p>
-            </div>
-          </div>
-          <span className="text-xs font-mono px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-[#06B6D4] border border-cyan-500/30 font-bold self-start sm:self-auto">
-            4 Interactive Role Modules
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+            Verified Facility Impact Proof Metrics
+          </h2>
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+            IPCC 2006 &amp; CEA India Grid v19 Grounded
           </span>
         </div>
 
-        {/* 4-Column Responsive Grid matching role-based cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-          {targetAudience.map((audience, idx) => {
-            const Icon = audience.icon;
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+          {keyProofMetrics.map((stat, idx) => {
+            const Icon = stat.icon;
             return (
-              <Card
-                key={idx}
-                className="p-5 flex flex-col justify-between bg-white dark:bg-[#111827] border-slate-200 dark:border-[#1F2937] hover:border-cyan-500/60 dark:hover:border-[#06B6D4]/60 hover:shadow-[0_0_25px_rgba(6,182,212,0.15)] transition-all duration-300 group rounded-2xl"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={cn('p-2.5 rounded-xl border shadow-sm', audience.color)}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-[9.5px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
-                      {audience.tag}
-                    </span>
-                  </div>
-
-                  <h4 className="text-base font-bold font-heading text-slate-900 dark:text-white mb-2 group-hover:text-cyan-600 dark:group-hover:text-[#06B6D4] transition-colors">
-                    {audience.role}
-                  </h4>
-
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                    {audience.description}
-                  </p>
+              <Card key={idx} className="p-4 sm:p-5 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">
+                    {stat.label}
+                  </span>
+                  <Icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 </div>
-
-                <div className="pt-4 border-t border-slate-200 dark:border-[#1F2937] space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-slate-500 dark:text-slate-400 text-[11px]">Key Focus</span>
-                    <span className="text-cyan-600 dark:text-[#06B6D4] font-bold">{audience.metrics}</span>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    {stat.value}
                   </div>
-
-                  <button
-                    onClick={() => onNavigate(audience.tabTarget)}
-                    className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors border border-slate-200 dark:border-slate-700 group-hover:border-cyan-500/40 dark:group-hover:border-[#06B6D4]/40"
-                  >
-                    <span>{audience.actionLabel}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-cyan-600 dark:text-[#06B6D4]" />
-                  </button>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {stat.subtext}
+                  </div>
                 </div>
               </Card>
             );
@@ -562,181 +343,345 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       </section>
 
       {/* ============================================================ */}
-      {/* INTERACTIVE STICKY-NOTE POP-UP OVERLAY (Isolated Fixed Container Modal) */}
+      {/* 3. THE PROBLEM: THE INDUSTRIAL SME DILEMMA                   */}
       {/* ============================================================ */}
-      {selectedAlertForPopup && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
-          onClick={() => setSelectedAlertForPopup(null)}
-        >
-          <div
-            className="relative max-w-lg w-full bg-gradient-to-b from-[#211d13] via-[#1a1710] to-[#14110b] border-2 border-amber-500/70 shadow-[0_0_60px_rgba(245,158,11,0.3)] rounded-2xl p-6 sm:p-7 text-slate-100 transform rotate-[-0.5deg] transition-all overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Top Tape Effect */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-amber-500/30 border border-amber-400/50 rounded-sm backdrop-blur-xs transform -rotate-1 shadow-inner" />
+      <section className="space-y-4">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            The Industrial SME Decarbonization Dilemma
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+            Why Indian manufacturing SMEs struggle with traditional ESG tools and carbon reporting.
+          </p>
+        </div>
 
-            {/* Sticky Note Header */}
-            <div className="flex items-start justify-between border-b border-amber-500/30 pb-4 mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-sm shrink-0">
-                  <StickyNote className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/40 uppercase animate-pulse">
-                      {selectedAlertForPopup.stats.urgencyLevel}
-                    </span>
-                    <span className="text-[10px] font-mono text-amber-400/90 font-bold">
-                      Severity: {selectedAlertForPopup.stats.urgencyScore}
-                    </span>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-black font-heading text-white mt-1">
-                    {selectedAlertForPopup.title}
-                  </h3>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setSelectedAlertForPopup(null)}
-                className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 hover:text-white border border-amber-500/30 transition-colors"
-                title="Close Sticky Note"
-              >
-                <X className="w-5 h-5" />
-              </button>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="p-6 space-y-3">
+            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+              01
             </div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Unseen Thermal Leak Points
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Industrial kilns and furnaces operate with uncalibrated air-fuel ratios and damaged refractory shell insulation, leaking up to 48 tCO₂e/mo in wasted fossil fuel without operator awareness.
+            </p>
+          </Card>
 
-            {/* Issue Summary */}
-            <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200/90 mb-4 font-mono leading-relaxed">
-              {selectedAlertForPopup.summary}
+          <Card className="p-6 space-y-3">
+            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+              02
             </div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Surging Peak Grid Tariffs
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              State DISCOM peak electricity rates surge to ₹8.50/kWh during evening windows (0.82 kgCO₂e/kWh grid factor). SMEs lack dynamic load-shifting simulators to avoid costly demand spikes.
+            </p>
+          </Card>
 
-            {/* Full Statistical Data Breakdown */}
-            <div className="space-y-3 mb-5">
-              <h4 className="text-xs font-extrabold uppercase font-heading text-amber-400 tracking-wider flex items-center space-x-1.5">
-                <Activity className="w-3.5 h-3.5 text-amber-400" />
-                <span>Full Telemetry & Statistical Breakdown</span>
-              </h4>
-
-              <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Peak Metric</span>
-                  <span className="text-xs sm:text-sm font-black text-rose-600 dark:text-rose-400">{selectedAlertForPopup.stats.peakTemperature}</span>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Thermal Efficiency</span>
-                  <span className="text-xs sm:text-sm font-black text-amber-600 dark:text-amber-400">{selectedAlertForPopup.stats.thermalEfficiency}</span>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Carbon Waste Stream</span>
-                  <span className="text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400">{selectedAlertForPopup.stats.monthlyCarbonWaste}</span>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Financial OPEX Loss</span>
-                  <span className="text-xs sm:text-sm font-black text-red-600 dark:text-red-400">{selectedAlertForPopup.stats.financialLossRate}</span>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs font-mono">
-                <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-500 dark:text-slate-400">Sensor Location:</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-bold">{selectedAlertForPopup.stats.sensorNode}</span>
-                </div>
-                <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-500 dark:text-slate-400">AI Diagnostic Confidence:</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">{selectedAlertForPopup.stats.confidenceScore}</span>
-                </div>
-                <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 text-[10px] block uppercase font-bold">Root Cause Analysis:</span>
-                  <p className="text-slate-700 dark:text-slate-300 text-[11px] leading-snug mt-0.5">{selectedAlertForPopup.stats.rootCause}</p>
-                </div>
-              </div>
+          <Card className="p-6 space-y-3">
+            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+              03
             </div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              SEBI BRSR Compliance Burden
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Mandatory SEBI BRSR Principle 6 Core disclosures require strict Scope 1-3 audit packs. Manual consulting takes months and costs lakhs, pricing out mid-market manufacturers.
+            </p>
+          </Card>
+        </div>
+      </section>
 
-            {/* Action Footer */}
-            <div className="pt-4 border-t border-slate-200 dark:border-amber-500/30 flex items-center justify-between gap-3">
-              <button
-                onClick={() => setSelectedAlertForPopup(null)}
-                className="py-2 px-4 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-800 transition-colors"
-              >
-                Dismiss
-              </button>
-
-              <button
-                onClick={() => {
-                  const target = selectedAlertForPopup.tabTarget;
-                  setSelectedAlertForPopup(null);
-                  onNavigate(target);
-                }}
-                className="flex-1 py-2 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs font-heading flex items-center justify-center space-x-2 transition-colors shadow-lg"
-              >
-                <span>{selectedAlertForPopup.actionLabel}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+      {/* ============================================================ */}
+      {/* 4. THE 5 CORE FUNCTIONALITIES (STANDARDIZED SHOWCASE)       */}
+      {/* ============================================================ */}
+      <section className="space-y-6">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              5 Core Platform Functionalities
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+              Empirical modeling, automated leak detection, and algorithmic byproduct monetization.
+            </p>
           </div>
-      {/* ============================================================ */}
-      {/* ABOUT US & PLATFORM GUIDE MODAL OVERLAY */}
-      {/* ============================================================ */}
-      {isAboutModalOpen && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
-          onClick={() => setIsAboutModalOpen(false)}
-        >
-          <div
-            className="relative max-w-xl w-full bg-[#0d1322] border border-emerald-500/40 shadow-2xl rounded-2xl p-6 sm:p-7 text-slate-100 space-y-5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between border-b border-slate-800 pb-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  <Leaf className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold font-heading text-white">About ByteMe Carbon Intelligence</h3>
-                  <span className="text-xs font-mono text-emerald-400">Industrial SME Carbon-to-ROI Engine</span>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsAboutModalOpen(false)}
-                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+          <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 self-start sm:self-auto">
+            Click any module to launch
+          </span>
+        </div>
+
+        <div className="space-y-4">
+          {coreFunctionalities.map((func) => {
+            const Icon = func.icon;
+            return (
+              <Card
+                key={func.num}
+                className="p-6 hover:border-emerald-500/50 transition-all duration-200 group"
               >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  {/* Left Column: Number, Title, Description */}
+                  <div className="flex items-start space-x-4 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-mono font-bold text-sm shrink-0">
+                      {func.num}
+                    </div>
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                          {func.title}
+                        </h3>
+                        <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                          • {func.tagline}
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        {func.description}
+                      </p>
+                      <div className="pt-2 flex flex-wrap items-center gap-y-1 gap-x-4 text-xs font-mono text-slate-500 dark:text-slate-400">
+                        <span><strong>Mechanism:</strong> {func.mechanism}</span>
+                      </div>
+                    </div>
+                  </div>
 
-            <div className="space-y-3 text-xs leading-relaxed text-slate-300">
-              <p className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 font-medium">
-                <strong className="text-white font-semibold">ByteMe</strong> is an AI-powered carbon decision intelligence platform designed specifically for Indian SME manufacturers facing rising energy tariffs and strict SEBI BRSR Principle 6 mandates.
-              </p>
+                  {/* Right Column: Metric Badge & Launch Action */}
+                  <div className="flex lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800 shrink-0">
+                    <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-semibold border border-emerald-500/20">
+                      {func.impactMetric}
+                    </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono">
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-                  <span className="text-emerald-400 font-bold block text-[11.5px]">1-Click SEBI Audit</span>
-                  <span className="text-slate-400 text-[10.5px]">Instant BRSR Principle 6 Core & ISO 14064 GHG report packs.</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onNavigate(func.tabTarget)}
+                      className="flex items-center space-x-1.5 text-xs group-hover:border-emerald-500 group-hover:bg-emerald-600 group-hover:text-white transition-all"
+                    >
+                      <span>{func.actionLabel}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-                  <span className="text-emerald-400 font-bold block text-[11.5px]">3D Thermal Hotspots</span>
-                  <span className="text-slate-400 text-[10.5px]">Physics-backed furnace telemetry and anomaly leak alerts.</span>
-                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 5. FINANCIAL & CARBON ROI IMPACT MATRIX (COSTED TABLE)       */}
+      {/* ============================================================ */}
+      <section className="space-y-4">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Costed Decarbonization Action Plan &amp; Payback Matrix
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+              Ranked financial investment roadmap modeled for Apex Packaging (195 tCO₂e/yr total cut).
+            </p>
+          </div>
+          {onOpenBRSRModal && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onOpenBRSRModal}
+              className="flex items-center space-x-1.5 self-start sm:self-auto"
+            >
+              <FileCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>Export BRSR Audit Pack</span>
+            </Button>
+          )}
+        </div>
+
+        <Card className="overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs font-sans">
+              <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-mono uppercase tracking-wider text-[11px]">
+                <tr>
+                  <th className="py-3 px-4">Rank</th>
+                  <th className="py-3 px-4">Intervention &amp; Strategy</th>
+                  <th className="py-3 px-4">Category</th>
+                  <th className="py-3 px-4 text-right">Capex</th>
+                  <th className="py-3 px-4 text-right">CO₂ Cut / yr</th>
+                  <th className="py-3 px-4 text-right">Annual Savings</th>
+                  <th className="py-3 px-4 text-right">Payback</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                {roiActionItems.map((item) => (
+                  <tr
+                    key={item.rank}
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                  >
+                    <td className="py-3.5 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      #{item.rank}
+                    </td>
+                    <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white">
+                      {item.name}
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                      {item.type}
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-mono font-semibold text-slate-800 dark:text-slate-200">
+                      {item.capex}
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      {item.annualCO2}
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900 dark:text-white">
+                      {item.annualSavings}
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-mono font-semibold text-slate-700 dark:text-slate-300">
+                      {item.payback}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot className="bg-slate-100/80 dark:bg-slate-800/80 border-t-2 border-slate-200 dark:border-slate-700 font-mono font-bold text-xs">
+                <tr>
+                  <td colSpan={3} className="py-3.5 px-4 text-slate-900 dark:text-white uppercase">
+                    Combined Portfolio Total Impact
+                  </td>
+                  <td className="py-3.5 px-4 text-right text-slate-900 dark:text-white">
+                    ₹20.30L
+                  </td>
+                  <td className="py-3.5 px-4 text-right text-emerald-600 dark:text-emerald-400">
+                    195.0 tCO₂e/yr
+                  </td>
+                  <td className="py-3.5 px-4 text-right text-slate-900 dark:text-white">
+                    ₹16.56L/yr
+                  </td>
+                  <td className="py-3.5 px-4 text-right text-emerald-600 dark:text-emerald-400">
+                    ~10.5 mos
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </Card>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 6. STAKEHOLDER BENEFICIARIES                                  */}
+      {/* ============================================================ */}
+      <section className="space-y-4">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Stakeholder Alignment &amp; Value Realization
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+            Tailored workflows for every decision-maker in the industrial SME hierarchy.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stakeholders.map((s, idx) => (
+            <Card key={idx} className="p-5 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                  {s.tag}
+                </span>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  {s.role}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {s.benefit}
+                </p>
               </div>
-            </div>
 
-            <div className="pt-4 border-t border-slate-800 flex justify-end">
-              <button
-                onClick={() => setIsAboutModalOpen(false)}
-                className="py-2 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs font-heading transition-colors"
-              >
-                Close Platform Guide
-              </button>
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="text-slate-500">Key Outcome:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{s.kpi}</span>
+                </div>
+                <button
+                  onClick={() => onNavigate(s.target)}
+                  className="w-full py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center justify-center space-x-1 transition-colors"
+                >
+                  <span>{s.action}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 7. SCIENTIFIC DATA PROVENANCE & ARCHITECTURE                 */}
+      {/* ============================================================ */}
+      <section className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              Scientific Data Provenance &amp; System Architecture
+            </h2>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+              Strictly grounded mathematical calculation engines with statutory citation standards.
+            </p>
+          </div>
+          <span className="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
+            100% Deterministic Provenance
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+              Emission Factors
             </div>
+            <div className="text-sm font-bold text-slate-900 dark:text-white font-heading">
+              CEA India Grid v19 &amp; IPCC 2006
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed font-sans">
+              Indian national grid baseline at 0.82 kgCO₂e/kWh. Stationary combustion factors per IPCC 2006 Guidelines for National GHG Inventories.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+              Compliance Standard
+            </div>
+            <div className="text-sm font-bold text-slate-900 dark:text-white font-heading">
+              SEBI BRSR Core &amp; ISO 14064
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed font-sans">
+              Formulated for direct filing under SEBI BRSR Principle 6 Core metrics (Scope 1 direct fuels, Scope 2 electricity, Scope 3 waste off-take).
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+              AI Backend Security
+            </div>
+            <div className="text-sm font-bold text-slate-900 dark:text-white font-heading">
+              Server-Side API Key Vault
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed font-sans">
+              Gemini LLM calls execute strictly server-side without exposing API keys to the browser, paired with zero-hallucination mathematical verification.
+            </p>
           </div>
         </div>
-      )}
+      </section>
+
+      {/* ============================================================ */}
+      {/* 8. TEAM & PROJECT CREDENTIALS                                 */}
+      {/* ============================================================ */}
+      <section className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
+        <div className="flex items-center space-x-2">
+          <Building2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>ByteMe v2.0 • Hackout 2.0 National Hackathon Submission</span>
+        </div>
+        <div className="flex items-center space-x-4 text-[11px]">
+          <span>React + Vite</span>
+          <span>•</span>
+          <span>Node.js / Express</span>
+          <span>•</span>
+          <span>Tailwind CSS</span>
+          <span>•</span>
+          <span>Gemini LLM</span>
+        </div>
+      </section>
     </div>
   );
 };
-

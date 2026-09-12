@@ -10,9 +10,10 @@ import {
   Leaf,
   PanelLeft,
   ChevronRight,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-
 import { GoogleUser } from '../../types';
 
 export interface NavbarProps {
@@ -22,6 +23,7 @@ export interface NavbarProps {
   onOpenCopilotModal: () => void;
   onOpenBRSRModal: () => void;
   onOpenAuditExportModal: () => void;
+  onOpenProvenanceModal?: () => void;
   onToggleSidebarMobile: () => void;
   onToggleSidebarDesktop: () => void;
   activeGoogleUser?: GoogleUser | null;
@@ -36,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCopilotModal,
   onOpenBRSRModal,
   onOpenAuditExportModal,
+  onOpenProvenanceModal,
   onToggleSidebarMobile,
   onToggleSidebarDesktop,
   activeGoogleUser,
@@ -45,6 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const tabTitles: Record<TabId, { title: string; category: string }> = {
     overview: { title: 'Product Overview & Executive Summary', category: 'Platform Home' },
+    admin: { title: 'Facility Admin & Factory Onboarding', category: 'Platform Setup' },
     simulator_hub: { title: 'Unified ROI Playground & Waterfall', category: 'Simulator & Controls' },
     analytics_hub: { title: 'Thermal Analytics & 3D Heatmap', category: 'Hotspot Diagnostics' },
     intake: { title: 'OCR Smart Bill Scanner', category: 'Data Ingestion' },
@@ -52,45 +56,59 @@ export const Navbar: React.FC<NavbarProps> = ({
     sandbox: { title: 'Scenario Sandbox Comparison', category: 'Planning Matrix' },
     circular: { title: 'B2B Circular Waste Stream Sankey', category: 'Circular Logistics' },
     roadmap: { title: 'Financial ROI & BRSR Roadmap', category: 'Compliance Matrix' },
+    whatif: { title: 'What-If Empirical Sliders', category: 'Scenario Planning' },
+    copilot: { title: 'ByteMe AI Copilot Panel', category: 'AI Intelligence' },
   };
 
   const currentSection = tabTitles[activeTab] || { title: 'Industrial Carbon Intelligence', category: 'Platform' };
 
   return (
-    <header className="sticky top-0 z-30 w-full h-16 border-b border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-[#070d19]/90 backdrop-blur-xl transition-colors duration-300 px-3 sm:px-6 lg:px-8 flex items-center justify-between shadow-sm">
+    <header className="sticky top-0 z-30 w-full h-16 border-b border-slate-200/80 dark:border-white/[0.08] bg-white/95 dark:bg-[#0D0F18]/95 backdrop-blur-xl transition-colors duration-300 px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-xs">
       {/* Left: Sidebar Toggle & Section Breadcrumb */}
-      <div className="flex items-center space-x-2 sm:space-x-3.5 min-w-0 flex-1 mr-2 sm:mr-3">
+      <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 mr-3">
         {/* Mobile Hamburger Drawer Trigger */}
         <button
           onClick={onToggleSidebarMobile}
-          className="p-1.5 sm:p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 lg:hidden transition-colors shrink-0"
+          className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] lg:hidden transition-colors shrink-0"
           aria-label="Open Navigation Menu"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* Breadcrumb Section Indicator */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 text-xs min-w-0 truncate">
-          <span className="text-slate-400 dark:text-slate-500 font-mono uppercase tracking-wider hidden lg:inline font-semibold shrink-0">
+        <div className="flex items-center space-x-2 text-xs min-w-0 truncate">
+          <span className="text-slate-400 dark:text-slate-500 font-mono text-[11px] uppercase tracking-wider hidden lg:inline font-semibold shrink-0">
             {currentSection.category}
           </span>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 hidden lg:inline shrink-0" />
-          <h2 className="font-heading font-extrabold text-slate-900 dark:text-slate-100 text-xs sm:text-sm md:text-base tracking-tight truncate">
+          <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-700 hidden lg:inline shrink-0" />
+          <h2 className="font-heading font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm md:text-base tracking-tight truncate">
             {currentSection.title}
           </h2>
         </div>
       </div>
 
       {/* Right: High-Level Controls (Search, Rupee Toggle, Export, Theme) */}
-      <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
+      <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        {/* Scientific Sources Badge Modal Trigger */}
+        {onOpenProvenanceModal && (
+          <button
+            onClick={onOpenProvenanceModal}
+            className="hidden xl:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all shrink-0"
+            title="Inspect Statutory Sources (CEA India, IPCC, BEE, CPCB)"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span className="font-mono text-[11px] font-bold">CEA / IPCC Factor</span>
+          </button>
+        )}
+
         {/* Rupee-to-Carbon Shift Toggle */}
-        <div className="flex items-center bg-slate-100 dark:bg-slate-800/70 p-0.5 sm:p-1 rounded-xl border border-slate-200 dark:border-slate-700/60">
+        <div className="flex items-center bg-slate-100 dark:bg-white/[0.04] p-1 rounded-xl border border-slate-200 dark:border-white/[0.08]">
           <button
             onClick={onToggleViewMode}
             className={cn(
-              'flex items-center space-x-1 px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-200',
+              'flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-200',
               !isFinancial
-                ? 'bg-emerald-600 text-white shadow-sm'
+                ? 'bg-emerald-600 text-white shadow-xs'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             )}
             title="View in Carbon Emissions (tCO2e)"
@@ -102,9 +120,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onToggleViewMode}
             className={cn(
-              'flex items-center space-x-1 px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-200',
+              'flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-200',
               isFinancial
-                ? 'bg-slate-900 dark:bg-emerald-500 text-white shadow-sm'
+                ? 'bg-slate-900 dark:bg-emerald-500 text-white shadow-xs'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             )}
             title="View in Financial Cash Flow (₹ INR)"
@@ -117,17 +135,17 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Global Command Terminal Trigger (Cmd + K) */}
         <button
           onClick={onOpenCopilotModal}
-          className="hidden md:flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:border-emerald-500/50 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm shrink-0"
+          className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 hover:text-slate-900 dark:hover:text-white transition-all shrink-0"
           title="Open Command Terminal (Cmd + K)"
         >
-          <Command className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-          <span className="font-mono">Cmd + K</span>
+          <Command className="w-3.5 h-3.5 text-emerald-500" />
+          <span className="font-mono text-[11px]">Cmd + K</span>
         </button>
 
         {/* BRSR Audit Modal Button */}
         <button
           onClick={onOpenBRSRModal}
-          className="hidden 2xl:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all shadow-sm shrink-0"
+          className="hidden 2xl:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all shrink-0"
           title="Open SEBI BRSR Audit Pack"
         >
           <FileCheck className="w-3.5 h-3.5" />
@@ -137,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Executive Export Button */}
         <button
           onClick={onOpenAuditExportModal}
-          className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-100 hover:bg-slate-800 dark:hover:bg-slate-700 border border-slate-700/50 transition-all shadow-sm shrink-0"
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-white/[0.08] dark:text-slate-100 hover:bg-slate-800 dark:hover:bg-white/[0.12] border border-slate-700/50 dark:border-white/[0.1] transition-all shadow-xs shrink-0"
           title="Configurable Data Export"
         >
           <Download className="w-3.5 h-3.5 text-emerald-400" />
@@ -147,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Google Account Profile Button */}
         <button
           onClick={onOpenGoogleAuthModal}
-          className="flex items-center space-x-1.5 sm:space-x-2 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-500/50 transition-all shadow-xs shrink-0"
+          className="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all shrink-0"
           title={activeGoogleUser ? `Google Account: ${activeGoogleUser.email}` : 'Sign in with Google'}
         >
           {activeGoogleUser ? (
@@ -155,7 +173,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img
                 src={activeGoogleUser.avatar}
                 alt={activeGoogleUser.name}
-                className="w-6 h-6 rounded-full border border-emerald-500 bg-white shrink-0 object-cover"
+                className="w-5.5 h-5.5 rounded-full border border-emerald-500 bg-white shrink-0 object-cover"
               />
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 hidden lg:inline truncate max-w-[100px]">
                 {activeGoogleUser.name.split(' ')[0]}
@@ -163,7 +181,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </>
           ) : (
             <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
-              <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0">
+              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />

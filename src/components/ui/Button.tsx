@@ -15,25 +15,25 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl';
+    'inline-flex items-center justify-center font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl cursor-pointer';
 
   const variants = {
     primary:
-      'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-600 hover:to-teal-700 active:scale-98',
+      'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs active:scale-[0.98]',
     secondary:
-      'bg-slate-800 text-slate-100 hover:bg-slate-700 border border-slate-700/60 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700',
+      'bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:border-slate-700 active:scale-[0.98]',
     outline:
-      'border border-slate-300 dark:border-slate-700/80 bg-transparent text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60',
+      'border border-slate-300 dark:border-slate-700 bg-transparent text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800',
     ghost:
-      'bg-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50',
+      'bg-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60',
     danger:
-      'bg-rose-600 text-white shadow-lg shadow-rose-600/20 hover:bg-rose-700 active:scale-98',
+      'bg-rose-600 hover:bg-rose-700 text-white shadow-xs active:scale-[0.98]',
   };
 
   const sizes = {
     sm: 'px-3 py-1.5 text-xs',
     md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base font-semibold',
+    lg: 'px-5 py-2.5 text-sm font-bold',
   };
 
   return (

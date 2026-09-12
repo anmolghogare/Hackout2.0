@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card';
 import { Badge } from '../../ui/Badge';
 import { Button } from '../../ui/Button';
-import { Recycle, ArrowUpRight, MapPin, Building, ShieldCheck, Plus, Sparkles, X, CheckCircle2, Handshake } from 'lucide-react';
+import { Recycle, ArrowUpRight, MapPin, Building, ShieldCheck, Sparkles, X, CheckCircle2, Handshake } from 'lucide-react';
 import { analyzeByProduct } from '../../../lib/api';
 
 export const CircularNetwork: React.FC = () => {
@@ -124,30 +124,32 @@ export const CircularNetwork: React.FC = () => {
   return (
     <Card className="mb-8 theme-transition">
       <CardHeader>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="flex items-center space-x-2">
-              <Recycle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-              <span>AI-Powered Waste-to-Resource Circular Network</span>
+            <CardTitle className="flex items-center space-x-2.5">
+              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <Recycle className="w-5 h-5 text-emerald-500" />
+              </div>
+              <span>AI-Powered Waste-to-Resource Circular Cluster Network</span>
             </CardTitle>
-            <CardDescription>
-              Analyze industrial by-products with AI, match recipient industries, calculate landfill diversion & monetize scrap.
+            <CardDescription className="mt-1">
+              Analyze industrial by-products with AI, match recipient industries, calculate landfill diversion & monetize scrap off-take.
             </CardDescription>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 self-start sm:self-center">
             <Button
               onClick={() => setIsAddModalOpen(true)}
               variant="primary"
-              className="flex items-center space-x-1.5 shadow-sm"
+              className="flex items-center space-x-1.5 shadow-xs font-bold"
             >
-              <Plus className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
               <span>Add By-Product for AI Match</span>
             </Button>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="space-y-6">
         {/* Listings Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {listings.map((item) => (
@@ -155,13 +157,13 @@ export const CircularNetwork: React.FC = () => {
               key={item.id}
               className={`p-5 rounded-2xl border flex flex-col justify-between transition-all duration-300 ${
                 item.isContracted
-                  ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-500/50 shadow-sm'
-                  : 'bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                  ? 'bg-emerald-500/10 border-emerald-500/50 shadow-xs'
+                  : 'bg-white dark:bg-[#0D0F18] border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500/40'
               }`}
             >
               <div>
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                <div className="flex justify-between items-start mb-2.5">
+                  <span className="text-xs font-bold font-mono px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.08]">
                     {item.matchScore}% AI Match
                   </span>
                   <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">
@@ -169,35 +171,35 @@ export const CircularNetwork: React.FC = () => {
                   </span>
                 </div>
 
-                <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1 font-heading">
+                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1 font-heading">
                   {item.materialName}
                 </h4>
 
-                <p className="text-xs text-slate-500 flex items-center space-x-1 mb-3">
+                <p className="text-xs text-slate-400 flex items-center space-x-1 mb-3">
                   <Building className="w-3.5 h-3.5 text-slate-400" />
                   <span className="truncate">{item.seller}</span>
                 </p>
 
-                <div className="space-y-2 py-3 border-y border-slate-100 dark:border-slate-700/60 text-xs">
+                <div className="space-y-2 py-3 border-y border-slate-100 dark:border-white/[0.06] text-xs">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Available Volume</span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">
+                    <span className="text-slate-400">Available Volume</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100 font-mono">
                       {item.quantity}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Carbon Abatement</span>
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                    <span className="text-slate-400">Carbon Abatement</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400 font-mono">
                       {item.carbonOffsetPotential}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-[11px] text-slate-500">
+                  <div className="flex justify-between items-center text-[11px] text-slate-400">
                     <span className="flex items-center space-x-1">
-                      <MapPin className="w-3 h-3 text-slate-400" />
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
                       <span className="truncate max-w-[150px]">{item.location}</span>
                     </span>
-                    <span className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-semibold">
-                      <ShieldCheck className="w-3 h-3" />
+                    <span className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-semibold font-mono">
+                      <ShieldCheck className="w-3.5 h-3.5" />
                       <span>Verified</span>
                     </span>
                   </div>
@@ -205,7 +207,7 @@ export const CircularNetwork: React.FC = () => {
 
                 {/* AI Recipient Industry Analysis Box */}
                 {item.aiAnalysis && (
-                  <div className="mt-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs font-mono">
+                  <div className="mt-3.5 p-3.5 rounded-xl bg-slate-50 dark:bg-[#080B12] border border-slate-200/80 dark:border-white/[0.08] space-y-1.5 text-xs font-mono">
                     <div className="flex items-center justify-between text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">
                       <span>AI Recipient Match</span>
                       <span>{item.aiAnalysis.landfillDiversionPct}</span>
@@ -213,12 +215,12 @@ export const CircularNetwork: React.FC = () => {
                     <p className="font-bold text-slate-900 dark:text-white text-xs font-heading">
                       ➔ {item.aiAnalysis.recipientIndustry}
                     </p>
-                    <div className="flex justify-between text-[11px] pt-1 border-t border-slate-200 dark:border-slate-800">
-                      <span className="text-slate-500 dark:text-slate-400">Scrap Revenue:</span>
+                    <div className="flex justify-between text-[11px] pt-1.5 border-t border-slate-200/80 dark:border-white/[0.06]">
+                      <span className="text-slate-400">Scrap Revenue:</span>
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold">{item.aiAnalysis.annualRevenueDisplay}</span>
                     </div>
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-500 dark:text-slate-400">Avoided Fee:</span>
+                      <span className="text-slate-400">Avoided Fee:</span>
                       <span className="text-slate-800 dark:text-slate-200 font-bold">{item.aiAnalysis.annualLandfillFeeSavedDisplay}</span>
                     </div>
                   </div>
@@ -230,16 +232,16 @@ export const CircularNetwork: React.FC = () => {
                   variant={item.isContracted ? 'secondary' : 'primary'}
                   size="sm"
                   onClick={() => handleOpenTradeModal(item)}
-                  className="w-full flex items-center justify-center space-x-1 font-bold"
+                  className="w-full flex items-center justify-center space-x-1.5 font-bold"
                 >
                   {item.isContracted ? (
                     <>
                       <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                      <span>Trade Active & Contracted</span>
+                      <span>Contract Active</span>
                     </>
                   ) : (
                     <>
-                      <span>Initiate B2B Circular Trade</span>
+                      <span>Initiate B2B Trade</span>
                       <ArrowUpRight className="w-4 h-4" />
                     </>
                   )}
@@ -251,30 +253,30 @@ export const CircularNetwork: React.FC = () => {
 
         {/* Interactive Initiate B2B Trade Modal */}
         {tradeModalItem && (
-          <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div className="flex items-center space-x-2">
-                  <Handshake className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                  <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+            <div className="bg-white dark:bg-[#0D0F18] border border-slate-200 dark:border-white/[0.12] rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-white/[0.08] pb-3">
+                <div className="flex items-center space-x-2.5">
+                  <Handshake className="w-5 h-5 text-emerald-500" />
+                  <h3 className="text-base font-bold font-heading text-slate-900 dark:text-white">
                     Initiate B2B Circular Trade Contract
                   </h3>
                 </div>
                 <button
                   onClick={() => setTradeModalItem(null)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                  className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="space-y-3.5 text-xs">
-                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1">
-                  <div className="text-slate-500">Target By-Product:</div>
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] space-y-1">
+                  <div className="text-slate-400">Target By-Product:</div>
                   <div className="font-bold text-slate-900 dark:text-white text-sm">
                     {tradeModalItem.materialName}
                   </div>
-                  <div className="text-slate-500 font-mono text-[11px]">
+                  <div className="text-slate-400 font-mono text-[11px]">
                     Seller: {tradeModalItem.seller}
                   </div>
                 </div>
@@ -288,7 +290,7 @@ export const CircularNetwork: React.FC = () => {
                       type="number"
                       value={tradeVolume}
                       onChange={(e) => setTradeVolume(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                     />
                   </div>
                   <div>
@@ -299,29 +301,29 @@ export const CircularNetwork: React.FC = () => {
                       type="number"
                       value={tradeRate}
                       onChange={(e) => setTradeRate(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                     />
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 space-y-1">
-                  <div className="flex justify-between font-bold">
+                <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 space-y-1">
+                  <div className="flex justify-between font-bold font-mono">
                     <span>Projected Annual Revenue:</span>
                     <span>₹{(parseFloat(tradeVolume || '0') * parseFloat(tradeRate || '0') * 12).toLocaleString('en-IN')} / year</span>
                   </div>
-                  <div className="text-[11px] text-emerald-700 dark:text-emerald-400">
-                    Avoids ₹1,500/Ton municipal landfill dumping fee & earns Scope 3 circularity credits.
+                  <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-sans">
+                    Avoids ₹1,500/Ton municipal landfill fee & earns Scope 3 circularity credits.
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end space-x-2 pt-3 border-t border-slate-200/80 dark:border-white/[0.08]">
                 <Button variant="outline" size="sm" onClick={() => setTradeModalItem(null)}>
                   Cancel
                 </Button>
                 <Button variant="primary" size="sm" onClick={handleConfirmTrade} className="flex items-center space-x-1.5">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Confirm & Sign B2B Trade</span>
+                  <span>Confirm B2B Trade</span>
                 </Button>
               </div>
             </div>
@@ -330,18 +332,18 @@ export const CircularNetwork: React.FC = () => {
 
         {/* Add By-Product AI Match Modal */}
         {isAddModalOpen && (
-          <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div className="flex items-center space-x-2">
-                  <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                  <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+            <div className="bg-white dark:bg-[#0D0F18] border border-slate-200 dark:border-white/[0.12] rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-white/[0.08] pb-3">
+                <div className="flex items-center space-x-2.5">
+                  <Sparkles className="w-5 h-5 text-emerald-500" />
+                  <h3 className="text-base font-bold font-heading text-slate-900 dark:text-white">
                     Add Industrial By-Product / Scrap
                   </h3>
                 </div>
                 <button
                   onClick={() => setIsAddModalOpen(false)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                  className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -358,7 +360,7 @@ export const CircularNetwork: React.FC = () => {
                     placeholder="e.g. PET Flakes, Fly Ash, Off-Cut Poly Film, Metal Shavings..."
                     value={newProductName}
                     onChange={(e) => setNewProductName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
@@ -373,7 +375,7 @@ export const CircularNetwork: React.FC = () => {
                       min="1"
                       value={newQuantity}
                       onChange={(e) => setNewQuantity(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                     />
                   </div>
 
@@ -382,7 +384,7 @@ export const CircularNetwork: React.FC = () => {
                     <select
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     >
                       <option value="Plastics & Polymers">Plastics & Polymers</option>
                       <option value="Combustion Ash & Minerals">Combustion Ash & Minerals</option>
@@ -399,12 +401,12 @@ export const CircularNetwork: React.FC = () => {
                     type="text"
                     value={newLocation}
                     onChange={(e) => setNewLocation(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-400 text-[11px] font-mono">
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center space-x-1 mb-1">
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 text-[11px] font-mono">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center space-x-1.5 mb-1">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>AI Industry Matching Engine</span>
                   </span>
@@ -421,12 +423,12 @@ export const CircularNetwork: React.FC = () => {
                   </Button>
                   <Button type="submit" variant="primary" disabled={isAnalyzing}>
                     {isAnalyzing ? (
-                      <span className="flex items-center space-x-1">
+                      <span className="flex items-center space-x-1.5">
                         <Sparkles className="w-4 h-4 animate-spin" />
                         <span>Analyzing AI Match...</span>
                       </span>
                     ) : (
-                      <span>Run AI Industry Matcher</span>
+                      <span>Run AI Matcher</span>
                     )}
                   </Button>
                 </div>

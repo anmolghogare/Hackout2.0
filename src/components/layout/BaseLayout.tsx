@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TabId, ViewMode, SliderInputs, GoogleUser } from '../../types';
+import { TabId, ViewMode, SliderInputs, GoogleUser, FacilityConfig } from '../../types';
 import { Navbar } from '../ui/Navbar';
 import { CollapsibleSidebar } from './CollapsibleSidebar';
 import { AIAssistantChatbot } from '../features/ai/AIAssistantChatbot';
@@ -12,6 +12,8 @@ export interface BaseLayoutProps {
   onOpenCopilotModal: () => void;
   onOpenBRSRModal: () => void;
   onOpenAuditExportModal: () => void;
+  onOpenProvenanceModal?: () => void;
+  facilityConfig?: FacilityConfig;
   activeGoogleUser?: GoogleUser | null;
   onOpenGoogleAuthModal?: () => void;
   onStartJudgeTour?: () => void;
@@ -28,6 +30,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
   onOpenCopilotModal,
   onOpenBRSRModal,
   onOpenAuditExportModal,
+  onOpenProvenanceModal,
+  facilityConfig,
   activeGoogleUser,
   onOpenGoogleAuthModal,
   onStartJudgeTour,
@@ -51,6 +55,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         onOpenCopilotModal={onOpenCopilotModal}
         onOpenBRSRModal={onOpenBRSRModal}
         onOpenAuditExportModal={onOpenAuditExportModal}
+        onOpenProvenanceModal={onOpenProvenanceModal}
+        facilityConfig={facilityConfig}
         viewMode={viewMode}
       />
 
@@ -64,6 +70,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
           onOpenCopilotModal={onOpenCopilotModal}
           onOpenBRSRModal={onOpenBRSRModal}
           onOpenAuditExportModal={onOpenAuditExportModal}
+          onOpenProvenanceModal={onOpenProvenanceModal}
           onToggleSidebarMobile={() => setIsMobileOpen((prev) => !prev)}
           onToggleSidebarDesktop={() => setIsSidebarCollapsed((prev) => !prev)}
           activeGoogleUser={activeGoogleUser}

@@ -106,8 +106,95 @@ export interface OCRParsedResult {
   extractedTextLines: string[];
 }
 
+export interface FacilityProfile {
+  name: string;
+  sector: 'Plastic & Polymer Extrusion' | 'Automotive Metal Forging' | 'Textile & Dyeing' | 'Chemical & Agrochem' | 'Food & Agro Processing' | 'Custom SME';
+  location: string;
+  cluster: string;
+  shiftsPerDay: number;
+  workingDaysPerMonth: number;
+  totalEmployees: number;
+  annualTurnoverINR: string;
+}
+
+export interface FacilityStage1Inputs {
+  materialName: string;
+  monthlyVolumeTons: number;
+  costPerTonINR: number;
+  virginEmissionFactor: number; // tCO2e/ton (e.g. 2.80 for polymer resin, 2.30 for steel billets)
+  recycledPcrAvailablePct: number;
+  recycledMaterialCostPerTonINR: number;
+}
+
+export interface FacilityStage2Inputs {
+  fuelType: 'Heavy Furnace Oil' | 'PNG Natural Gas' | 'High Speed Diesel' | 'Biomass Briquettes' | 'Electric Arc Induction';
+  monthlyFuelConsumption: number; // Liters or SCM
+  fuelUnit: 'Liters' | 'SCM' | 'kg' | 'kWh';
+  fuelCostPerUnitINR: number;
+  furnaceOperatingTempC: number;
+  fuelEmissionFactor: number; // kgCO2e/unit (e.g. 3.12 for HFO, 1.88 for PNG)
+  thermalEfficiencyPct: number;
+}
+
+export interface FacilityStage3Inputs {
+  monthlyElectricityKWh: number;
+  contractDemandKVA: number;
+  gridTariffPerKWhINR: number;
+  gridEmissionFactor: number; // kgCO2e/kWh (CEA India Baseline 0.82)
+  rooftopSolarKWp: number;
+  powerFactor: number;
+}
+
+export interface FacilityStage4Inputs {
+  scrapTypeName: string;
+  monthlyScrapTons: number;
+  disposalOrLandfillCostPerTonINR: number;
+  recyclerSellingRatePerTonINR: number;
+  landfillEmissionFactor: number; // tCO2e/ton
+}
+
+export interface FacilityFinancialContext {
+  availableCapexBudgetINR: number;
+  maxPaybackThresholdMonths: number;
+  costOfCapitalPct: number;
+  carbonOffsetCreditPriceINR: number;
+}
+
+export interface FacilityConfig {
+  id: string;
+  profile: FacilityProfile;
+  stage1: FacilityStage1Inputs;
+  stage2: FacilityStage2Inputs;
+  stage3: FacilityStage3Inputs;
+  stage4: FacilityStage4Inputs;
+  financial: FacilityFinancialContext;
+  updatedAt: string;
+}
+
+export interface AISettings {
+  apiKey: string;
+  model: 'gemini-1.5-flash' | 'gemini-1.5-pro' | 'heuristic-offline';
+  enableAutoAnalysis: boolean;
+  temperature: number;
+}
+
+export interface ScientificSourceItem {
+  id: string;
+  title: string;
+  authority: string;
+  referenceDoc: string;
+  scope: 'Scope 1' | 'Scope 2' | 'Scope 3' | 'Circular' | 'Financial';
+  formula: string;
+  substitutedSample: string;
+  verifiableValue: string;
+  officialUrl?: string;
+  regulatoryBody: string;
+  description: string;
+}
+
 export type TabId =
   | 'overview'
+  | 'admin'
   | 'simulator_hub'
   | 'analytics_hub'
   | 'intake'
