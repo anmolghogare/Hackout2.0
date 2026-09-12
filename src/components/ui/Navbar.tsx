@@ -79,41 +79,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Top Priority Hotspot Red Alert Bar on Overview / Header */}
-        {activeTab === 'overview' ? (
-          <div className="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 font-mono text-xs shadow-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
-            <span className="font-extrabold text-[11px] uppercase tracking-wider hidden sm:inline">
-              PRIORITY 1 RED ALERT: Zone 2 Furnace Thermal Leak (48 tCO₂e/mo)
-            </span>
-            <span className="font-extrabold text-[11px] uppercase tracking-wider sm:hidden">
-              Priority 1 Leak (48t)
-            </span>
-            {onTabChange && (
-              <button
-                onClick={() => onTabChange('simulator_hub')}
-                className="px-2 py-0.5 rounded-md bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] transition-colors shrink-0 shadow-xs"
-              >
-                Fix in Simulator →
-              </button>
-            )}
-          </div>
-        ) : (
-          /* Breadcrumb Section Indicator for other tabs */
-          <div className="flex items-center space-x-2 text-xs min-w-0 truncate">
-            {currentSection.category && (
-              <>
-                <span className="text-slate-400 dark:text-slate-500 font-mono text-[11px] uppercase tracking-wider hidden lg:inline font-semibold shrink-0">
-                  {currentSection.category}
-                </span>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-700 hidden lg:inline shrink-0" />
-              </>
-            )}
-            <h2 className="font-heading font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm md:text-base tracking-tight truncate">
-              {currentSection.title}
-            </h2>
-          </div>
-        )}
+        {/* Breadcrumb Section Indicator */}
+        <div className="flex items-center space-x-2 text-xs min-w-0 truncate">
+          {currentSection.category && (
+            <>
+              <span className="text-slate-400 dark:text-slate-500 font-mono text-[11px] uppercase tracking-wider hidden lg:inline font-semibold shrink-0">
+                {currentSection.category}
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-700 hidden lg:inline shrink-0" />
+            </>
+          )}
+          <h2 className="font-heading font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm md:text-base tracking-tight truncate">
+            {currentSection.title}
+          </h2>
+        </div>
       </div>
 
       <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">

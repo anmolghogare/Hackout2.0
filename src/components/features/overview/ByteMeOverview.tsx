@@ -66,27 +66,6 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     <div className="w-full max-w-7xl mx-auto space-y-8 animate-fadeIn pb-16 text-slate-900 dark:text-slate-100 font-sans">
       <OverviewHero onNavigate={onNavigate} onStartJudgeTour={onStartJudgeTour} />
 
-      <section className="space-y-3">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">The Industrial SME Decarbonization Dilemma</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Why Indian manufacturing SMEs struggle with traditional ESG tools and carbon reporting.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[{
-            num: '01', title: 'Unseen Thermal Leak Points', body: 'Kilns and furnaces operate with uncalibrated air-fuel ratios and damaged refractory shell insulation, leaking up to 48 tCO\u2082e/mo in wasted fossil fuel without operator awareness.'
-          }, {
-            num: '02', title: 'Surging Peak Grid Tariffs', body: 'State DISCOM peak electricity rates surge to \u20b98.50/kWh during evening windows (0.82 kgCO\u2082e/kWh grid factor). SMEs lack dynamic load-shifting simulators to avoid costly demand spikes.'
-          }, {
-            num: '03', title: 'SEBI BRSR Compliance Burden', body: 'Mandatory SEBI BRSR Principle 6 Core disclosures require strict Scope 1-3 audit packs. Manual consulting takes months and costs lakhs, pricing out mid-market manufacturers.'
-          }].map((card) => (
-            <div key={card.num} className="rounded-2xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-[#0E131F] p-5 space-y-3 shadow-xs">
-              <span className="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-mono font-bold text-slate-500">{card.num}</span>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">{card.title}</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{card.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
 
       <section className="space-y-6">
         <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
