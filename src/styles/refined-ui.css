@@ -6,18 +6,9 @@ body {
   background: #f6f7f8;
 }
 
-.dark body,
-.dark {
-  background: #08090d;
-}
-
 h1, h2, h3, h4 {
   letter-spacing: -0.03em;
   line-height: 1.25;
-}
-
-button, input, select {
-  letter-spacing: 0;
 }
 
 .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -26,6 +17,11 @@ button, input, select {
   border-radius: 99px;
 }
 
-/* Quiet cards: no glow, no scale on hover */
 .shadow-xs { box-shadow: none; }
-.shadow-sm { box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04); }
+
+button[aria-label="Open AI Assistant"] {
+  padding: 0.85rem 1.35rem !important;
+  font-size: 0.875rem !important;
+  border-radius: 999px !important;
+  min-height: 48px;
+}
