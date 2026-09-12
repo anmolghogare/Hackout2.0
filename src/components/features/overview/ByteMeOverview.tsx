@@ -22,6 +22,8 @@ import {
   RefreshCw,
   Thermometer,
   ShieldAlert,
+  StickyNote,
+  X,
 } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { cn } from '../../../lib/utils';
@@ -41,6 +43,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   const [greeting, setGreeting] = useState('');
   const [userRole, setUserRole] = useState('Operations Lead');
   const [lastRefreshed, setLastRefreshed] = useState('Just now');
+  const [selectedAlertForPopup, setSelectedAlertForPopup] = useState<(typeof criticalAlerts)[0] | null>(null);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -61,7 +64,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     );
   };
 
-  // Critical real-time events for Right Column (Limited strictly to Title & 1-2 sentence Issue Summary <= 20 words)
+  // Critical real-time events for Right Column with full statistical data pop-up stats
   const criticalAlerts = [
     {
       id: 'kiln-overshoot',
@@ -72,6 +75,17 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       actionLabel: 'Fix Setpoint in 3D Analytics',
       badgeColor: 'bg-red-500 text-white animate-pulse',
       icon: Thermometer,
+      stats: {
+        urgencyLevel: 'CRITICAL • P1 IMMEDIATE ACTION',
+        urgencyScore: '98/100',
+        peakTemperature: '1,418 °C (Limit: 1,250 °C)',
+        thermalEfficiency: '54.2% (-22% deviation)',
+        monthlyCarbonWaste: '48.0 tCO₂e / mo',
+        financialLossRate: '₹12,400 / day (₹3.72L / mo)',
+        sensorNode: 'Sensor #K2-A (Zone 3 Flue)',
+        confidenceScore: '99.4% AI Telemetry Match',
+        rootCause: 'Refractory shell insulation degradation & burner nozzle fuel-air ratio drift.',
+      },
     },
     {
       id: 'uninsulated-furnace',
@@ -82,6 +96,17 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       actionLabel: 'Inspect Twin Pipeline',
       badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
       icon: ShieldAlert,
+      stats: {
+        urgencyLevel: 'HIGH WARNING • OPERATIONAL HAZARD',
+        urgencyScore: '84/100',
+        peakTemperature: '380 °C Surface Loss',
+        thermalEfficiency: '68.5% (-14% efficiency)',
+        monthlyCarbonWaste: '21.5 tCO₂e / mo',
+        financialLossRate: '₹4,000 / day (₹1.20L / mo)',
+        sensorNode: 'FLIR Thermal IR Array #4',
+        confidenceScore: '96.8% AI Image Match',
+        rootCause: 'External insulation wall cracking along main combustion line junction.',
+      },
     },
     {
       id: 'grid-peak-tariff',
@@ -92,6 +117,17 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       actionLabel: 'Simulate Load Shift',
       badgeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
       icon: Zap,
+      stats: {
+        urgencyLevel: 'MODERATE • FINANCIAL TARIFF ALERT',
+        urgencyScore: '76/100',
+        peakTemperature: 'Grid Tariff Peak: ₹8.50/kWh',
+        thermalEfficiency: 'Grid PF: 0.94 (Optimal >0.98)',
+        monthlyCarbonWaste: '18.2 tCO₂e / mo',
+        financialLossRate: '₹45,000 Peak Surge / day',
+        sensorNode: 'Smart Tariff Meter #Grid-01',
+        confidenceScore: '100% Tariff Grid Stream',
+        rootCause: 'Peak hour power draw during state discom high tariff window (18:00 - 22:00 IST).',
+      },
     },
     {
       id: 'fuel-bill-unlogged',
@@ -102,6 +138,17 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       actionLabel: 'Scan Bill via OCR',
       badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
       icon: Scan,
+      stats: {
+        urgencyLevel: 'AUDIT RISK • SCOPE 1 DATA GAP',
+        urgencyScore: '71/100',
+        peakTemperature: '12 KL Delivery Unlogged',
+        thermalEfficiency: 'Audit Readiness: 94.2%',
+        monthlyCarbonWaste: '37.4 tCO₂e Unverified',
+        financialLossRate: 'SEBI Audit Penalty Risk',
+        sensorNode: 'Fuel Intake Terminal #B-2',
+        confidenceScore: '92.1% Invoice OCR Alert',
+        rootCause: 'Manual delivery note pending OCR scan ingestion in ByteMe intake portal.',
+      },
     },
   ];
 
@@ -236,7 +283,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center space-x-2">
                 <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
-                <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-slate-200">
+                <h3 className="text-sm sm:text-base font-extrabold font-heading uppercase tracking-wider text-slate-100">
                   Site Overview Statistics
                 </h3>
               </div>
@@ -586,7 +633,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FF3B30]" />
                 </span>
-                <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-red-400">
+                <h3 className="text-sm sm:text-base font-extrabold font-heading uppercase tracking-wider text-red-400">
                   Urgent Hotspots & Hazards
                 </h3>
               </div>
@@ -596,7 +643,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             </div>
 
             <p className="text-[11px] text-slate-300 leading-snug">
-              Real-time physical anomaly detection & energy leak alerts requiring immediate operator intervention.
+              Real-time physical anomaly detection & energy leak alerts. Click any hotspot to launch full statistical sticky note overlay.
             </p>
 
             {/* Alerts List */}
@@ -606,14 +653,15 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                 return (
                   <div
                     key={alert.id}
-                    className="p-3.5 rounded-xl bg-slate-950/80 border border-red-500/30 space-y-2 hover:border-red-500/70 transition-all shadow-md group"
+                    onClick={() => setSelectedAlertForPopup(alert)}
+                    className="p-3.5 rounded-xl bg-slate-950/80 border border-red-500/30 space-y-2.5 hover:border-amber-400/80 transition-all shadow-md group cursor-pointer relative"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center space-x-2">
                         <div className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 shrink-0">
                           <Icon className="w-3.5 h-3.5" />
                         </div>
-                        <h4 className="text-xs font-bold text-white group-hover:text-red-400 transition-colors">
+                        <h4 className="text-xs font-bold text-white group-hover:text-amber-400 transition-colors">
                           {alert.title}
                         </h4>
                       </div>
@@ -627,14 +675,30 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                       {alert.summary}
                     </p>
 
-                    {/* Direct Actionable CTA button */}
-                    <button
-                      onClick={() => onNavigate(alert.tabTarget)}
-                      className="w-full py-1.5 px-3 rounded-lg bg-red-600/20 hover:bg-red-600/40 text-red-200 hover:text-white text-[11px] font-bold flex items-center justify-center space-x-1.5 transition-colors border border-red-500/40"
-                    >
-                      <span>{alert.actionLabel}</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
+                    {/* Action Triggers */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedAlertForPopup(alert);
+                        }}
+                        className="flex-1 py-1.5 px-2.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 hover:text-white text-[10.5px] font-bold flex items-center justify-center space-x-1 transition-colors border border-amber-500/40"
+                      >
+                        <StickyNote className="w-3 h-3 text-amber-400" />
+                        <span>Telemetry Sticky Note</span>
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onNavigate(alert.tabTarget);
+                        }}
+                        className="py-1.5 px-2.5 rounded-lg bg-red-600/20 hover:bg-red-600/40 text-red-200 hover:text-white text-[10.5px] font-bold flex items-center justify-center space-x-1 transition-colors border border-red-500/40"
+                      >
+                        <span>{alert.actionLabel}</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
                 );
               })}
@@ -665,6 +729,126 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
           </div>
         </aside>
       </div>
+
+      {/* ============================================================ */}
+      {/* INTERACTIVE STICKY-NOTE POP-UP OVERLAY (Isolated Fixed Container Modal) */}
+      {/* ============================================================ */}
+      {selectedAlertForPopup && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setSelectedAlertForPopup(null)}
+        >
+          <div
+            className="relative max-w-lg w-full bg-gradient-to-b from-[#211d13] via-[#1a1710] to-[#14110b] border-2 border-amber-500/70 shadow-[0_0_60px_rgba(245,158,11,0.3)] rounded-2xl p-6 sm:p-7 text-slate-100 transform rotate-[-0.5deg] transition-all overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Tape Effect */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-amber-500/30 border border-amber-400/50 rounded-sm backdrop-blur-xs transform -rotate-1 shadow-inner" />
+
+            {/* Sticky Note Header */}
+            <div className="flex items-start justify-between border-b border-amber-500/30 pb-4 mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-sm shrink-0">
+                  <StickyNote className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/40 uppercase animate-pulse">
+                      {selectedAlertForPopup.stats.urgencyLevel}
+                    </span>
+                    <span className="text-[10px] font-mono text-amber-400/90 font-bold">
+                      Severity: {selectedAlertForPopup.stats.urgencyScore}
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-black font-heading text-white mt-1">
+                    {selectedAlertForPopup.title}
+                  </h3>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setSelectedAlertForPopup(null)}
+                className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 hover:text-white border border-amber-500/30 transition-colors"
+                title="Close Sticky Note"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Issue Summary */}
+            <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200/90 mb-4 font-mono leading-relaxed">
+              {selectedAlertForPopup.summary}
+            </div>
+
+            {/* Full Statistical Data Breakdown */}
+            <div className="space-y-3 mb-5">
+              <h4 className="text-xs font-extrabold uppercase font-heading text-amber-400 tracking-wider flex items-center space-x-1.5">
+                <Activity className="w-3.5 h-3.5 text-amber-400" />
+                <span>Full Telemetry & Statistical Breakdown</span>
+              </h4>
+
+              <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
+                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+                  <span className="text-[10px] text-slate-400 block uppercase">Peak Metric</span>
+                  <span className="text-xs sm:text-sm font-black text-rose-400">{selectedAlertForPopup.stats.peakTemperature}</span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+                  <span className="text-[10px] text-slate-400 block uppercase">Thermal Efficiency</span>
+                  <span className="text-xs sm:text-sm font-black text-amber-400">{selectedAlertForPopup.stats.thermalEfficiency}</span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+                  <span className="text-[10px] text-slate-400 block uppercase">Carbon Waste Stream</span>
+                  <span className="text-xs sm:text-sm font-black text-emerald-400">{selectedAlertForPopup.stats.monthlyCarbonWaste}</span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
+                  <span className="text-[10px] text-slate-400 block uppercase">Financial OPEX Loss</span>
+                  <span className="text-xs sm:text-sm font-black text-red-400">{selectedAlertForPopup.stats.financialLossRate}</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5 text-xs font-mono">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-slate-400">Sensor Location:</span>
+                  <span className="text-slate-200 font-bold">{selectedAlertForPopup.stats.sensorNode}</span>
+                </div>
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-slate-400">AI Diagnostic Confidence:</span>
+                  <span className="text-emerald-400 font-bold">{selectedAlertForPopup.stats.confidenceScore}</span>
+                </div>
+                <div className="pt-1.5 border-t border-slate-800">
+                  <span className="text-slate-400 text-[10px] block uppercase font-bold">Root Cause Analysis:</span>
+                  <p className="text-slate-300 text-[11px] leading-snug mt-0.5">{selectedAlertForPopup.stats.rootCause}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Footer */}
+            <div className="pt-4 border-t border-amber-500/30 flex items-center justify-between gap-3">
+              <button
+                onClick={() => setSelectedAlertForPopup(null)}
+                className="py-2 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold border border-slate-800 transition-colors"
+              >
+                Dismiss
+              </button>
+
+              <button
+                onClick={() => {
+                  const target = selectedAlertForPopup.tabTarget;
+                  setSelectedAlertForPopup(null);
+                  onNavigate(target);
+                }}
+                className="flex-1 py-2 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs font-heading flex items-center justify-center space-x-2 transition-colors shadow-lg"
+              >
+                <span>{selectedAlertForPopup.actionLabel}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
