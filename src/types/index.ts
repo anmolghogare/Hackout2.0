@@ -39,6 +39,32 @@ export interface SliderInputs {
   scrapRecyclePct: number;
 }
 
+export interface AnomalyLog {
+  id: string;
+  title: string;
+  stageName: string;
+  spikeMetric: string;
+  severity: 'HIGH' | 'MEDIUM' | 'LOW';
+  featureImportance: { feature: string; weight: number }[];
+  naturalExplanation: string;
+  mitigationSteps: string[];
+}
+
+export interface WaterfallStep {
+  label: string;
+  value: number;
+  isTotal?: boolean;
+  color?: string;
+}
+
+export interface ExportOptions {
+  includeThermalMaps: boolean;
+  attachFinancialRoi: boolean;
+  exportRegressionCsv: boolean;
+  includeBRSR: boolean;
+  includeAuditTrail: boolean;
+}
+
 export interface CopilotRecommendation {
   action: string;
   impactCO2: string;
@@ -49,38 +75,6 @@ export interface CopilotRecommendation {
     badge: 'IPCC Verified' | 'CEA Factor' | 'Empirical Regression';
     formula: string;
   };
-}
-
-export interface CopilotMessage {
-  id: string;
-  sender: 'user' | 'assistant';
-  text: string;
-  timestamp: string;
-  recommendation?: CopilotRecommendation;
-}
-
-export interface CircularListing {
-  id: string;
-  materialName: string;
-  seller: string;
-  quantity: string;
-  pricePerTon: string;
-  carbonOffsetPotential: string;
-  matchScore: number;
-  location: string;
-  feedstockDiscount: string;
-  transportDistance: string;
-}
-
-export interface RoadmapItem {
-  phase: string;
-  timeline: string;
-  initiative: string;
-  investmentCost: string;
-  annualSavings: string;
-  co2Reduction: string;
-  paybackPeriod: string;
-  status: 'Planned' | 'In Progress' | 'Completed';
 }
 
 export interface SavedScenario {
@@ -103,4 +97,14 @@ export interface OCRParsedResult {
   extractedTextLines: string[];
 }
 
-export type TabId = 'overview' | 'intake' | 'simulation' | 'whatif' | 'sandbox' | 'copilot' | 'circular' | 'roadmap';
+export type TabId =
+  | 'overview'
+  | 'simulator_hub'
+  | 'analytics_hub'
+  | 'intake'
+  | 'simulation'
+  | 'whatif'
+  | 'sandbox'
+  | 'copilot'
+  | 'circular'
+  | 'roadmap';

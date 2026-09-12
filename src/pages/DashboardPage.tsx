@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { BaseLayout } from '../components/layout/BaseLayout';
 import { KPICards } from '../components/features/dashboard/KPICards';
 import { JudgeTourBanner } from '../components/features/dashboard/JudgeTourBanner';
+import { UnifiedSimulatorHub } from '../components/features/dashboard/UnifiedSimulatorHub';
+import { AdvancedAnalyticsHub } from '../components/features/dashboard/AdvancedAnalyticsHub';
 import { OCRIntakeHub } from '../components/features/dashboard/OCRIntakeHub';
 import { ProcessFlowCanvas } from '../components/features/dashboard/ProcessFlowCanvas';
-import { WhatIfSliders } from '../components/features/dashboard/WhatIfSliders';
 import { ScenarioSandbox } from '../components/features/dashboard/ScenarioSandbox';
 import { CopilotPanel } from '../components/features/dashboard/CopilotPanel';
 import { CopilotCommandModal } from '../components/features/dashboard/CopilotCommandModal';
 import { BRSRExportModal } from '../components/features/dashboard/BRSRExportModal';
+import { AuditReportExportModal } from '../components/features/dashboard/AuditReportExportModal';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
 import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
 import { RoadmapTable } from '../components/features/dashboard/RoadmapTable';
 import { Card, CardContent } from '../components/ui/Card';
-import { Building2, ChevronRight, Command, Scan, FileCheck } from 'lucide-react';
+import { Building2, ChevronRight, Command, Scan, FileCheck, Zap, Activity } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
 export const DashboardPage: React.FC = () => {
@@ -45,6 +47,8 @@ export const DashboardPage: React.FC = () => {
     stopJudgeTour,
   } = useDashboardData();
 
+  const [isAuditExportOpen, setIsAuditExportOpen] = useState(false);
+
   return (
     <BaseLayout
       activeTab={activeTab}
@@ -53,6 +57,7 @@ export const DashboardPage: React.FC = () => {
       onToggleViewMode={toggleViewMode}
       onOpenCopilotModal={() => setIsCopilotOpen(true)}
       onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
+      onOpenAuditExportModal={() => setIsAuditExportOpen(true)}
       isBackendOnline={isBackendOnline}
     >
       {/* Top Guided "Judge Tour" Banner */}
@@ -84,7 +89,14 @@ export const DashboardPage: React.FC = () => {
         stages={stages}
       />
 
-      {/* Tab 1: Project Overview & Hero Context */}
+      {/* Executive Configurable Audit Export Modal */}
+      <AuditReportExportModal
+        isOpen={isAuditExportOpen}
+        onClose={() => setIsAuditExportOpen(false)}
+        kpiData={kpiData}
+      />
+
+      {/* Tab 1: Project Overview & Context Hero */}
       {activeTab === 'overview' && (
         <div className="space-y-8 animate-fadeIn">
           {/* Hero Banner */}
@@ -100,45 +112,52 @@ export const DashboardPage: React.FC = () => {
                     Industrial Emission Leak-Point Intelligence Platform
                   </h1>
                   <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Digital twin particle-stream visualization, real-time What-If empirical regression sliders, OCR bill scanner, and AI-powered circular economy trade matching for Indian SME manufacturers.
+                    Digital twin particle-stream visualization, unified What-If playground, 3D thermal hotspot heatmap, OCR bill scanner, and AI-powered circular economy trade matching for Indian SME manufacturers.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
                   <Button
                     variant="primary"
-                    onClick={() => setActiveTab('intake')}
+                    onClick={() => setActiveTab('simulator_hub')}
                     className="flex items-center space-x-2"
                   >
-                    <Scan className="w-4 h-4" />
-                    <span>OCR Smart Bill Scanner</span>
+                    <Zap className="w-4 h-4 fill-current" />
+                    <span>ROI Simulator Playground</span>
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => setIsBRSRModalOpen(true)}
+                    onClick={() => setActiveTab('analytics_hub')}
                     className="flex items-center space-x-2"
                   >
-                    <FileCheck className="w-4 h-4 text-emerald-500" />
-                    <span>BRSR PDF Audit Pack</span>
+                    <Activity className="w-4 h-4 text-emerald-500" />
+                    <span>3D Thermal Heatmap</span>
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* OCR Intake Scanner */}
-          <OCRIntakeHub />
-
-          {/* Digital Twin Canvas */}
-          <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
-
-          {/* What-If Sliders */}
-          <WhatIfSliders
+          {/* Task 1: Unified What-If Simulator & Live ROI Hub */}
+          <UnifiedSimulatorHub
             sliderInputs={sliderInputs}
             onSliderChange={updateSlider}
+            onApplyPreset={applyPreset}
             onReset={resetSliders}
             viewMode={viewMode}
           />
+
+          {/* Task 2: Advanced Analytics & 3D Thermal Hotspot Heatmap Engine */}
+          <AdvancedAnalyticsHub
+            onOpenAnomalyCopilot={() => setIsCopilotOpen(true)}
+            viewMode={viewMode}
+          />
+
+          {/* Digital Twin Particle Stream Canvas */}
+          <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
+
+          {/* OCR Intake Scanner */}
+          <OCRIntakeHub />
 
           {/* Scenario Sandbox Comparison Matrix */}
           <ScenarioSandbox
@@ -149,11 +168,34 @@ export const DashboardPage: React.FC = () => {
             viewMode={viewMode}
           />
 
-          {/* Sankey Flow Visualizer */}
+          {/* B2B Sankey Flow Visualizer */}
           <SankeyVisualizer viewMode={viewMode} />
 
           {/* Roadmap Table */}
           <RoadmapTable viewMode={viewMode} />
+        </div>
+      )}
+
+      {/* Tab: Unified Simulator Hub */}
+      {activeTab === 'simulator_hub' && (
+        <div className="animate-fadeIn">
+          <UnifiedSimulatorHub
+            sliderInputs={sliderInputs}
+            onSliderChange={updateSlider}
+            onApplyPreset={applyPreset}
+            onReset={resetSliders}
+            viewMode={viewMode}
+          />
+        </div>
+      )}
+
+      {/* Tab: Advanced Analytics Hub */}
+      {activeTab === 'analytics_hub' && (
+        <div className="animate-fadeIn">
+          <AdvancedAnalyticsHub
+            onOpenAnomalyCopilot={() => setIsCopilotOpen(true)}
+            viewMode={viewMode}
+          />
         </div>
       )}
 
@@ -168,18 +210,6 @@ export const DashboardPage: React.FC = () => {
       {activeTab === 'simulation' && (
         <div className="animate-fadeIn">
           <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
-        </div>
-      )}
-
-      {/* Tab: What-If Sliders */}
-      {activeTab === 'whatif' && (
-        <div className="animate-fadeIn">
-          <WhatIfSliders
-            sliderInputs={sliderInputs}
-            onSliderChange={updateSlider}
-            onReset={resetSliders}
-            viewMode={viewMode}
-          />
         </div>
       )}
 

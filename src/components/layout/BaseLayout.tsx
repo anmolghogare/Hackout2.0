@@ -9,6 +9,7 @@ export interface BaseLayoutProps {
   onToggleViewMode: () => void;
   onOpenCopilotModal: () => void;
   onOpenBRSRModal: () => void;
+  onOpenAuditExportModal: () => void;
   isBackendOnline?: boolean;
   children: React.ReactNode;
 }
@@ -20,6 +21,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
   onToggleViewMode,
   onOpenCopilotModal,
   onOpenBRSRModal,
+  onOpenAuditExportModal,
   isBackendOnline = true,
   children,
 }) => {
@@ -33,6 +35,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         onToggleViewMode={onToggleViewMode}
         onOpenCopilotModal={onOpenCopilotModal}
         onOpenBRSRModal={onOpenBRSRModal}
+        onOpenAuditExportModal={onOpenAuditExportModal}
         isBackendOnline={isBackendOnline}
       />
 
@@ -48,7 +51,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
           <div className="flex items-center space-x-4">
             <span className="hover:text-emerald-500 cursor-pointer transition-colors">Documentation</span>
             <span className="hover:text-emerald-500 cursor-pointer transition-colors">API Contract Immutable</span>
-            <span className="hover:text-emerald-500 cursor-pointer transition-colors">SEBI BRSR Principle 6 Verified</span>
+            <span className="hover:text-emerald-500 cursor-pointer transition-colors">ISO 14064 & SEBI BRSR Verified</span>
           </div>
         </div>
       </footer>

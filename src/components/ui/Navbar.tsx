@@ -16,6 +16,9 @@ import {
   Scan,
   Layers,
   FileCheck,
+  Activity,
+  Zap,
+  Download,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -26,6 +29,7 @@ export interface NavbarProps {
   onToggleViewMode: () => void;
   onOpenCopilotModal: () => void;
   onOpenBRSRModal: () => void;
+  onOpenAuditExportModal: () => void;
   isBackendOnline?: boolean;
 }
 
@@ -36,17 +40,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleViewMode,
   onOpenCopilotModal,
   onOpenBRSRModal,
+  onOpenAuditExportModal,
   isBackendOnline = true,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const tabs: { id: TabId; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'overview', label: 'Context', icon: Building2 },
+    { id: 'simulator_hub', label: 'ROI Playground', icon: Zap },
+    { id: 'analytics_hub', label: 'Thermal Analytics', icon: Activity },
     { id: 'intake', label: 'OCR Scanner', icon: Scan },
     { id: 'simulation', label: 'Digital Twin', icon: Flame },
-    { id: 'whatif', label: 'What-If Sliders', icon: SlidersHorizontal },
     { id: 'sandbox', label: 'Sandbox Matrix', icon: Layers },
-    { id: 'copilot', label: 'AI Copilot', icon: Bot },
     { id: 'circular', label: 'Waste Sankey', icon: Recycle },
     { id: 'roadmap', label: 'ROI Matrix', icon: BarChart3 },
   ];
@@ -72,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-normal hidden sm:block">
-                Industrial Emission Leak-Point Intelligence
+                Industrial Carbon Decision Intelligence
               </p>
             </div>
           </div>
@@ -100,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </nav>
 
-          {/* Right Controls: Rupee-to-Carbon Switch, BRSR Export, Cmd+K & Theme */}
+          {/* Right Controls: Rupee-to-Carbon Switch, Export Audit, Cmd+K & Theme */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Rupee-to-Carbon Shift Hero Switch */}
             <div className="flex items-center bg-slate-200/80 dark:bg-slate-800 p-1 rounded-xl border border-slate-300/80 dark:border-slate-700/80">
@@ -133,14 +138,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
-            {/* BRSR Export Pack Button */}
+            {/* Audit Export Configurable Modal Button */}
             <button
-              onClick={onOpenBRSRModal}
+              onClick={onOpenAuditExportModal}
               className="hidden lg:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all shadow-sm"
-              title="Generate BRSR Regulatory Audit Pack"
+              title="Configurable Executive Audit Export"
             >
-              <FileCheck className="w-3.5 h-3.5" />
-              <span>BRSR Audit</span>
+              <Download className="w-3.5 h-3.5" />
+              <span>Export</span>
             </button>
 
             {/* Cmd+K Copilot Command Trigger */}
