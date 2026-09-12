@@ -108,43 +108,6 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
     }
     setIsAsking(false);
   };
-                {
-                  step: 1,
-                  title: 'Furnace Insulation & 5% Temp Overshoot Reduction',
-                  co2Impact: 'CO₂ Reduction: -9%',
-                  financialImpact: 'Annual Energy Savings: ₹3,50,000 / year',
-                  paybackPeriod: '4.2 Months',
-                },
-                {
-                  step: 2,
-                  title: '20% PCR Polymer Resin Substitution Blend',
-                  co2Impact: 'CO₂ Reduction: -7%',
-                  financialImpact: 'Financial Impact: Cost-Neutral Material Shift',
-                  paybackPeriod: '7.5 Months',
-                },
-                {
-                  step: 3,
-                  title: 'B2B Scrap Route (12T/mo) to Factory B',
-                  co2Impact: 'CO₂ Reduction: -5%',
-                  financialImpact: 'Scrap Sales Revenue: +₹3,00,000 / year',
-                  paybackPeriod: 'Immediate',
-                },
-              ],
-              totalImpact: {
-                co2ReductionPct: '21% Total CO₂ Cut',
-                annualProfitIncrease: '+₹6,50,000 / year Net Profit',
-                paybackPeriodMonths: '~10.5 Months Payback',
-              },
-            },
-          },
-        ]);
-        setIsAsking(false);
-      }, 400);
-      return;
-    }
-
-    setIsAsking(false);
-  };
 
   return (
     <Card className="mb-8 theme-transition">
