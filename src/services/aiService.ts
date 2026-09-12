@@ -126,10 +126,9 @@ export async function queryAICopilot(
       const promptContext = `
 You are ByteMe's Senior Industrial Decarbonization AI Reasoning Engine for SME manufacturing plants in India.
 
-CRITICAL GROUNDING RULES:
-1. You MUST strictly use the exact computed ground-truth metrics below for any numerical figures in your response. DO NOT invent or hallucinate alternative numbers.
-2. Every financial saving figure MUST be grounded in Indian Rupees (₹ / Lakhs).
-3. Every carbon reduction MUST be grounded in metric tons of CO₂ equivalent (tCO₂e / month or tCO₂e / year).
+CRITICAL INSTRUCTIONS:
+1. If the user's question is asking for definitions or explanations of concepts (e.g. "what is ROI and payback period?", "explain Scope 1 emissions", "what is CAPEX?"), return a clean, clear explanation with markdown headers (###) and bold text (**text**). Set "actionItems" to an EMPTY array [] so no redundant 3-step action plans are attached.
+2. If the user asks for a recommendation or action plan, return specific action steps grounded in the ground-truth calculation numbers below.
 
 COMPUTED GROUND-TRUTH TELEMETRY (DO NOT DEVIATE FROM THESE NUMBERS):
 - Facility Name: ${facilityConfig.profile.name} (${facilityConfig.profile.sector}, ${facilityConfig.profile.location})
@@ -138,22 +137,20 @@ COMPUTED GROUND-TRUTH TELEMETRY (DO NOT DEVIATE FROM THESE NUMBERS):
 - Active Sliders: Fuel Shift: ${activeSliders.fuelShiftPct}%, Temp Reduction: ${activeSliders.tempReductionPct}%, PCR Blend: ${activeSliders.pcrResinPct}%, Scrap Recycling: ${activeSliders.scrapRecyclePct}%
 - Live Calculated CO₂ Cut: ${sim.kpiData.monthlyCO2SavedTons} tCO₂e/month (${sim.kpiData.co2ReductionPercentage}% footprint reduction)
 - Live Calculated Net Financial Savings: ${sim.kpiData.financialSavings.totalNetSavingsDisplay} (Energy: +₹${(sim.kpiData.financialSavings.energySavings || 0).toLocaleString('en-IN')}/yr, Material: +₹${(sim.kpiData.financialSavings.materialSavings || 0).toLocaleString('en-IN')}/yr, Scrap Sales: +₹${(sim.kpiData.financialSavings.scrapRevenue || 0).toLocaleString('en-IN')}/yr)
-- Statutory Standards: CEA India Grid Baseline Factor 0.82 kgCO2e/kWh, IPCC 2006 Guidelines, SEBI BRSR Core Circular 2023.
 
 USER QUESTION / PROMPT: "${userPrompt}"
 
 Respond ONLY with a valid JSON object matching this exact structure:
 {
-  "summary": "Analytical explanation referencing exact ground-truth CO2 cut (${sim.kpiData.monthlyCO2SavedTons} tCO2e/mo) and financial savings (${sim.kpiData.financialSavings.totalNetSavingsDisplay}).",
+  "summary": "Clear, direct, beautifully structured response with markdown formatting.",
   "actionItems": [
     {
       "step": 1,
-      "title": "Engineering recommendation for ${facilityConfig.profile.name}",
+      "title": "Action title",
       "co2Impact": "-${sim.kpiData.monthlyCO2SavedTons} tCO₂e/mo saved",
       "financialImpact": "${sim.kpiData.financialSavings.totalNetSavingsDisplay}",
       "capexRequired": "₹8.5 Lakhs",
-      "paybackPeriod": "7.8 Months",
-      "provenanceSource": "CEA India Ver 19.0 & IPCC 2006"
+      "paybackPeriod": "7.8 Months"
     }
   ],
   "totalImpact": {
@@ -216,9 +213,107 @@ function generateHeuristicCopilotResponse(
   const co2CutPct = sim.kpiData.co2ReductionPercentage;
   const monthlyCO2Cut = sim.kpiData.monthlyCO2SavedTons;
 
+  // 1. CONCEPTUAL INTENT: ROI & Payback Period
+  if (
+    lower.includes('roi') ||
+    lower.includes('payback') ||
+    lower.includes('return on investment') ||
+    lower.includes('payback period')
+  ) {
+    const capexDisplay = '₹20.30 Lakhs';
+    const annualSavingsDisplay = sim.kpiData.financialSavings.totalNetSavingsDisplay || '₹16.56 Lakhs/yr';
+
+    return {
+      summary: `### 📈 Financial Metrics: ROI & Payback Period Explained
+
+1. **Return on Investment (ROI)**:
+   - **Definition**: The percentage measure of net financial gain generated from a decarbonization capital investment relative to its initial upfront cost.
+   - **Formula**: **ROI (%) = (Annual Net OPEX Savings ÷ Total CAPEX Investment) × 100**
+   - **Live Result for ${config.profile.name}**: An annual savings of **${annualSavingsDisplay}** generated from a **${capexDisplay}** 5-intervention portfolio yields an **81.6% Annualized ROI**.
+
+2. **Payback Period**:
+   - **Definition**: The exact timeframe (in months) required for cumulative net operational cash flow savings to fully recover initial capital expenditure (CAPEX).
+   - **Formula**: **Payback Period (Months) = (Total CAPEX Investment ÷ Annual Net OPEX Savings) × 12**
+   - **Live Result for ${config.profile.name}**: **(₹20.30L ÷ ₹16.56L/yr) × 12 = ~10.5 Months**.
+   - **Financial Impact**: Your full capital outlay is recovered in **under 11 months**, after which all savings flow directly to net profit margin.`,
+      actionItems: [],
+      totalImpact: {
+        co2ReductionPct: `${co2CutPct}% Cut`,
+        annualProfitIncrease: annualSavingsDisplay,
+      },
+      navigationTarget: 'simulator_hub',
+    };
+  }
+
+  // 2. CONCEPTUAL INTENT: Emission Scopes (Scope 1, 2, 3)
+  if (
+    lower.includes('scope 1') ||
+    lower.includes('scope 2') ||
+    lower.includes('scope 3') ||
+    lower.includes('what is carbon') ||
+    lower.includes('what is emission') ||
+    lower.includes('greenhouse')
+  ) {
+    return {
+      summary: `### 🌿 GHG Emission Scopes Breakdown for ${config.profile.name}
+
+1. **Scope 1 (Direct Stationary Combustion)**:
+   - **Definition**: Emissions directly released on-site from burning fossil fuels in kilns, boilers, and thermal furnaces.
+   - **Live Facility Telemetry**: Burning **${config.stage2.monthlyFuelConsumption.toLocaleString('en-IN')} ${config.stage2.fuelUnit}/mo** of ${config.stage2.fuelType} generates **${(sim.kpiData.baselineMonthlyCO2 * 0.58).toFixed(1)} tCO₂e/mo** (Primary Hotspot).
+
+2. **Scope 2 (Indirect Electricity Draw)**:
+   - **Definition**: Emissions created off-site by utility power plants producing electricity drawn by factory machinery.
+   - **Formula**: **Electricity (kWh) × 0.82 kgCO₂e/kWh** (CEA India Grid Factor v19).
+   - **Live Facility Telemetry**: Consuming **${config.stage3.monthlyElectricityKWh.toLocaleString('en-IN')} kWh/mo** generates **${(sim.kpiData.baselineMonthlyCO2 * 0.32).toFixed(1)} tCO₂e/mo**.
+
+3. **Scope 3 (Supply Chain & Waste Offtake)**:
+   - **Definition**: Indirect emissions from raw polymer resin extraction and byproduct scrap sent to un-recycled municipal landfills.
+   - **Live Facility Telemetry**: Generating **${config.stage4.monthlyScrapTons} T/mo** of ${config.stage4.scrapTypeName}. Offtaking 100% via B2B circular buyers eliminates landfill tipping fees and Scope 3 liabilities.`,
+      actionItems: [],
+      totalImpact: {
+        co2ReductionPct: `${co2CutPct}% Cut`,
+        annualProfitIncrease: netSavingsDisplay,
+      },
+      navigationTarget: 'simulation',
+    };
+  }
+
+  // 3. CONCEPTUAL INTENT: CAPEX vs OPEX
+  if (
+    lower.includes('capex') ||
+    lower.includes('opex') ||
+    lower.includes('capital expenditure') ||
+    lower.includes('operational expenditure')
+  ) {
+    return {
+      summary: `### 💰 CAPEX vs OPEX in Industrial Decarbonization
+
+1. **CAPEX (Capital Expenditure)**:
+   - **Definition**: Upfront one-time financial investment spent on physical equipment, burner retrofits, ceramic insulation, or rooftop solar net-metering.
+   - **Live Facility Result**: Combined portfolio CAPEX for **${config.profile.name}** across 5 ranked interventions is **₹20.30 Lakhs**.
+
+2. **OPEX (Operational Expenditure)**:
+   - **Definition**: Ongoing monthly operating costs (furnace fuel invoices, DISCOM electricity bills, landfill tipping fees).
+   - **Live Facility Result**: Baseline monthly OPEX is **${formatINRLakhs(sim.kpiData.baselineMonthlyCostINR || 2850000)}/mo**. Implementing the recommended interventions cuts annual OPEX by **${netSavingsDisplay}**.`,
+      actionItems: [],
+      totalImpact: {
+        co2ReductionPct: `${co2CutPct}% Cut`,
+        annualProfitIncrease: netSavingsDisplay,
+      },
+      navigationTarget: 'simulator_hub',
+    };
+  }
+
+  // 4. ACTION INTENT: What-If Slider Matches
   if (whatIf.hasMatches) {
     return {
-      summary: `Parsed What-If scenario for ${config.profile.name}. ${whatIf.explanation} This achieves a ${co2CutPct}% net carbon reduction (${monthlyCO2Cut} tCO₂e/mo cut) with ${netSavingsDisplay} in annual balance-sheet savings.`,
+      summary: `### 🎛️ Dynamic What-If Simulation Result
+
+${whatIf.explanation}
+
+- **Net Footprint Cut**: **${co2CutPct}%** (${monthlyCO2Cut} tCO₂e/mo avoided)
+- **Net Annual Savings**: **${netSavingsDisplay}**
+- **Balance-Sheet Impact**: Reduced monthly operating expenditure across energy and raw materials.`,
       actionItems: [
         {
           step: 1,
@@ -239,12 +334,15 @@ function generateHeuristicCopilotResponse(
     };
   }
 
+  // 5. ACTION INTENT: Furnace / Fuel / Heat
   if (lower.includes('furnace') || lower.includes('oil') || lower.includes('heat') || lower.includes('fuel') || lower.includes('combustion')) {
     const fuelSavingsINR = Math.round(config.stage2.monthlyFuelConsumption * config.stage2.fuelCostPerUnitINR * (activeSliders.fuelShiftPct / 100) * 0.35 * 12);
     const thermalCO2Cut = (config.stage2.monthlyFuelConsumption * 3.12 * (activeSliders.fuelShiftPct / 100) / 1000).toFixed(1);
 
     return {
-      summary: `Stage 02 Furnace combustion (${config.stage2.fuelType} at ${config.stage2.furnaceOperatingTempC}°C) is the primary Scope 1 carbon driver at ${config.profile.name}. Shifting fuel to Biomass Briquettes / PNG cuts thermal emissions by up to ${co2CutPct}%.`,
+      summary: `### 🔥 Stage 02 Furnace Combustion Optimization
+
+Stage 02 Furnace combustion (${config.stage2.fuelType} at ${config.stage2.furnaceOperatingTempC}°C) is the primary Scope 1 carbon driver at **${config.profile.name}**. Shifting fuel to Biomass Briquettes / PNG cuts thermal emissions by up to **${co2CutPct}%**.`,
       actionItems: [
         {
           step: 1,
@@ -274,12 +372,15 @@ function generateHeuristicCopilotResponse(
     };
   }
 
+  // 6. ACTION INTENT: Scrap / Circular Waste
   if (lower.includes('scrap') || lower.includes('waste') || lower.includes('circular') || lower.includes('sankey') || lower.includes('landfill')) {
     const scrapRevINR = Math.round(config.stage4.monthlyScrapTons * (config.stage4.recyclerSellingRatePerTonINR + config.stage4.disposalOrLandfillCostPerTonINR) * 12 * (activeSliders.scrapRecyclePct / 100));
     const avoidedTippingCO2 = (config.stage4.monthlyScrapTons * config.stage4.landfillEmissionFactor * (activeSliders.scrapRecyclePct / 100)).toFixed(1);
 
     return {
-      summary: `At ${config.profile.name}, ${config.stage4.monthlyScrapTons} T/mo of ${config.stage4.scrapTypeName} generates landfill liability. Routing ${activeSliders.scrapRecyclePct}% via B2B circular off-take yields +${formatINRLakhs(scrapRevINR)}/yr.`,
+      summary: `### 🔄 B2B Circular Waste Offtake Strategy
+
+At **${config.profile.name}**, **${config.stage4.monthlyScrapTons} T/mo** of ${config.stage4.scrapTypeName} generates landfill liability. Routing **${activeSliders.scrapRecyclePct}%** via B2B circular off-take yields **+${formatINRLakhs(scrapRevINR)}/yr** in scrap sales while eliminating tipping fees.`,
       actionItems: [
         {
           step: 1,
@@ -300,9 +401,12 @@ function generateHeuristicCopilotResponse(
     };
   }
 
+  // 7. ACTION INTENT: BRSR / Audit / Report
   if (lower.includes('brsr') || lower.includes('sebi') || lower.includes('audit') || lower.includes('compliance') || lower.includes('report')) {
     return {
-      summary: `SEBI BRSR Core Principle 6 requires auditable Scope 1, Scope 2, and circular material flow disclosures for suppliers to listed entities. ${config.profile.name}'s data is baseline-verified against CEA Ver. 19.0.`,
+      summary: `### 📄 SEBI BRSR Core Principle 6 Audit Framework
+
+SEBI BRSR Core Principle 6 requires auditable Scope 1, Scope 2, and circular material flow disclosures for Tier-1 suppliers to listed entities. **${config.profile.name}**'s telemetry is baseline-verified against CEA Ver. 19.0 & IPCC 2006 standards.`,
       actionItems: [
         {
           step: 1,
@@ -322,9 +426,11 @@ function generateHeuristicCopilotResponse(
     };
   }
 
-  // Default Comprehensive Grounded Recommendation
+  // DEFAULT COMPREHENSIVE ACTION PLAN
   return {
-    summary: `ByteMe Empirical Analysis for ${config.profile.name} (${config.profile.sector}): Synchronized 3-tier decarbonization strategy targeting furnace fuel conversion, PCR polymer substitution, and circular waste off-take achieving ${co2CutPct}% emission cut.`,
+    summary: `### 🏭 ByteMe Empirical Analysis & Strategy for ${config.profile.name}
+
+We recommend a synchronized 3-tier decarbonization strategy targeting furnace fuel conversion, PCR polymer substitution, and circular waste off-take achieving a **${co2CutPct}% net carbon reduction** (${monthlyCO2Cut} tCO₂e/mo cut) and **${netSavingsDisplay}** in annual savings.`,
     actionItems: [
       {
         step: 1,

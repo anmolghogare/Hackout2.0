@@ -37,14 +37,69 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<
-    { id: string; sender: 'user' | 'assistant'; text: string; actionChip?: { label: string; action: () => void } }[]
+    {
+      id: string;
+      sender: 'user' | 'assistant';
+      text: string;
+      actionChip?: { label: string; action: () => void };
+      actionItems?: any[];
+    }[]
   >([
     {
       id: 'welcome',
       sender: 'assistant',
-      text: `👋 Hi! I'm your ByteMe Assistant for ${facilityConfig.profile.name}. I can guide you through the platform, answer questions on facility carbon emissions & ROI, or run live simulations for you.`,
+      text: `👋 Hi! I'm your ByteMe Assistant for ${facilityConfig.profile.name}. Ask me about facility carbon emissions, ROI & payback calculations, or run live simulations for your plant.`,
     },
   ]);
+
+  const formatChatMessageText = (text: string) => {
+    if (!text) return null;
+    const lines = text.split('\n');
+
+    return lines.map((line, lineIdx) => {
+      const trimmed = line.trim();
+      if (!trimmed) return <div key={lineIdx} className="h-1.5" />;
+
+      if (trimmed.startsWith('### ')) {
+        return (
+          <h4 key={lineIdx} className="font-bold text-xs text-emerald-700 dark:text-emerald-400 mt-2 mb-1 border-b border-emerald-500/20 pb-0.5 font-mono uppercase tracking-wider">
+            {trimmed.replace('### ', '')}
+          </h4>
+        );
+      }
+      if (trimmed.startsWith('## ')) {
+        return (
+          <h3 key={lineIdx} className="font-bold text-sm text-slate-900 dark:text-white mt-2 mb-1">
+            {trimmed.replace('## ', '')}
+          </h3>
+        );
+      }
+
+      // Format bold markers **text**
+      const parts = line.split(/(\*\*.*?\*\*)/g);
+      const lineContent = parts.map((part, pIdx) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return <strong key={pIdx} className="font-semibold text-slate-900 dark:text-white">{part.slice(2, -2)}</strong>;
+        }
+        return part;
+      });
+
+      if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
+        return (
+          <div key={lineIdx} className="flex items-start space-x-1.5 my-0.5 ml-1">
+            <span className="text-emerald-500 font-bold shrink-0">•</span>
+            <span>{lineContent}</span>
+          </div>
+        );
+      }
+
+      return (
+        <p key={lineIdx} className="my-0.5">
+          {lineContent}
+        </p>
+      );
+    });
+  };
   const [isTyping, setIsTyping] = useState(false);
 
   // Quick navigation shortcuts
@@ -167,19 +222,13 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
           onNavigateTab(aiRes.navigationTarget as TabId);
         }
 
-        let formattedText = aiRes.summary;
-        if (aiRes.actionItems && Array.isArray(aiRes.actionItems) && aiRes.actionItems.length > 0) {
-          formattedText += '\n\n**Calculated Action Plan:**\n' + aiRes.actionItems.map((item) =>
-            `• **Step ${item.step}: ${item.title}**\n  - CO₂ Impact: ${item.co2Impact || ''}\n  - Financial Savings: ${item.financialImpact || ''}`
-          ).join('\n');
-        }
-
         setMessages((prev) => [
           ...prev,
           {
             id: (Date.now() + 1).toString(),
             sender: 'assistant',
-            text: formattedText,
+            text: aiRes.summary,
+            actionItems: (aiRes.actionItems && Array.isArray(aiRes.actionItems) && aiRes.actionItems.length > 0) ? aiRes.actionItems : undefined,
           },
         ]);
       } else {
@@ -286,13 +335,34 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
               >
                 <div
                   className={cn(
-                    'max-w-[85%] p-3.5 rounded-2xl leading-relaxed whitespace-pre-line',
+                    'max-w-[88%] p-3.5 rounded-2xl leading-relaxed',
                     m.sender === 'user'
                       ? 'bg-emerald-600 text-white rounded-br-none shadow-sm font-medium'
                       : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-bl-none shadow-sm'
                   )}
                 >
-                  <p>{m.text}</p>
+                  <div className="space-y-1">
+                    {formatChatMessageText(m.text)}
+                  </div>
+
+                  {m.actionItems && m.actionItems.length > 0 && (
+                    <div className="mt-3 space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+                        Recommended Action Steps:
+                      </span>
+                      {m.actionItems.map((item: any, idx: number) => (
+                        <div key={idx} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
+                          <div className="font-bold text-slate-900 dark:text-white text-xs">
+                            Step {item.step}: {item.title}
+                          </div>
+                          <div className="flex flex-wrap items-center justify-between gap-1 text-[11px] font-mono pt-0.5">
+                            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{item.co2Impact}</span>
+                            <span className="text-slate-700 dark:text-slate-300 font-semibold">{item.financialImpact}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {m.actionChip && (
                     <button
