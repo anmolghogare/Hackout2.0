@@ -303,53 +303,53 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
 
               {/* Major High-Level KPI 1: Active Plant Telemetry */}
               <div className="space-y-3">
-                <div className="p-3 rounded-xl bg-slate-900/90 border border-[#1F2937] space-y-1">
-                  <span className="text-[10px] text-slate-400 font-mono block">Active Plant Telemetry</span>
-                  <p className="text-xs font-bold text-white font-heading truncate">
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-[#1F2937] space-y-1">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono block">Active Plant Telemetry</span>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white font-heading truncate">
                     Apex Packaging Pvt. Ltd.
                   </p>
-                  <span className="text-[10px] text-emerald-400 font-mono block">Pune Unit #4 • 4 Sensor Nodes</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono block">Pune Unit #4 • 4 Sensor Nodes</span>
                 </div>
 
                 {/* Major High-Level KPI 2: Grid Load & Power Factor */}
-                <div className="p-3 rounded-xl bg-slate-900/90 border border-[#1F2937] space-y-1.5">
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-[#1F2937] space-y-1.5">
                   <div className="flex items-center justify-between text-xs min-w-0">
-                    <span className="text-slate-400 text-[11px] truncate">Grid Load & Power Factor</span>
-                    <span className="font-mono font-extrabold text-[#06B6D4] tracking-wider whitespace-nowrap shrink-0">420 kW • PF 0.96</span>
+                    <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate">Grid Load & Power Factor</span>
+                    <span className="font-mono font-extrabold text-cyan-600 dark:text-[#06B6D4] tracking-wider whitespace-nowrap shrink-0">420 kW • PF 0.96</span>
                   </div>
-                  <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#06B6D4] rounded-full w-[65%]" />
+                  <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-cyan-500 rounded-full w-[65%]" />
                   </div>
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                  <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                     <span>CEA Grid Factor</span>
-                    <span className="text-slate-200 font-bold">0.82 kgCO₂e/kWh</span>
+                    <span className="text-slate-800 dark:text-slate-200 font-bold">0.82 kgCO₂e/kWh</span>
                   </div>
                 </div>
 
                 {/* Major High-Level KPI 3: Net MT CO2e Emissions */}
-                <div className="p-3 rounded-xl bg-slate-900/90 border border-[#1F2937] space-y-1.5">
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-[#1F2937] space-y-1.5">
                   <div className="flex items-center justify-between text-xs min-w-0">
-                    <span className="text-slate-400 text-[11px] truncate">Net MT CO₂e Emissions</span>
-                    <span className="font-mono font-extrabold text-rose-400 tracking-wider whitespace-nowrap shrink-0">100 tCO₂e/mo</span>
+                    <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate">Net MT CO₂e Emissions</span>
+                    <span className="font-mono font-extrabold text-rose-600 dark:text-rose-400 tracking-wider whitespace-nowrap shrink-0">100 tCO₂e/mo</span>
                   </div>
-                  <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                     <div className="h-full bg-rose-500 rounded-full w-[80%]" />
                   </div>
                   <div className="flex items-center justify-between text-[10px] font-mono">
-                    <span className="text-slate-400">Net Financial Savings</span>
-                    <span className="text-emerald-400 font-bold">₹6.5L / yr Net ROI</span>
+                    <span className="text-slate-500 dark:text-slate-400">Net Financial Savings</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">₹6.5L / yr Net ROI</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Live refresh status bar */}
-            <div className="pt-3 border-t border-[#1F2937]">
+            <div className="pt-3 border-t border-slate-200 dark:border-[#1F2937]">
               <button
                 onClick={handleRefreshStats}
-                className="w-full py-1.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white text-[10.5px] font-mono flex items-center justify-center space-x-1.5 transition-colors border border-[#1F2937]"
+                className="w-full py-1.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-[10.5px] font-mono flex items-center justify-center space-x-1.5 transition-colors border border-slate-200 dark:border-[#1F2937]"
               >
-                <RefreshCw className="w-3 h-3 text-emerald-400" />
+                <RefreshCw className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                 <span>Refreshed: {lastRefreshed}</span>
               </button>
             </div>
@@ -619,48 +619,48 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
               </h4>
 
               <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
-                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block uppercase">Peak Metric</span>
-                  <span className="text-xs sm:text-sm font-black text-rose-400">{selectedAlertForPopup.stats.peakTemperature}</span>
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Peak Metric</span>
+                  <span className="text-xs sm:text-sm font-black text-rose-600 dark:text-rose-400">{selectedAlertForPopup.stats.peakTemperature}</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block uppercase">Thermal Efficiency</span>
-                  <span className="text-xs sm:text-sm font-black text-amber-400">{selectedAlertForPopup.stats.thermalEfficiency}</span>
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Thermal Efficiency</span>
+                  <span className="text-xs sm:text-sm font-black text-amber-600 dark:text-amber-400">{selectedAlertForPopup.stats.thermalEfficiency}</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block uppercase">Carbon Waste Stream</span>
-                  <span className="text-xs sm:text-sm font-black text-emerald-400">{selectedAlertForPopup.stats.monthlyCarbonWaste}</span>
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Carbon Waste Stream</span>
+                  <span className="text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400">{selectedAlertForPopup.stats.monthlyCarbonWaste}</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-                  <span className="text-[10px] text-slate-400 block uppercase">Financial OPEX Loss</span>
-                  <span className="text-xs sm:text-sm font-black text-red-400">{selectedAlertForPopup.stats.financialLossRate}</span>
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase">Financial OPEX Loss</span>
+                  <span className="text-xs sm:text-sm font-black text-red-600 dark:text-red-400">{selectedAlertForPopup.stats.financialLossRate}</span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5 text-xs font-mono">
+              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs font-mono">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-400">Sensor Location:</span>
-                  <span className="text-slate-200 font-bold">{selectedAlertForPopup.stats.sensorNode}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Sensor Location:</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-bold">{selectedAlertForPopup.stats.sensorNode}</span>
                 </div>
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-slate-400">AI Diagnostic Confidence:</span>
-                  <span className="text-emerald-400 font-bold">{selectedAlertForPopup.stats.confidenceScore}</span>
+                  <span className="text-slate-500 dark:text-slate-400">AI Diagnostic Confidence:</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">{selectedAlertForPopup.stats.confidenceScore}</span>
                 </div>
-                <div className="pt-1.5 border-t border-slate-800">
-                  <span className="text-slate-400 text-[10px] block uppercase font-bold">Root Cause Analysis:</span>
-                  <p className="text-slate-300 text-[11px] leading-snug mt-0.5">{selectedAlertForPopup.stats.rootCause}</p>
+                <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 text-[10px] block uppercase font-bold">Root Cause Analysis:</span>
+                  <p className="text-slate-700 dark:text-slate-300 text-[11px] leading-snug mt-0.5">{selectedAlertForPopup.stats.rootCause}</p>
                 </div>
               </div>
             </div>
 
             {/* Action Footer */}
-            <div className="pt-4 border-t border-amber-500/30 flex items-center justify-between gap-3">
+            <div className="pt-4 border-t border-slate-200 dark:border-amber-500/30 flex items-center justify-between gap-3">
               <button
                 onClick={() => setSelectedAlertForPopup(null)}
-                className="py-2 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold border border-slate-800 transition-colors"
+                className="py-2 px-4 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-800 transition-colors"
               >
                 Dismiss
               </button>

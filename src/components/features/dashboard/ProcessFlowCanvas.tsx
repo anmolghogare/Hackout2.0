@@ -527,7 +527,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
               </div>
 
               {/* Mathematical Equation Provenance */}
-              <div className="p-4 rounded-2xl bg-[#0B0D15] border border-white/[0.08] text-xs font-mono">
+              <div className="p-4 rounded-2xl bg-slate-100 dark:bg-[#0B0D15] border border-slate-200 dark:border-white/[0.08] text-xs font-mono">
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block mb-1.5 flex items-center space-x-1.5">
                   <Info className="w-3.5 h-3.5 text-cyan-400" />
                   <span>EMPIRICAL REGRESSION MATHEMATICAL FORMULA</span>

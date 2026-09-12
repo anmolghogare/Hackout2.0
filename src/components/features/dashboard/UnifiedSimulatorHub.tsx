@@ -263,7 +263,7 @@ export const UnifiedSimulatorHub: React.FC<UnifiedSimulatorHubProps> = ({
           </div>
 
           {/* Interactive Before/After Split View Slider */}
-          <div className="p-5 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 flex flex-col justify-between">
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 shadow-md flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-mono text-emerald-400 font-bold uppercase">
