@@ -1,10 +1,13 @@
 import React from 'react';
-import { TabId } from '../../types';
+import { TabId, ViewMode } from '../../types';
 import { Navbar } from '../ui/Navbar';
 
 export interface BaseLayoutProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  viewMode: ViewMode;
+  onToggleViewMode: () => void;
+  onOpenCopilotModal: () => void;
   isBackendOnline?: boolean;
   children: React.ReactNode;
 }
@@ -12,6 +15,9 @@ export interface BaseLayoutProps {
 export const BaseLayout: React.FC<BaseLayoutProps> = ({
   activeTab,
   onTabChange,
+  viewMode,
+  onToggleViewMode,
+  onOpenCopilotModal,
   isBackendOnline = true,
   children,
 }) => {
@@ -21,6 +27,9 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
       <Navbar
         activeTab={activeTab}
         onTabChange={onTabChange}
+        viewMode={viewMode}
+        onToggleViewMode={onToggleViewMode}
+        onOpenCopilotModal={onOpenCopilotModal}
         isBackendOnline={isBackendOnline}
       />
 
@@ -35,8 +44,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
           <p>© 2026 Team ByteMe — Industrial Carbon Intelligence Platform (Hackout 2.0)</p>
           <div className="flex items-center space-x-4">
             <span className="hover:text-emerald-500 cursor-pointer transition-colors">Documentation</span>
-            <span className="hover:text-emerald-500 cursor-pointer transition-colors">API Endpoint</span>
-            <span className="hover:text-emerald-500 cursor-pointer transition-colors">ESG Compliance</span>
+            <span className="hover:text-emerald-500 cursor-pointer transition-colors">API Contract Immutable</span>
+            <span className="hover:text-emerald-500 cursor-pointer transition-colors">IPCC & CEA Verified</span>
           </div>
         </div>
       </footer>

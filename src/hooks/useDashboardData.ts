@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { KPIData, ProcessStage, SliderInputs, TabId } from '../types';
+import { KPIData, ProcessStage, SliderInputs, TabId, ViewMode } from '../types';
 import { fetchSimulationResult } from '../lib/api';
 import { calculateLocalSimulation } from '../lib/utils';
 
@@ -12,9 +12,11 @@ const INITIAL_SLIDERS: SliderInputs = {
 
 export function useDashboardData() {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
+  const [viewMode, setViewMode] = useState<ViewMode>('carbon');
   const [sliderInputs, setSliderInputs] = useState<SliderInputs>(INITIAL_SLIDERS);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isBackendOnline, setIsBackendOnline] = useState<boolean>(false);
+  const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
 
   // Computed simulation state
   const [kpiData, setKpiData] = useState<KPIData>(() => calculateLocalSimulation(INITIAL_SLIDERS).kpiData);
@@ -49,19 +51,36 @@ export function useDashboardData() {
     }));
   };
 
+  const applyPreset = (preset: Partial<SliderInputs>) => {
+    setSliderInputs((prev) => ({
+      ...prev,
+      ...preset,
+    }));
+  };
+
   const resetSliders = () => {
     setSliderInputs(INITIAL_SLIDERS);
+  };
+
+  const toggleViewMode = () => {
+    setViewMode((prev) => (prev === 'carbon' ? 'financial' : 'carbon'));
   };
 
   return {
     activeTab,
     setActiveTab,
+    viewMode,
+    setViewMode,
+    toggleViewMode,
     sliderInputs,
     updateSlider,
+    applyPreset,
     resetSliders,
     kpiData,
     stages,
     isLoading,
     isBackendOnline,
+    isCopilotOpen,
+    setIsCopilotOpen,
   };
 }

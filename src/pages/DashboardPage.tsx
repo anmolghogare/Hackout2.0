@@ -2,41 +2,59 @@ import React from 'react';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { BaseLayout } from '../components/layout/BaseLayout';
 import { KPICards } from '../components/features/dashboard/KPICards';
-import { ProcessSimulation } from '../components/features/dashboard/ProcessSimulation';
+import { ProcessFlowCanvas } from '../components/features/dashboard/ProcessFlowCanvas';
 import { WhatIfSliders } from '../components/features/dashboard/WhatIfSliders';
 import { CopilotPanel } from '../components/features/dashboard/CopilotPanel';
+import { CopilotCommandModal } from '../components/features/dashboard/CopilotCommandModal';
+import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
 import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
 import { RoadmapTable } from '../components/features/dashboard/RoadmapTable';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card';
-import { Building2, Award, Zap, ChevronRight } from 'lucide-react';
+import { Card, CardContent } from '../components/ui/Card';
+import { Building2, ChevronRight, Sparkles, Command } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
 export const DashboardPage: React.FC = () => {
   const {
     activeTab,
     setActiveTab,
+    viewMode,
+    toggleViewMode,
     sliderInputs,
     updateSlider,
+    applyPreset,
     resetSliders,
     kpiData,
     stages,
     isBackendOnline,
+    isCopilotOpen,
+    setIsCopilotOpen,
   } = useDashboardData();
 
   return (
     <BaseLayout
       activeTab={activeTab}
       onTabChange={setActiveTab}
+      viewMode={viewMode}
+      onToggleViewMode={toggleViewMode}
+      onOpenCopilotModal={() => setIsCopilotOpen(true)}
       isBackendOnline={isBackendOnline}
     >
-      {/* Top Metric Cards Bar (Always visible in dashboard shell) */}
-      <KPICards kpiData={kpiData} />
+      {/* Top Executive Metric Cards Bar */}
+      <KPICards kpiData={kpiData} viewMode={viewMode} />
 
-      {/* Tab 1: Project Overview & Context Shell */}
+      {/* Global AI Command Modal (Cmd + K) */}
+      <CopilotCommandModal
+        isOpen={isCopilotOpen}
+        onClose={() => setIsCopilotOpen(false)}
+        onApplyPreset={applyPreset}
+        viewMode={viewMode}
+      />
+
+      {/* Tab 1: Project Overview & Digital Twin Context Shell */}
       {activeTab === 'overview' && (
         <div className="space-y-8 animate-fadeIn">
-          {/* Facility Context Hero Card */}
-          <Card className="bg-gradient-to-r from-emerald-900/20 via-slate-900/40 to-cyan-900/20 border-emerald-500/30">
+          {/* Hero Banner */}
+          <Card className="bg-gradient-to-r from-emerald-950/30 via-slate-900/60 to-cyan-950/30 border-emerald-500/30">
             <CardContent className="p-6 sm:p-8">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                 <div className="space-y-2 max-w-2xl">
@@ -45,10 +63,10 @@ export const DashboardPage: React.FC = () => {
                     <span>Apex Packaging Pvt. Ltd. — Pune SME Facility</span>
                   </div>
                   <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">
-                    Industrial Emission Leak-Point Intelligence & Circular Engine
+                    Industrial Emission Leak-Point Intelligence Platform
                   </h1>
                   <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Automated thermal & material hotspot detection for manufacturing SMEs. Quantify carbon leak-points, run real-time what-if substitution simulations, and generate bankable ESG decarbonization roadmaps.
+                    Digital twin particle-stream visualization, real-time What-If empirical regression sliders, and AI-powered circular economy trade matching for Indian SME manufacturers.
                   </p>
                 </div>
 
@@ -58,36 +76,45 @@ export const DashboardPage: React.FC = () => {
                     onClick={() => setActiveTab('simulation')}
                     className="flex items-center space-x-2"
                   >
-                    <span>View Leak Points</span>
+                    <span>View Digital Twin Canvas</span>
                     <ChevronRight className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => setActiveTab('whatif')}
+                    onClick={() => setIsCopilotOpen(true)}
+                    className="flex items-center space-x-2"
                   >
-                    Run Simulation
+                    <Command className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Cmd + K AI Copilot</span>
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Process Leak Hotspot Grid */}
-          <ProcessSimulation stages={stages} />
+          {/* Functionality 1 & 2: Digital Twin Process Flow Canvas & Red Alert Engine */}
+          <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
 
-          {/* What-If Simulation Controls Preview */}
+          {/* Functionality 4: What-If Empirical Controls */}
           <WhatIfSliders
             sliderInputs={sliderInputs}
             onSliderChange={updateSlider}
             onReset={resetSliders}
+            viewMode={viewMode}
           />
+
+          {/* Functionality 5: B2B Circular Sankey Flow Visualizer */}
+          <SankeyVisualizer viewMode={viewMode} />
+
+          {/* Executive Impact Matrix Table */}
+          <RoadmapTable viewMode={viewMode} />
         </div>
       )}
 
-      {/* Tab 2: Process Heatmap */}
+      {/* Tab 2: Digital Twin Canvas */}
       {activeTab === 'simulation' && (
         <div className="animate-fadeIn">
-          <ProcessSimulation stages={stages} />
+          <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
         </div>
       )}
 
@@ -98,6 +125,7 @@ export const DashboardPage: React.FC = () => {
             sliderInputs={sliderInputs}
             onSliderChange={updateSlider}
             onReset={resetSliders}
+            viewMode={viewMode}
           />
         </div>
       )}
@@ -109,9 +137,10 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 5: B2B Waste Exchange */}
+      {/* Tab 5: B2B Waste Sankey Network */}
       {activeTab === 'circular' && (
-        <div className="animate-fadeIn">
+        <div className="animate-fadeIn space-y-8">
+          <SankeyVisualizer viewMode={viewMode} />
           <CircularNetwork />
         </div>
       )}
@@ -119,7 +148,7 @@ export const DashboardPage: React.FC = () => {
       {/* Tab 6: Financial ROI Matrix & Roadmap */}
       {activeTab === 'roadmap' && (
         <div className="animate-fadeIn">
-          <RoadmapTable />
+          <RoadmapTable viewMode={viewMode} />
         </div>
       )}
     </BaseLayout>

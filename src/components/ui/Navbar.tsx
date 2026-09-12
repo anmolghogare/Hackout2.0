@@ -1,48 +1,58 @@
 import React, { useState } from 'react';
-import { TabId } from '../../types';
+import { TabId, ViewMode } from '../../types';
 import { ThemeToggle } from './ThemeToggle';
 import {
   Menu,
   X,
-  Activity,
   Flame,
   SlidersHorizontal,
   Bot,
   Recycle,
   BarChart3,
   Building2,
+  DollarSign,
+  Leaf,
+  Command,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export interface NavbarProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  viewMode: ViewMode;
+  onToggleViewMode: () => void;
+  onOpenCopilotModal: () => void;
   isBackendOnline?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   onTabChange,
+  viewMode,
+  onToggleViewMode,
+  onOpenCopilotModal,
   isBackendOnline = true,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const tabs: { id: TabId; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'overview', label: 'Context & Mission', icon: Building2 },
-    { id: 'simulation', label: 'Process Heatmap', icon: Flame },
+    { id: 'simulation', label: 'Process Canvas', icon: Flame },
     { id: 'whatif', label: 'What-If Sliders', icon: SlidersHorizontal },
     { id: 'copilot', label: 'AI Copilot', icon: Bot },
-    { id: 'circular', label: 'Waste Exchange', icon: Recycle },
+    { id: 'circular', label: 'Waste Sankey', icon: Recycle },
     { id: 'roadmap', label: 'ROI Roadmap', icon: BarChart3 },
   ];
 
+  const isFinancial = viewMode === 'financial';
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl transition-colors duration-300">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo & Connection Status */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 font-heading font-extrabold text-xl">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 font-heading font-extrabold text-xl">
               B
             </div>
             <div>
@@ -83,22 +93,48 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </nav>
 
-          {/* Right Action Icons: Status Indicator & Theme Toggle */}
-          <div className="flex items-center space-x-3">
-            <div
-              className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 text-[11px]"
-              title={isBackendOnline ? 'Connected to live API' : 'Operating in client fallback mode'}
-            >
-              <span
+          {/* Right Controls: Rupee-to-Carbon Shift Toggle, Cmd+K Trigger & Theme */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Rupee-to-Carbon Shift Hero Switch */}
+            <div className="flex items-center bg-slate-200/80 dark:bg-slate-800 p-1 rounded-xl border border-slate-300/80 dark:border-slate-700/80">
+              <button
+                onClick={() => onToggleViewMode()}
                 className={cn(
-                  'w-2 h-2 rounded-full animate-pulse',
-                  isBackendOnline ? 'bg-emerald-500' : 'bg-amber-500'
+                  'flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-300',
+                  !isFinancial
+                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                 )}
-              />
-              <span className="font-mono font-medium text-slate-600 dark:text-slate-300">
-                {isBackendOnline ? 'API LIVE' : 'CLIENT MODE'}
-              </span>
+                title="View in Carbon Emissions (tCO2e)"
+              >
+                <Leaf className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">tCO₂e</span>
+              </button>
+
+              <button
+                onClick={() => onToggleViewMode()}
+                className={cn(
+                  'flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-300',
+                  isFinancial
+                    ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                )}
+                title="View in Financial Cash Flow (₹ INR)"
+              >
+                <DollarSign className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">₹ INR</span>
+              </button>
             </div>
+
+            {/* Cmd+K Copilot Command Trigger */}
+            <button
+              onClick={onOpenCopilotModal}
+              className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500/50 transition-all shadow-sm"
+              title="Open AI Command Terminal (Cmd + K)"
+            >
+              <Command className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Cmd + K</span>
+            </button>
 
             <ThemeToggle />
 
