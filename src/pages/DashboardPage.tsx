@@ -2,15 +2,19 @@ import React from 'react';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { BaseLayout } from '../components/layout/BaseLayout';
 import { KPICards } from '../components/features/dashboard/KPICards';
+import { JudgeTourBanner } from '../components/features/dashboard/JudgeTourBanner';
+import { OCRIntakeHub } from '../components/features/dashboard/OCRIntakeHub';
 import { ProcessFlowCanvas } from '../components/features/dashboard/ProcessFlowCanvas';
 import { WhatIfSliders } from '../components/features/dashboard/WhatIfSliders';
+import { ScenarioSandbox } from '../components/features/dashboard/ScenarioSandbox';
 import { CopilotPanel } from '../components/features/dashboard/CopilotPanel';
 import { CopilotCommandModal } from '../components/features/dashboard/CopilotCommandModal';
+import { BRSRExportModal } from '../components/features/dashboard/BRSRExportModal';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
 import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
 import { RoadmapTable } from '../components/features/dashboard/RoadmapTable';
 import { Card, CardContent } from '../components/ui/Card';
-import { Building2, ChevronRight, Sparkles, Command } from 'lucide-react';
+import { Building2, ChevronRight, Command, Scan, FileCheck } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
 export const DashboardPage: React.FC = () => {
@@ -28,6 +32,17 @@ export const DashboardPage: React.FC = () => {
     isBackendOnline,
     isCopilotOpen,
     setIsCopilotOpen,
+    isBRSRModalOpen,
+    setIsBRSRModalOpen,
+    savedScenarios,
+    saveScenario,
+    deleteScenario,
+    isJudgeTourActive,
+    judgeTourStep,
+    judgeTourSteps,
+    startJudgeTour,
+    nextJudgeTourStep,
+    stopJudgeTour,
   } = useDashboardData();
 
   return (
@@ -37,8 +52,19 @@ export const DashboardPage: React.FC = () => {
       viewMode={viewMode}
       onToggleViewMode={toggleViewMode}
       onOpenCopilotModal={() => setIsCopilotOpen(true)}
+      onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
       isBackendOnline={isBackendOnline}
     >
+      {/* Top Guided "Judge Tour" Banner */}
+      <JudgeTourBanner
+        isActive={isJudgeTourActive}
+        currentStep={judgeTourStep}
+        steps={judgeTourSteps}
+        onStart={startJudgeTour}
+        onNext={nextJudgeTourStep}
+        onStop={stopJudgeTour}
+      />
+
       {/* Top Executive Metric Cards Bar */}
       <KPICards kpiData={kpiData} viewMode={viewMode} />
 
@@ -50,7 +76,15 @@ export const DashboardPage: React.FC = () => {
         viewMode={viewMode}
       />
 
-      {/* Tab 1: Project Overview & Digital Twin Context Shell */}
+      {/* Global SEBI BRSR Regulatory Audit Modal */}
+      <BRSRExportModal
+        isOpen={isBRSRModalOpen}
+        onClose={() => setIsBRSRModalOpen(false)}
+        kpiData={kpiData}
+        stages={stages}
+      />
+
+      {/* Tab 1: Project Overview & Hero Context */}
       {activeTab === 'overview' && (
         <div className="space-y-8 animate-fadeIn">
           {/* Hero Banner */}
@@ -66,36 +100,39 @@ export const DashboardPage: React.FC = () => {
                     Industrial Emission Leak-Point Intelligence Platform
                   </h1>
                   <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Digital twin particle-stream visualization, real-time What-If empirical regression sliders, and AI-powered circular economy trade matching for Indian SME manufacturers.
+                    Digital twin particle-stream visualization, real-time What-If empirical regression sliders, OCR bill scanner, and AI-powered circular economy trade matching for Indian SME manufacturers.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
                   <Button
                     variant="primary"
-                    onClick={() => setActiveTab('simulation')}
+                    onClick={() => setActiveTab('intake')}
                     className="flex items-center space-x-2"
                   >
-                    <span>View Digital Twin Canvas</span>
-                    <ChevronRight className="w-4 h-4" />
+                    <Scan className="w-4 h-4" />
+                    <span>OCR Smart Bill Scanner</span>
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => setIsCopilotOpen(true)}
+                    onClick={() => setIsBRSRModalOpen(true)}
                     className="flex items-center space-x-2"
                   >
-                    <Command className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Cmd + K AI Copilot</span>
+                    <FileCheck className="w-4 h-4 text-emerald-500" />
+                    <span>BRSR PDF Audit Pack</span>
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Functionality 1 & 2: Digital Twin Process Flow Canvas & Red Alert Engine */}
+          {/* OCR Intake Scanner */}
+          <OCRIntakeHub />
+
+          {/* Digital Twin Canvas */}
           <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
 
-          {/* Functionality 4: What-If Empirical Controls */}
+          {/* What-If Sliders */}
           <WhatIfSliders
             sliderInputs={sliderInputs}
             onSliderChange={updateSlider}
@@ -103,22 +140,38 @@ export const DashboardPage: React.FC = () => {
             viewMode={viewMode}
           />
 
-          {/* Functionality 5: B2B Circular Sankey Flow Visualizer */}
+          {/* Scenario Sandbox Comparison Matrix */}
+          <ScenarioSandbox
+            scenarios={savedScenarios}
+            onSaveCurrentScenario={saveScenario}
+            onDeleteScenario={deleteScenario}
+            onLoadScenario={applyPreset}
+            viewMode={viewMode}
+          />
+
+          {/* Sankey Flow Visualizer */}
           <SankeyVisualizer viewMode={viewMode} />
 
-          {/* Executive Impact Matrix Table */}
+          {/* Roadmap Table */}
           <RoadmapTable viewMode={viewMode} />
         </div>
       )}
 
-      {/* Tab 2: Digital Twin Canvas */}
+      {/* Tab: OCR Scanner */}
+      {activeTab === 'intake' && (
+        <div className="animate-fadeIn">
+          <OCRIntakeHub />
+        </div>
+      )}
+
+      {/* Tab: Digital Twin Canvas */}
       {activeTab === 'simulation' && (
         <div className="animate-fadeIn">
           <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
         </div>
       )}
 
-      {/* Tab 3: What-If Sliders */}
+      {/* Tab: What-If Sliders */}
       {activeTab === 'whatif' && (
         <div className="animate-fadeIn">
           <WhatIfSliders
@@ -130,14 +183,27 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 4: AI Sustainability Copilot */}
+      {/* Tab: Scenario Sandbox */}
+      {activeTab === 'sandbox' && (
+        <div className="animate-fadeIn">
+          <ScenarioSandbox
+            scenarios={savedScenarios}
+            onSaveCurrentScenario={saveScenario}
+            onDeleteScenario={deleteScenario}
+            onLoadScenario={applyPreset}
+            viewMode={viewMode}
+          />
+        </div>
+      )}
+
+      {/* Tab: AI Copilot */}
       {activeTab === 'copilot' && (
         <div className="animate-fadeIn">
           <CopilotPanel />
         </div>
       )}
 
-      {/* Tab 5: B2B Waste Sankey Network */}
+      {/* Tab: B2B Waste Sankey Network */}
       {activeTab === 'circular' && (
         <div className="animate-fadeIn space-y-8">
           <SankeyVisualizer viewMode={viewMode} />
@@ -145,7 +211,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 6: Financial ROI Matrix & Roadmap */}
+      {/* Tab: ROI Matrix & Roadmap */}
       {activeTab === 'roadmap' && (
         <div className="animate-fadeIn">
           <RoadmapTable viewMode={viewMode} />

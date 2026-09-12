@@ -83,4 +83,24 @@ export interface RoadmapItem {
   status: 'Planned' | 'In Progress' | 'Completed';
 }
 
-export type TabId = 'overview' | 'simulation' | 'whatif' | 'copilot' | 'circular' | 'roadmap';
+export interface SavedScenario {
+  id: string;
+  name: string;
+  sliderInputs: SliderInputs;
+  savedKpi: KPIData;
+  createdAt: string;
+  capexEst: string;
+  paybackMonths: string;
+}
+
+export interface OCRParsedResult {
+  fileName: string;
+  fileType: 'Utility Bill' | 'Weighbridge Ticket' | 'Furnace Fuel Invoice';
+  parsedVolume: string;
+  parsedMonthlyCost: string;
+  detectedHotspot: string;
+  confidenceScore: number;
+  extractedTextLines: string[];
+}
+
+export type TabId = 'overview' | 'intake' | 'simulation' | 'whatif' | 'sandbox' | 'copilot' | 'circular' | 'roadmap';
