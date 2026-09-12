@@ -236,6 +236,15 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 strokeLinecap="round"
                 markerEnd="url(#arrowHeadRose)"
               />
+              <path
+                d="M 180 80 L 255 80"
+                stroke="#10b981"
+                strokeWidth="3"
+                strokeDasharray="6 6"
+                strokeDashoffset="12"
+                fill="none"
+                className="animate-[pulse_1.5s_infinite]"
+              />
 
               {/* Pipeline Track 2 -> 3 (Thermal to Motors) */}
               <path
@@ -246,6 +255,14 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 strokeLinecap="round"
                 markerEnd="url(#arrowHeadCyan)"
               />
+              <path
+                d="M 435 80 L 510 80"
+                stroke="#ef4444"
+                strokeWidth="3"
+                strokeDasharray="6 6"
+                fill="none"
+                className="animate-[pulse_1.5s_infinite]"
+              />
 
               {/* Pipeline Track 3 -> 4 (Motors to Output Recovery) */}
               <path
@@ -255,6 +272,14 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 fill="none"
                 strokeLinecap="round"
                 markerEnd="url(#arrowHeadPurple)"
+              />
+              <path
+                d="M 690 80 L 765 80"
+                stroke="#10b981"
+                strokeWidth="3"
+                strokeDasharray="6 6"
+                fill="none"
+                className="animate-[pulse_1.5s_infinite]"
               />
             </svg>
 

@@ -219,7 +219,56 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-12 animate-fadeIn pb-16 text-slate-900 dark:text-slate-100 font-sans">
+    <div className="w-full max-w-7xl mx-auto space-y-8 animate-fadeIn pb-16 text-slate-900 dark:text-slate-100 font-sans">
+      {/* ============================================================ */}
+      {/* 0. TOP PRIORITY HOTSPOT RED ALERT BANNER                    */}
+      {/* ============================================================ */}
+      <section className="rounded-2xl border border-rose-500/30 bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-transparent p-5 md:p-6 shadow-md relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-start space-x-3.5">
+            <div className="p-3 rounded-xl bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 shrink-0 mt-0.5 animate-pulse">
+              <AlertCircle className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-rose-500 text-white font-mono text-[10px] font-extrabold uppercase tracking-wider">
+                  PRIORITY 1 CRITICAL RED ALERT
+                </span>
+                <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                  Zone 2 Furnace Oil Burner (1,418°C Thermal Leak)
+                </span>
+              </div>
+              <h3 className="text-base md:text-lg font-extrabold font-heading text-slate-900 dark:text-white">
+                48.0 tCO₂e/mo Fuel Loss Detected • <span className="text-rose-500 font-mono">₹3,72,000 / month OPEX Drain</span>
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 max-w-3xl">
+                Uncalibrated air-fuel ratio and uninsulated ceramic shell are causing severe thermal energy dissipation. Immediate burner retrofit & 50% biomass shift recommended.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2.5 self-start lg:self-center shrink-0">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => onNavigate('simulator_hub')}
+              className="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-sm flex items-center space-x-1.5"
+            >
+              <Zap className="w-3.5 h-3.5 fill-current" />
+              <span>Fix Priority 1 in What-If Studio</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onNavigate('analytics_hub')}
+              className="border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 text-xs font-semibold"
+            >
+              <span>Inspect Thermal Diagnostics</span>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* ============================================================ */}
       {/* 1. HERO SECTION                                              */}
       {/* ============================================================ */}
@@ -286,54 +335,103 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       </section>
 
       {/* ============================================================ */}
-      {/* 2. THE PROBLEM: THE INDUSTRIAL SME DILEMMA                   */}
+      {/* 2. EXECUTIVE QUICK STATS BAR WITH INNOVATIVE VISUALS        */}
       {/* ============================================================ */}
-      <section className="space-y-6">
-        <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4">
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-            The Industrial SME Decarbonization Dilemma
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Why Indian manufacturing SMEs struggle with traditional ESG tools and carbon reporting.
-          </p>
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Stat 1: Monthly Footprint Target Visual */}
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#0E131F] border border-slate-200/90 dark:border-slate-800/80 space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">Monthly CO₂ Footprint</span>
+            <Activity className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div>
+            <div className="flex items-baseline justify-between font-mono">
+              <span className="text-xl font-extrabold text-slate-900 dark:text-white">58.0 tCO₂e</span>
+              <span className="text-xs text-rose-500 line-through">100.0 t</span>
+            </div>
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold font-mono">-42.0 tCO₂e/mo Net Reduction Target</span>
+          </div>
+          {/* Visual Bar Meter */}
+          <div className="space-y-1">
+            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden flex">
+              <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '58%' }} />
+              <div className="bg-rose-500/40 h-2 rounded-r-full" style={{ width: '42%' }} />
+            </div>
+            <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <span>Simulated: 58t</span>
+              <span>Baseline: 100t</span>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 space-y-4">
-            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono font-bold text-xs text-slate-700 dark:text-slate-300">
-              01
+        {/* Stat 2: Monthly OPEX Savings Visual */}
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#0E131F] border border-slate-200/90 dark:border-slate-800/80 space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">Monthly OPEX Cost</span>
+            <Coins className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div>
+            <div className="flex items-baseline justify-between font-mono">
+              <span className="text-xl font-extrabold text-slate-900 dark:text-white">₹16.8 Lakhs</span>
+              <span className="text-xs text-rose-500 line-through">₹28.5L</span>
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              Unseen Thermal Leak Points
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Kilns and furnaces operate with uncalibrated air-fuel ratios and damaged refractory shell insulation, leaking up to 48 tCO₂e/mo in wasted fossil fuel without operator awareness.
-            </p>
-          </Card>
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold font-mono">+₹11.7L / mo Savings Potential</span>
+          </div>
+          {/* Visual Bar Meter */}
+          <div className="space-y-1">
+            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden flex">
+              <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '59%' }} />
+              <div className="bg-emerald-300 dark:bg-emerald-700/60 h-2 rounded-r-full" style={{ width: '41%' }} />
+            </div>
+            <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <span>Optimized OPEX</span>
+              <span>Baseline OPEX</span>
+            </div>
+          </div>
+        </div>
 
-          <Card className="p-6 space-y-4">
-            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono font-bold text-xs text-slate-700 dark:text-slate-300">
-              02
+        {/* Stat 3: Capital Payback Velocity */}
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#0E131F] border border-slate-200/90 dark:border-slate-800/80 space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">Capital Payback Velocity</span>
+            <Zap className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div>
+            <div className="text-xl font-extrabold font-mono text-slate-900 dark:text-white">10.5 Months</div>
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold font-mono">Sub-1 Year Balance-Sheet ROI</span>
+          </div>
+          {/* Visual Bar Meter */}
+          <div className="space-y-1">
+            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '87.5%' }} />
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              Surging Peak Grid Tariffs
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              State DISCOM peak electricity rates surge to ₹8.50/kWh during evening windows (0.82 kgCO₂e/kWh grid factor). SMEs lack dynamic load-shifting simulators to avoid costly demand spikes.
-            </p>
-          </Card>
+            <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <span>Payback: 10.5 mos</span>
+              <span>12 Month Threshold</span>
+            </div>
+          </div>
+        </div>
 
-          <Card className="p-6 space-y-4">
-            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono font-bold text-xs text-slate-700 dark:text-slate-300">
-              03
+        {/* Stat 4: Circular Landfill Diversion Rate */}
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#0E131F] border border-slate-200/90 dark:border-slate-800/80 space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">Landfill Diversion Rate</span>
+            <Recycle className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div>
+            <div className="text-xl font-extrabold font-mono text-slate-900 dark:text-white">85.0% Diverted</div>
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold font-mono">+₹3.0L/yr Trim Scrap Sales</span>
+          </div>
+          {/* Visual Bar Meter */}
+          <div className="space-y-1">
+            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '85%' }} />
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              SEBI BRSR Compliance Burden
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Mandatory SEBI BRSR Principle 6 Core disclosures require strict Scope 1-3 audit packs. Manual consulting takes months and costs lakhs, pricing out mid-market manufacturers.
-            </p>
-          </Card>
+            <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <span>85% Monetized Scrap</span>
+              <span>15% Residual</span>
+            </div>
+          </div>
         </div>
       </section>
 

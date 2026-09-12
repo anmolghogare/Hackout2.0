@@ -123,9 +123,20 @@ export const ScenarioSandbox: React.FC<ScenarioSandboxProps> = ({
                 <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1 font-heading">
                   {sc.name}
                 </h4>
-                <p className="text-xs text-slate-400 mb-4 font-mono">
-                  Fuel: {sc.sliderInputs.fuelShiftPct}% | PCR: {sc.sliderInputs.pcrResinPct}% | Scrap: {sc.sliderInputs.scrapRecyclePct}%
-                </p>
+                <div className="flex flex-wrap gap-1.5 mb-3.5 mt-2">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono font-bold border border-emerald-500/20">
+                    Fuel Shift: {sc.sliderInputs.fuelShiftPct}%
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-mono font-bold border border-amber-500/20">
+                    Temp Tuning: -{sc.sliderInputs.tempReductionPct}°C
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-[10px] font-mono font-bold border border-cyan-500/20">
+                    PCR Blend: {sc.sliderInputs.pcrResinPct}%
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-mono font-bold border border-purple-500/20">
+                    Scrap Loop: {sc.sliderInputs.scrapRecyclePct}%
+                  </span>
+                </div>
 
                 <div className="space-y-3 py-3 border-y border-slate-200/80 dark:border-white/[0.06] text-xs font-mono">
                   <div className="flex justify-between">
