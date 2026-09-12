@@ -1,8 +1,8 @@
 import React from 'react';
 import { KPIData, ViewMode } from '../../../types';
-import { Leaf, TrendingDown, DollarSign, Activity, Coins, Zap, ShieldCheck } from 'lucide-react';
+import { Card, CardContent } from '../../ui/Card';
+import { Leaf, TrendingDown, DollarSign, AlertTriangle, Coins, Zap } from 'lucide-react';
 import { formatINR, formatNumber } from '../../../lib/utils';
-import { cn } from '../../../lib/utils';
 
 export interface KPICardsProps {
   kpiData: KPIData;
@@ -13,119 +13,90 @@ export const KPICards: React.FC<KPICardsProps> = ({ kpiData, viewMode = 'carbon'
   const isFinancial = viewMode === 'financial';
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-8">
-      {/* Metric 1: Baseline Output / Cost */}
-      <div className="bg-white dark:bg-[#0D131F] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all space-y-3 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            {isFinancial ? 'Monthly Baseline Spend' : 'Monthly Carbon Output'}
-          </span>
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center shrink-0">
-            {isFinancial ? <Coins className="w-4 h-4" /> : <Activity className="w-4 h-4" />}
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+      {/* Metric 1: Baseline Footprint vs Monthly Baseline Operational Cost */}
+      <Card className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827]">
+        <CardContent className="p-5 flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">
+              {isFinancial ? 'Baseline Operational Cost' : 'Baseline Carbon Footprint'}
+            </p>
+            <h4 className="text-xl sm:text-2xl font-bold font-heading text-slate-900 dark:text-white mt-1 truncate">
+              {isFinancial
+                ? formatINR(kpiData.baselineMonthlyCostINR || 2850000)
+                : `${kpiData.baselineMonthlyCO2} tCO₂e/mo`}
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+              Apex Packaging Facility
+            </p>
           </div>
-        </div>
+          <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 shrink-0">
+            {isFinancial ? <Coins className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
+          </div>
+        </CardContent>
+      </Card>
 
-        <div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-slate-900 dark:text-white">
-            {isFinancial
-              ? formatINR(kpiData.baselineMonthlyCostINR || 2850000)
-              : `${kpiData.baselineMonthlyCO2} tCO₂e`}
+      {/* Metric 2: Monthly CO2 Saved vs Monthly Net Cashflow Savings */}
+      <Card className="border border-emerald-500/30 bg-emerald-500/[0.03] dark:bg-emerald-950/20">
+        <CardContent className="p-5 flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 truncate">
+              {isFinancial ? 'Monthly Cashflow ROI' : 'CO₂ Saved / Month'}
+            </p>
+            <h4 className="text-xl sm:text-2xl font-bold font-heading text-emerald-700 dark:text-emerald-400 mt-1 truncate">
+              {isFinancial
+                ? formatINR(Math.round((kpiData.financialSavings.totalNetSavingsVal || 650000) / 12))
+                : `${formatNumber(kpiData.monthlyCO2SavedTons)} Tons`}
+            </h4>
+            <p className="text-xs text-emerald-700/80 dark:text-emerald-400/80 mt-0.5 truncate">
+              {isFinancial ? 'Direct Operational Margin' : 'Verified Abatement'}
+            </p>
           </div>
-          <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">
-            <span>{isFinancial ? 'Energy & Material Baseline' : 'Scope 1, 2 & 3 Combined'}</span>
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+            {isFinancial ? <DollarSign className="w-5 h-5" /> : <Leaf className="w-5 h-5" />}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-400 flex items-center justify-between font-mono">
-          <span>Annual Projected:</span>
-          <span className="text-slate-700 dark:text-slate-300 font-bold">
-            {isFinancial
-              ? formatINR((kpiData.baselineMonthlyCostINR || 2850000) * 12)
-              : `${Math.round(kpiData.baselineMonthlyCO2 * 12).toLocaleString()} tCO₂e/yr`}
-          </span>
-        </div>
-      </div>
-
-      {/* Metric 2: Monthly Net Abatement / Cash Flow Savings */}
-      <div className="bg-white dark:bg-[#0D131F] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-emerald-500/40 transition-all space-y-3 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-            {isFinancial ? 'Monthly Net Margin Boost' : 'Verified CO₂ Abatement'}
-          </span>
-          <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-            {isFinancial ? <DollarSign className="w-4 h-4" /> : <Leaf className="w-4 h-4" />}
+      {/* Metric 3: Footprint Cut % vs Financial Cost Reduction % */}
+      <Card className="border border-emerald-500/30 bg-emerald-500/[0.03] dark:bg-emerald-950/20">
+        <CardContent className="p-5 flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 truncate">
+              {isFinancial ? 'Cost Reduction' : 'Footprint Cut'}
+            </p>
+            <h4 className="text-xl sm:text-2xl font-bold font-heading text-emerald-700 dark:text-emerald-400 mt-1 truncate">
+              -{formatNumber(kpiData.co2ReductionPercentage)}%
+            </h4>
+            <p className="text-xs text-emerald-700/80 dark:text-emerald-400/80 mt-0.5 truncate">
+              {isFinancial ? 'Energy & Fuel Efficiency' : 'Net Intensity Cut'}
+            </p>
           </div>
-        </div>
-
-        <div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
-            {isFinancial
-              ? formatINR(Math.round((kpiData.financialSavings.totalNetSavingsVal || 650000) / 12))
-              : `${formatNumber(kpiData.monthlyCO2SavedTons)} Tons/mo`}
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+            <TrendingDown className="w-5 h-5" />
           </div>
-          <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">
-            <span>{isFinancial ? 'Direct OPEX Reduction' : 'CEA & IPCC Calibrated'}</span>
-          </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center justify-between font-mono font-semibold">
-          <span>Net Impact:</span>
-          <span>+{isFinancial ? formatINR(kpiData.financialSavings.totalNetSavingsVal || 650000) + '/yr' : `${Math.round(kpiData.monthlyCO2SavedTons * 12)} T/yr`}</span>
-        </div>
-      </div>
-
-      {/* Metric 3: Carbon Intensity / Cost Reduction % */}
-      <div className="bg-white dark:bg-[#0D131F] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all space-y-3 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            {isFinancial ? 'OPEX Cost Cut %' : 'Emission Reduction %'}
-          </span>
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center shrink-0">
-            <TrendingDown className="w-4 h-4" />
+      {/* Metric 4: Est. Annual Net Savings */}
+      <Card className="border border-emerald-500/30 bg-emerald-500/[0.03] dark:bg-emerald-950/20">
+        <CardContent className="p-5 flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 truncate">
+              Est. Annual Net ROI
+            </p>
+            <h4 className="text-xl sm:text-2xl font-bold font-heading text-emerald-700 dark:text-emerald-400 mt-1 truncate">
+              {kpiData.financialSavings.totalNetSavingsDisplay}
+            </h4>
+            <p className="text-xs text-emerald-700/80 dark:text-emerald-400/80 mt-0.5 truncate">
+              Payback ~10.5 Months
+            </p>
           </div>
-        </div>
-
-        <div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-slate-900 dark:text-white">
-            -{formatNumber(kpiData.co2ReductionPercentage)}%
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+            <Zap className="w-5 h-5" />
           </div>
-          <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">
-            <span>{isFinancial ? 'Fuel & Electricity Efficiency' : 'Baseline Footprint Reduction'}</span>
-          </div>
-        </div>
-
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-400 flex items-center justify-between font-mono">
-          <span>Regulatory Target:</span>
-          <span className="text-slate-700 dark:text-slate-300 font-bold">Exceeds BEE PAT Norms</span>
-        </div>
-      </div>
-
-      {/* Metric 4: Est. Annual Net ROI & Payback */}
-      <div className="bg-white dark:bg-[#0D131F] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all space-y-3 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            Annual Net ROI
-          </span>
-          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center shrink-0">
-            <Zap className="w-4 h-4 text-amber-500" />
-          </div>
-        </div>
-
-        <div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-slate-900 dark:text-white">
-            {kpiData.financialSavings.totalNetSavingsDisplay}
-          </div>
-          <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">
-            <span>Est. Payback: ~10.5 Months</span>
-          </div>
-        </div>
-
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-400 flex items-center justify-between font-mono">
-          <span>Hurdle Rate:</span>
-          <span className="text-emerald-600 dark:text-emerald-400 font-bold">Optimal (&lt; 18 Mo)</span>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
-
