@@ -353,61 +353,57 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         </aside>
 
         {/* ============================================================ */}
-        {/* CENTER COLUMN: Interactive Ambient Greeting Banner & Cards (6 cols) */}
+        {/* CENTER COLUMN: Main Workflow & Operational Cards (6 cols) */}
         {/* ============================================================ */}
         <main className="lg:col-span-6 space-y-6">
-          {/* INTERACTIVE AMBIENT GREETING BANNER */}
-          <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-r from-emerald-950/30 via-slate-900/70 to-teal-950/30 border border-emerald-500/20 shadow-lg relative overflow-hidden">
-            {/* Ambient Background Soft Accent */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse" />
-                  <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
-                    Systems Nominal
-                  </span>
-                </div>
-
-                <div className="flex items-center space-x-1.5 text-[11px] font-mono text-slate-400">
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Apex Unit #4 • Live</span>
-                </div>
-              </div>
-
-              {/* Dynamic Time-Based Greeting */}
-              <h2 className="text-xl sm:text-2xl font-black font-heading tracking-tight text-white">
-                {greeting},{' '}
-                <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-                  {userRole}
-                </span>
-              </h2>
-
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-                ByteMe Carbon Decision Intelligence is actively monitoring 4 process telemetry nodes across Apex Packaging Pune. All physical models are operating within nominal thresholds with ₹6.5 Lakhs in annual cost savings identified.
-              </p>
-
-              {/* Soothing Role Switcher Filter Pill */}
-              <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
-                <span className="text-[11px] text-slate-400 font-mono">View Presets:</span>
-                {['Operations Lead', 'ESG Auditor', 'CFO'].map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => setUserRole(role)}
-                    className={cn(
-                      'px-2.5 py-1 rounded-full text-xs font-mono font-medium transition-all border',
-                      userRole === role
-                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
-                        : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200'
-                    )}
+          {/* STAKEHOLDER ALIGNMENT OPERATIONAL DECISION CARDS */}
+          <section className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {targetAudience.map((audience, idx) => {
+                const Icon = audience.icon;
+                return (
+                  <Card
+                    key={idx}
+                    className="p-4 flex flex-col justify-between bg-slate-900/70 border-slate-800 hover:border-emerald-500/50 transition-all duration-300 shadow-md group"
                   >
-                    {role}
-                  </button>
-                ))}
-              </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className={cn('p-2 rounded-xl border shadow-sm', audience.color)}>
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
+                          {audience.tag}
+                        </span>
+                      </div>
+
+                      <h4 className="text-sm font-bold font-heading text-white mb-1 group-hover:text-emerald-400 transition-colors">
+                        {audience.role}
+                      </h4>
+
+                      <p className="text-xs text-slate-400 leading-relaxed mb-3">
+                        {audience.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-500">Key Outcome</span>
+                        <span className="text-emerald-400 font-bold">{audience.metrics}</span>
+                      </div>
+
+                      <button
+                        onClick={() => onNavigate(audience.tabTarget)}
+                        className="w-full py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-1 transition-colors border border-slate-700"
+                      >
+                        <span>{audience.actionLabel}</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
-          </div>
+          </section>
 
           {/* MAIN HERO PRODUCT PRESENTATION CARD */}
           <section className="rounded-2xl p-6 sm:p-8 bg-gradient-to-br from-[#0c101c] via-[#090d18] to-[#060912] border border-slate-800 shadow-xl relative overflow-hidden">
