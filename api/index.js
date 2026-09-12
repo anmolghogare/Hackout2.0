@@ -1,5 +1,5 @@
-const requestHandler = require('../server/server');
+import requestHandler from '../server/server.js';
 
-module.exports = (req, res) => {
+export default (req, res) => {
   return requestHandler(req, res);
 };

@@ -5,7 +5,7 @@
  * Team: ByteMe
  */
 
-const facilityBaseline = {
+export const facilityBaseline = {
   projectInfo: {
     teamName: "ByteMe",
     track: "Automated Industrial Carbon Decision Intelligence for SMEs",
@@ -76,7 +76,7 @@ const facilityBaseline = {
   }
 };
 
-const decarbonizationRoadmap = [
+export const decarbonizationRoadmap = [
   {
     id: 1,
     diagnosedHotspot: "Virgin Polymer Resin (62% Footprint)",
@@ -106,7 +106,7 @@ const decarbonizationRoadmap = [
   }
 ];
 
-const b2bCircularMatch = {
+export const b2bCircularMatch = {
   seller: {
     name: "Apex Packaging Pvt. Ltd. (Factory A)",
     byProduct: "Polymer Trim Scrap",
@@ -131,12 +131,11 @@ const b2bCircularMatch = {
   }
 };
 
-// Data points for Empirical Regression Models (Slide 8)
-const empiricalRegressionData = {
+export const empiricalRegressionData = {
   rawMaterialRegression: {
     labels: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-    baselineVirginResin: [28, 56, 84, 112, 140, 168, 196, 224, 252, 280], // 2.80 tCO2e/Ton
-    circularPCRBlend: [14, 28, 42, 56, 70, 84, 98, 112, 126, 140],       // 1.40 tCO2e/Ton (40% PCR Target)
+    baselineVirginResin: [28, 56, 84, 112, 140, 168, 196, 224, 252, 280],
+    circularPCRBlend: [14, 28, 42, 56, 70, 84, 98, 112, 126, 140],
     targetReductionPct: 50
   },
   fuelTransitionRegression: {
@@ -146,11 +145,4 @@ const empiricalRegressionData = {
     pipedNaturalGas: [0, 3.0, 6.0, 9.0, 12.0, 15.0, 18.0, 21.0, 24.0, 27.0, 30.0],
     greenShiftTarget: { percent: 50, reduction: 44 }
   }
-};
-
-module.exports = {
-  facilityBaseline,
-  decarbonizationRoadmap,
-  b2bCircularMatch,
-  empiricalRegressionData
 };

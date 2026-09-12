@@ -1,5 +1,5 @@
-const http = require('http');
-const {
+import http from 'http';
+import {
   getBaseline,
   calculateSimulation,
   getCopilotResponse,
@@ -7,7 +7,7 @@ const {
   analyzeByProduct,
   getRoadmap,
   getRegressionCharts
-} = require('./controllers/mainController');
+} from './controllers/mainController.js';
 
 const PORT = process.env.PORT || 5000;
 
@@ -120,10 +120,10 @@ const requestHandler = (req, res) => {
 
 const server = http.createServer(requestHandler);
 
-if (require.main === module) {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   server.listen(PORT, () => {
     console.log(`🚀 Industrial Carbon Intelligence Server running on port ${PORT}`);
   });
 }
 
-module.exports = requestHandler;
+export default requestHandler;

@@ -1,9 +1,9 @@
-const {
+import {
   facilityBaseline,
   decarbonizationRoadmap,
   b2bCircularMatch,
   empiricalRegressionData
-} = require('../models/facilityModel');
+} from '../models/facilityModel.js';
 
 let activeCircularListings = [
   {
@@ -59,7 +59,7 @@ const EMISSION_FACTORS = {
 };
 
 // GET /api/facility/baseline
-exports.getBaseline = (req, res) => {
+export const getBaseline = (req, res) => {
   res.json({
     success: true,
     data: facilityBaseline,
@@ -71,7 +71,7 @@ exports.getBaseline = (req, res) => {
 };
 
 // POST /api/simulation/calculate
-exports.calculateSimulation = (req, res) => {
+export const calculateSimulation = (req, res) => {
   try {
     const {
       fuelShiftPct = 0,       // 0 to 100% shift from Furnace Oil to PNG/Biomass
@@ -181,7 +181,7 @@ exports.calculateSimulation = (req, res) => {
 };
 
 // POST /api/copilot/query - Server-side AI Q&A Engine (No API key exposed to frontend)
-exports.getCopilotResponse = async (req, res) => {
+export const getCopilotResponse = async (req, res) => {
   try {
     const { prompt = "" } = req.body;
     const queryLower = prompt.toLowerCase().trim();
@@ -494,7 +494,7 @@ Return ONLY valid JSON format:
 };
 
 // GET /api/circular/matches
-exports.getCircularMatches = (req, res) => {
+export const getCircularMatches = (req, res) => {
   res.json({
     success: true,
     data: activeCircularListings
@@ -502,7 +502,7 @@ exports.getCircularMatches = (req, res) => {
 };
 
 // POST /api/circular/analyze-product - AI By-Product Industry Matcher
-exports.analyzeByProduct = (req, res) => {
+export const analyzeByProduct = (req, res) => {
   try {
     const {
       name = "Industrial By-Product",
@@ -584,7 +584,7 @@ exports.analyzeByProduct = (req, res) => {
 };
 
 // GET /api/roadmap
-exports.getRoadmap = (req, res) => {
+export const getRoadmap = (req, res) => {
   res.json({
     success: true,
     data: {
@@ -601,7 +601,12 @@ exports.getRoadmap = (req, res) => {
 };
 
 // GET /api/charts/whatif
-exports.getRegressionCharts = (req, res) => {
+export const getRegressionCharts = (req, res) => {
+  res.json({
+    success: true,
+    data: empiricalRegressionData
+  });
+};sionCharts = (req, res) => {
   res.json({
     success: true,
     data: empiricalRegressionData
