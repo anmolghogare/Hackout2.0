@@ -685,70 +685,72 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       {/* ============================================================ */}
       {/* FULL-WIDTH LOWER BAND: INTERACTIVE PLATFORM MODULES SECTION (100% WIDTH) */}
       {/* ============================================================ */}
-      <section className="w-full space-y-6 pt-6 border-t border-slate-800/80">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
-          <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm">
-              <Target className="w-5 h-5 text-emerald-400 animate-pulse" />
+      <section className="w-full space-y-6 pt-8 border-t border-slate-800/80">
+        <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#0c101c]/80 via-[#0a0d17]/80 to-[#080a12]/80 border border-slate-800/90 shadow-2xl space-y-6 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/90 pb-5">
+            <div className="flex items-center space-x-3">
+              <div className="p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm">
+                <Target className="w-6 h-6 text-emerald-400 animate-pulse" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black font-heading text-white uppercase tracking-wider">
+                  Interactive Platform Modules
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Launch real-time material-to-output telemetry, 3D thermal diagnostics, OCR scanner, and B2B waste streams.
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-black font-heading text-white uppercase tracking-wider">
-                Interactive Platform Modules
-              </h3>
-              <p className="text-xs text-slate-400">
-                Launch real-time telemetry, 3D thermal diagnostics, OCR scanner, and B2B waste streams.
-              </p>
-            </div>
+            <span className="text-xs font-mono px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold tracking-wide self-start sm:self-auto shadow-sm">
+              6 Interactive Tools Live
+            </span>
           </div>
-          <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold self-start sm:self-auto">
-            6 Interactive Tools Live
-          </span>
-        </div>
 
-        {/* 3-Column Full-Width Module Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featurePillars.map((pillar) => {
-            const Icon = pillar.icon;
-            return (
-              <Card
-                key={pillar.id}
-                onClick={() => onNavigate(pillar.id)}
-                className="group p-5 cursor-pointer hover:border-emerald-500/60 hover:shadow-[0_0_25px_rgba(0,230,118,0.15)] transition-all duration-300 flex flex-col justify-between bg-[#0d1322]/90 border-slate-800/90"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 group-hover:scale-105 transition-transform">
-                      <Icon className="w-5 h-5" />
+          {/* 3-Column Responsive Grid across full expanded layout width */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            {featurePillars.map((pillar) => {
+              const Icon = pillar.icon;
+              return (
+                <Card
+                  key={pillar.id}
+                  onClick={() => onNavigate(pillar.id)}
+                  className="group p-6 cursor-pointer hover:border-emerald-500/60 hover:shadow-[0_0_30px_rgba(0,230,118,0.15)] transition-all duration-300 flex flex-col justify-between bg-[#0d1322]/90 border-slate-800/90 rounded-2xl"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 rounded-xl bg-slate-800/90 border border-slate-700 text-emerald-400 group-hover:scale-110 transition-transform">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <span className={cn('text-[10px] font-mono font-extrabold px-3 py-1 rounded-full border tracking-wide uppercase', pillar.badgeColor)}>
+                        {pillar.badge}
+                      </span>
                     </div>
-                    <span className={cn('text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border', pillar.badgeColor)}>
-                      {pillar.badge}
+
+                    <h4 className="text-base font-extrabold font-heading text-white mb-1 group-hover:text-emerald-400 transition-colors">
+                      {pillar.title}
+                    </h4>
+                    <span className="text-xs text-emerald-400 font-mono block mb-3 font-semibold">
+                      {pillar.headline}
                     </span>
+
+                    <p className="text-xs text-slate-300 leading-relaxed mb-5">
+                      {pillar.summary}
+                    </p>
                   </div>
 
-                  <h4 className="text-base font-bold font-heading text-white mb-1 group-hover:text-emerald-400 transition-colors">
-                    {pillar.title}
-                  </h4>
-                  <span className="text-xs text-emerald-400 font-mono block mb-2 font-semibold">
-                    {pillar.headline}
-                  </span>
-
-                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                    {pillar.summary}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-400 text-[11px] truncate max-w-[190px]">
-                    {pillar.benefit}
-                  </span>
-                  <div className="flex items-center space-x-1.5 text-emerald-400 font-bold group-hover:translate-x-1 transition-transform shrink-0">
-                    <span>Launch Tool</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                  <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
+                    <span className="text-slate-400 text-[11px] truncate max-w-[200px]">
+                      {pillar.benefit}
+                    </span>
+                    <div className="flex items-center space-x-1.5 text-emerald-400 font-bold group-hover:translate-x-1.5 transition-transform shrink-0">
+                      <span>Launch Tool</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
                   </div>
-                </div>
-              </Card>
-            );
-          })}
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </section>
 
