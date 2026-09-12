@@ -43,8 +43,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-slate-100 transition-colors duration-300 font-sans selection:bg-emerald-500 selection:text-white flex">
-      {/* Collapsible Left Navigation Sidebar */}
+    <div className="min-h-screen bg-slate-50 dark:bg-[#08090D] text-slate-900 dark:text-slate-100 transition-colors duration-300 font-sans selection:bg-emerald-500/30 selection:text-emerald-950 dark:selection:text-white flex">
       <CollapsibleSidebar
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
@@ -60,9 +59,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         viewMode={viewMode}
       />
 
-      {/* Main Layout Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        {/* Top Header Navbar */}
         <Navbar
           activeTab={activeTab}
           viewMode={viewMode}
@@ -78,25 +75,22 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
           isBackendOnline={isBackendOnline}
         />
 
-        {/* Expansive Main Content Canvas Shell */}
-        <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-8 min-w-0 flex flex-col justify-start relative isolate">
+        <main className="flex-1 w-full max-w-[1680px] mx-auto px-5 sm:px-10 lg:px-14 xl:px-16 py-10 md:py-12 space-y-10 md:space-y-12 min-w-0 flex flex-col justify-start relative isolate">
           {children}
         </main>
 
-        {/* Persistent Base Footer */}
-        <footer className="border-t border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-[#0D0F18]/80 backdrop-blur-md py-6 text-center text-xs text-slate-500 dark:text-slate-400 mt-auto">
-          <div className="max-w-[1720px] mx-auto px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+        <footer className="border-t border-slate-200/70 dark:border-white/[0.06] bg-white/70 dark:bg-[#0B0D14]/80 backdrop-blur-md py-8 text-center text-xs text-slate-500 dark:text-slate-400 mt-auto tracking-wide">
+          <div className="max-w-[1680px] mx-auto px-5 sm:px-10 flex flex-col sm:flex-row justify-between items-center gap-3">
             <p>© 2026 Team ByteMe — Industrial Carbon Intelligence Platform (Hackout 2.0)</p>
-            <div className="flex items-center space-x-4">
-              <span className="hover:text-emerald-500 cursor-pointer transition-colors">Documentation</span>
-              <span className="hover:text-emerald-500 cursor-pointer transition-colors">API Contract Immutable</span>
-              <span className="hover:text-emerald-500 cursor-pointer transition-colors">ISO 14064 & SEBI BRSR Verified</span>
+            <div className="flex items-center space-x-6">
+              <span className="hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer transition-colors">Documentation</span>
+              <span className="hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer transition-colors">API Contract</span>
+              <span className="hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer transition-colors">ISO 14064 · SEBI BRSR</span>
             </div>
           </div>
         </footer>
       </div>
 
-      {/* Floating Interactive AI Assistant Chatbot Overlay */}
       <AIAssistantChatbot
         activeTab={activeTab}
         onNavigateTab={onTabChange}
