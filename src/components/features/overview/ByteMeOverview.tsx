@@ -270,74 +270,74 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             <div className="space-y-4">
               {/* Metric 1: Live Logistics Flow */}
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 text-[11px]">Live Logistics Flow</span>
-                  <span className="font-mono font-bold text-white">142.5 T/day</span>
+                <div className="flex items-center justify-between text-xs min-w-0">
+                  <span className="text-slate-400 text-[11px] truncate pr-2">Live Logistics Flow</span>
+                  <span className="font-mono font-extrabold text-white tracking-wider whitespace-nowrap shrink-0">142.5 T/day</span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-500 rounded-full w-[78%]" />
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                  <span>Target: 150 T/d</span>
-                  <span className="text-emerald-400 font-bold">78% Capacity</span>
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono min-w-0">
+                  <span className="truncate pr-2">Target: 150 T/d</span>
+                  <span className="text-emerald-400 font-bold tracking-wide whitespace-nowrap shrink-0">78% Capacity</span>
                 </div>
               </div>
 
               {/* Metric 2: Grid Load & Power Factor */}
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 text-[11px]">Grid Load & Power Factor</span>
-                  <span className="font-mono font-bold text-emerald-400">420 kW • PF 0.96</span>
+                <div className="flex items-center justify-between text-xs min-w-0">
+                  <span className="text-slate-400 text-[11px] truncate pr-2">Grid Load & Power Factor</span>
+                  <span className="font-mono font-extrabold text-emerald-400 tracking-wider whitespace-nowrap shrink-0">420 kW • PF 0.96</span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                   <div className="h-full bg-teal-400 rounded-full w-[65%]" />
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                  <span>CEA Grid Factor</span>
-                  <span className="text-slate-300">0.82 kgCO₂e/kWh</span>
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono min-w-0">
+                  <span className="truncate pr-2">CEA Grid Factor</span>
+                  <span className="text-slate-200 font-bold tracking-wide whitespace-nowrap shrink-0">0.82 kgCO₂e/kWh</span>
                 </div>
               </div>
 
               {/* Metric 3: Network & Sensor Uptime */}
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 text-[11px]">Network Sensor Uptime</span>
-                  <span className="font-mono font-bold text-emerald-400">99.94%</span>
+                <div className="flex items-center justify-between text-xs min-w-0">
+                  <span className="text-slate-400 text-[11px] truncate pr-2">Network Sensor Uptime</span>
+                  <span className="font-mono font-extrabold text-emerald-400 tracking-wider whitespace-nowrap shrink-0">99.94%</span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-400 rounded-full w-[99.9%]" />
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                  <span>Latency: 14ms</span>
-                  <span className="text-emerald-400 font-bold">4 Nodes Nominal</span>
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono min-w-0">
+                  <span className="truncate pr-2">Latency: 14ms</span>
+                  <span className="text-emerald-400 font-bold tracking-wide whitespace-nowrap shrink-0">4 Nodes Nominal</span>
                 </div>
               </div>
 
               {/* Metric 4: Safety & Hazard Clock */}
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 text-[11px]">Safety Incident Clock</span>
-                  <span className="font-mono font-bold text-white">412 Days Zero LTI</span>
+                <div className="flex items-center justify-between text-xs min-w-0">
+                  <span className="text-slate-400 text-[11px] truncate pr-2">Safety Incident Clock</span>
+                  <span className="font-mono font-extrabold text-white tracking-wider whitespace-nowrap shrink-0">412 Days Zero LTI</span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                   <div className="h-full bg-blue-500 rounded-full w-[100%]" />
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                  <span>ISO 45001 Compliant</span>
-                  <span className="text-blue-400 font-bold">Optimal</span>
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono min-w-0">
+                  <span className="truncate pr-2">ISO 45001 Compliant</span>
+                  <span className="text-blue-400 font-bold tracking-wide whitespace-nowrap shrink-0">Optimal</span>
                 </div>
               </div>
             </div>
 
             {/* Baseline Footprint & Net ROI summary */}
             <div className="pt-3 border-t border-slate-800 grid grid-cols-2 gap-2 text-center font-mono">
-              <div className="p-2 rounded-lg bg-slate-900/60 border border-slate-800">
-                <span className="text-[9px] text-slate-400 uppercase block">Baseline</span>
-                <span className="text-xs font-bold text-rose-400">100 tCO₂e/mo</span>
+              <div className="p-2 rounded-lg bg-slate-900/80 border border-slate-800 overflow-hidden">
+                <span className="text-[9px] text-slate-400 uppercase tracking-wider block">Baseline</span>
+                <span className="text-xs font-black text-rose-400 tracking-wider whitespace-nowrap block">100 tCO₂e/mo</span>
               </div>
-              <div className="p-2 rounded-lg bg-slate-900/60 border border-slate-800">
-                <span className="text-[9px] text-slate-400 uppercase block">Net ROI</span>
-                <span className="text-xs font-bold text-emerald-400">₹6.5L / yr</span>
+              <div className="p-2 rounded-lg bg-slate-900/80 border border-slate-800 overflow-hidden">
+                <span className="text-[9px] text-slate-400 uppercase tracking-wider block">Net ROI</span>
+                <span className="text-xs font-black text-emerald-400 tracking-wider whitespace-nowrap block">₹6.5L / yr</span>
               </div>
             </div>
 

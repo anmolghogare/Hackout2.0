@@ -22,15 +22,15 @@ export const KPICards: React.FC<KPICardsProps> = ({ kpiData, viewMode = 'carbon'
       >
         <CardContent className="p-5 flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <p className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
               {isFinancial ? 'Baseline Energy & Material Cost' : 'Baseline Carbon Footprint'}
             </p>
-            <h4 className="text-2xl font-bold font-heading text-slate-900 dark:text-white mt-1">
+            <h4 className="text-2xl font-extrabold font-heading text-slate-900 dark:text-white mt-1 tracking-wider whitespace-nowrap">
               {isFinancial
                 ? formatINR(kpiData.baselineMonthlyCostINR || 2850000)
                 : `${kpiData.baselineMonthlyCO2} tCO₂e/mo`}
             </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">Apex Packaging Facility</p>
+            <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Apex Packaging Facility</p>
           </div>
           <div
             className={`p-3 rounded-2xl ${
@@ -51,22 +51,22 @@ export const KPICards: React.FC<KPICardsProps> = ({ kpiData, viewMode = 'carbon'
         <CardContent className="p-5 flex items-center justify-between">
           <div>
             <p
-              className={`text-xs font-semibold uppercase tracking-wider ${
-                isFinancial ? 'text-purple-500' : 'text-emerald-600 dark:text-emerald-400'
+              className={`text-xs font-bold uppercase tracking-wider ${
+                isFinancial ? 'text-purple-500' : 'text-emerald-500 dark:text-emerald-400'
               }`}
             >
               {isFinancial ? 'Monthly Cashflow ROI' : 'CO₂ Saved / Month'}
             </p>
             <h4
-              className={`text-2xl font-bold font-heading mt-1 ${
-                isFinancial ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600 dark:text-emerald-400'
+              className={`text-2xl font-extrabold font-heading mt-1 tracking-wider whitespace-nowrap ${
+                isFinancial ? 'text-purple-400 dark:text-purple-400' : 'text-emerald-400 dark:text-emerald-400'
               }`}
             >
               {isFinancial
                 ? formatINR(Math.round((kpiData.financialSavings.totalNetSavingsVal || 650000) / 12))
                 : `${formatNumber(kpiData.monthlyCO2SavedTons)} Tons`}
             </h4>
-            <p className="text-[11px] opacity-80 mt-0.5">
+            <p className="text-[11px] opacity-80 mt-0.5 font-medium">
               {isFinancial ? 'Direct Operational Margin' : 'Verified Abatement'}
             </p>
           </div>
@@ -89,20 +89,20 @@ export const KPICards: React.FC<KPICardsProps> = ({ kpiData, viewMode = 'carbon'
         <CardContent className="p-5 flex items-center justify-between">
           <div>
             <p
-              className={`text-xs font-semibold uppercase tracking-wider ${
-                isFinancial ? 'text-blue-500' : 'text-cyan-600 dark:text-cyan-400'
+              className={`text-xs font-bold uppercase tracking-wider ${
+                isFinancial ? 'text-blue-400' : 'text-cyan-400 dark:text-cyan-400'
               }`}
             >
               {isFinancial ? 'Cost Reduction %' : 'Footprint Cut %'}
             </p>
             <h4
-              className={`text-2xl font-bold font-heading mt-1 ${
-                isFinancial ? 'text-blue-600 dark:text-blue-400' : 'text-cyan-600 dark:text-cyan-400'
+              className={`text-2xl font-extrabold font-heading mt-1 tracking-wider whitespace-nowrap ${
+                isFinancial ? 'text-blue-400 dark:text-blue-400' : 'text-cyan-400 dark:text-cyan-400'
               }`}
             >
               -{formatNumber(kpiData.co2ReductionPercentage)}%
             </h4>
-            <p className="text-[11px] opacity-80 mt-0.5">
+            <p className="text-[11px] opacity-80 mt-0.5 font-medium">
               {isFinancial ? 'Energy & Material Efficiency' : 'Net Intensity Reduction'}
             </p>
           </div>
@@ -120,13 +120,13 @@ export const KPICards: React.FC<KPICardsProps> = ({ kpiData, viewMode = 'carbon'
       <Card className="border-l-4 border-l-purple-500">
         <CardContent className="p-5 flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+            <p className="text-xs font-bold text-purple-400 dark:text-purple-400 uppercase tracking-wider">
               Est. Annual Net ROI
             </p>
-            <h4 className="text-xl font-bold font-heading text-purple-600 dark:text-purple-400 mt-1 truncate">
+            <h4 className="text-xl font-extrabold font-heading text-purple-400 dark:text-purple-400 mt-1 tracking-wider whitespace-nowrap">
               {kpiData.financialSavings.totalNetSavingsDisplay}
             </h4>
-            <p className="text-[11px] text-purple-600/80 dark:text-purple-400/80 mt-0.5">
+            <p className="text-[11px] text-purple-400/80 dark:text-purple-400/80 mt-0.5 font-medium">
               Payback ~10.5 Months
             </p>
           </div>
