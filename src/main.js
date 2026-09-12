@@ -27,7 +27,6 @@ function render() {
   if (root) {
     root.innerHTML = App(appState);
     attachEventListeners();
-    // Initialize Chart.js rendering after DOM update
     setTimeout(initChartInstances, 50);
   }
 }
@@ -46,7 +45,7 @@ async function init() {
   render();
 }
 
-// Attach Tab, Slider & Preset Event Listeners
+// Attach Event Listeners
 function attachEventListeners() {
   // Tab Navigation
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -59,7 +58,6 @@ function attachEventListeners() {
       const contentEl = document.getElementById(targetTab);
       if (contentEl) contentEl.classList.add('active');
 
-      // Re-trigger chart rendering when switching to What-If tab
       if (targetTab === 'tab-whatif') {
         setTimeout(initChartInstances, 50);
       }
@@ -87,24 +85,43 @@ function attachEventListeners() {
 
   // Preset Buttons
   const presetBaseline = document.getElementById('btn-preset-baseline');
-  if (presetBaseline) {
-    presetBaseline.addEventListener('click', () => applyPreset(0, 0, 0, 0));
-  }
+  if (presetBaseline) presetBaseline.addEventListener('click', () => applyPreset(0, 0, 0, 0));
 
   const presetModerate = document.getElementById('btn-preset-moderate');
-  if (presetModerate) {
-    presetModerate.addEventListener('click', () => applyPreset(50, 5, 20, 100));
-  }
+  if (presetModerate) presetModerate.addEventListener('click', () => applyPreset(50, 5, 20, 100));
 
   const presetAggressive = document.getElementById('btn-preset-aggressive');
-  if (presetAggressive) {
-    presetAggressive.addEventListener('click', () => applyPreset(80, 10, 40, 100));
-  }
+  if (presetAggressive) presetAggressive.addEventListener('click', () => applyPreset(80, 10, 40, 100));
+
+  // PDF Download Handlers
+  const pdfBtnHeader = document.getElementById('btn-download-pdf');
+  if (pdfBtnHeader) pdfBtnHeader.addEventListener('click', handlePDFDownload);
+
+  const pdfBtnRoadmap = document.getElementById('btn-download-pdf-roadmap');
+  if (pdfBtnRoadmap) pdfBtnRoadmap.addEventListener('click', handlePDFDownload);
 
   // AI Copilot Ask Button
   const askBtn = document.getElementById('btn-copilot-ask');
-  if (askBtn) {
-    askBtn.addEventListener('click', handleCopilotQuery);
+  if (askBtn) askBtn.addEventListener('click', handleCopilotQuery);
+}
+
+// 1-Click ESG PDF Generator
+function handlePDFDownload() {
+  const element = document.getElementById('esg-report-printable');
+  if (!element) return;
+
+  if (typeof html2pdf !== 'undefined') {
+    const opt = {
+      margin:       0.4,
+      filename:     'Apex_Packaging_ESG_Audit_Report.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+  } else {
+    // Fallback: Open browser print dialog
+    window.print();
   }
 }
 

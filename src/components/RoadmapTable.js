@@ -1,4 +1,6 @@
-export function renderRoadmapTable(roadmapData = []) {
+import { renderReportTemplate } from './ReportGenerator.js';
+
+export function renderRoadmapTable(roadmapData = [], state = {}) {
   const defaultRoadmap = [
     {
       diagnosedHotspot: "Virgin Polymer Resin (62% Footprint)",
@@ -29,9 +31,9 @@ export function renderRoadmapTable(roadmapData = []) {
     <div class="dashboard-card">
       <div class="card-title">
         <span>📊 Integrated Decarbonization Roadmap & Financial Matrix</span>
-        <span style="font-size:12px; color:var(--primary); background:rgba(16, 185, 129, 0.15); padding:4px 10px; border-radius:12px; border:1px solid var(--primary);">
-          10.5 MONTHS AVG PAYBACK
-        </span>
+        <button class="btn-primary" id="btn-download-pdf-roadmap" style="font-size:12px; padding:6px 14px; background:linear-gradient(135deg, #10b981, #059669); color:#000;">
+          📥 Download ESG Compliance Audit Report (PDF)
+        </button>
       </div>
       <div class="card-subtitle">
         Economically self-sustaining decarbonization roadmap converting capital investment into rapid payback and measurable carbon cuts.
@@ -67,11 +69,10 @@ export function renderRoadmapTable(roadmapData = []) {
         </tbody>
       </table>
 
-      <div style="margin-top:20px; padding:16px; background:rgba(6, 182, 212, 0.05); border:1px solid rgba(6, 182, 212, 0.2); border-radius:var(--radius-md);">
-        <h4 style="color:var(--secondary); font-size:14px; margin-bottom:4px;">💡 Financial ROI Takeaway:</h4>
-        <p style="font-size:13px; color:var(--text-muted);">
-          Every recommended circular intervention is economically self-sustaining. For a total capital investment of ₹20.3 Lakhs, Apex Packaging eliminates 195 tons of annual CO₂ while fully recovering capital in ~10.5 months.
-        </p>
+      <!-- Embedded Official ESG Compliance Report Preview -->
+      <div style="margin-top:32px;">
+        <h3 style="color:var(--primary); font-size:16px; margin-bottom:8px;">📄 Official ESG Audit Document Preview</h3>
+        ${renderReportTemplate(state)}
       </div>
     </div>
   `;

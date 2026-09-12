@@ -17,15 +17,18 @@ export function renderHeader(kpiData = {}) {
           </div>
         </div>
 
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn-primary" id="btn-download-pdf" style="font-size:12px; padding:8px 16px; background:linear-gradient(135deg, #06b6d4, #3b82f6); color:#fff;">
+            📥 Download ESG Audit PDF
+          </button>
           <button class="pill-btn" id="btn-preset-baseline" style="background:rgba(239, 68, 68, 0.15); color:var(--danger); border-color:var(--danger);">
-            🚨 Preset: Baseline (Red Alert)
+            🚨 Baseline (Red Alert)
           </button>
           <button class="pill-btn" id="btn-preset-moderate" style="background:rgba(6, 182, 212, 0.15); color:var(--secondary); border-color:var(--secondary);">
-            ⚡ Preset: Moderate (-21% CO₂)
+            ⚡ Moderate (-21%)
           </button>
           <button class="pill-btn" id="btn-preset-aggressive" style="background:rgba(16, 185, 129, 0.15); color:var(--primary); border-color:var(--primary);">
-            🌱 Preset: Aggressive (-42% CO₂)
+            🌱 Aggressive (-42%)
           </button>
         </div>
       </div>

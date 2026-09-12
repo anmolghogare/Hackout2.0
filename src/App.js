@@ -33,7 +33,7 @@ export function App(state = {}) {
           🔄 B2B Waste Exchange Network
         </button>
         <button class="tab-btn" data-tab="tab-roadmap">
-          📊 Financial ROI Matrix & Roadmap
+          📊 Financial ROI Matrix & ESG Report
         </button>
       </nav>
 
@@ -60,9 +60,9 @@ export function App(state = {}) {
           ${renderCircularNetwork()}
         </div>
 
-        <!-- Tab 5: Decarbonization Roadmap -->
+        <!-- Tab 5: Decarbonization Roadmap & ESG Report -->
         <div id="tab-roadmap" class="tab-content">
-          ${renderRoadmapTable(roadmapData)}
+          ${renderRoadmapTable(roadmapData, state)}
         </div>
       </main>
     </div>
