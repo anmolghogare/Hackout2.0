@@ -2,47 +2,91 @@ export function renderCircularNetwork() {
   return `
     <div class="dashboard-card">
       <div class="card-title">
-        <span>🔄 Functionality 5: AI-Powered Waste-to-Resource Circular Network</span>
-        <span style="font-size:12px; color:var(--primary); background:rgba(16, 185, 129, 0.15); padding:4px 10px; border-radius:12px; border:1px solid var(--primary);">
+        <div class="card-title-left">
+          <span class="card-icon">🔄</span>
+          <span>Functionality 5: AI-Powered Waste-to-Resource Circular Network</span>
+        </div>
+        <span class="badge-primary">
           ACTIVE B2B BY-PRODUCT MATCHER
         </span>
       </div>
       <div class="card-subtitle">
-        Replaces the traditional linear route (Factory ➔ Waste ➔ Landfill) with an active B2B waste-to-resource exchange network.
+        Replaces the traditional linear route (Factory ➔ Waste ➔ Landfill) with an active B2B waste-to-resource exchange network. Automatically analyzes industrial by-products and matches recipient industries.
       </div>
 
-      <div style="display:grid; grid-template-columns: 1fr auto 1fr; gap:20px; align-items:center; margin:24px 0;">
-        <div style="background:rgba(239, 68, 68, 0.08); border:2px solid var(--danger); border-radius:var(--radius-md); padding:20px;">
-          <h4 style="color:var(--danger); font-size:16px; margin-bottom:8px;">FACTORY A (Apex Packaging)</h4>
-          <p style="font-size:13px; color:var(--text-main);"><strong>By-Product:</strong> 12 Tons/month Polymer Trim Scrap</p>
-          <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Old Path: Landfill Dumping</p>
-          <p style="font-size:12px; color:var(--danger); margin-top:2px;">Disposal Fee Paid: ₹1,500 / Ton</p>
-        </div>
-
-        <div style="text-align:center;">
-          <div style="background:linear-gradient(135deg, #10b981, #06b6d4); color:#000; font-weight:800; padding:12px 18px; border-radius:30px; font-size:12px; letter-spacing:0.5px;">
-            🤖 AI MATCH ENGINE<br/>Waste-to-Resource
+      <!-- Interactive Flow Visualizer Diagram -->
+      <div class="circular-diagram-container">
+        <!-- Factory A Node -->
+        <div class="network-node seller-node">
+          <div class="node-badge danger">FACTORY A (SELLER)</div>
+          <h3 class="node-title">Apex Packaging Pvt. Ltd.</h3>
+          <div class="node-detail-item">
+            <span class="detail-label">Industrial By-Product:</span>
+            <span class="detail-val">12 Tons/month Polymer Scrap</span>
           </div>
-          <div style="font-size:24px; color:var(--primary); margin-top:8px;">➔ ➔ ➔</div>
+          <div class="node-detail-item">
+            <span class="detail-label">Old Linear Route:</span>
+            <span class="detail-val danger">Landfill Dumping</span>
+          </div>
+          <div class="node-detail-item">
+            <span class="detail-label">Disposal Fee Paid:</span>
+            <span class="detail-val danger">₹1,500 / Ton (₹2,16,000/yr)</span>
+          </div>
         </div>
 
-        <div style="background:rgba(6, 182, 212, 0.08); border:2px solid var(--secondary); border-radius:var(--radius-md); padding:20px;">
-          <h4 style="color:var(--secondary); font-size:16px; margin-bottom:8px;">FACTORY B (Pipe Manufacturer)</h4>
-          <p style="font-size:13px; color:var(--text-main);"><strong>Secondary Feedstock:</strong> Buys Feedstock @ 30% Discount</p>
-          <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">New Path: Circular Product Input</p>
-          <p style="font-size:12px; color:var(--primary); margin-top:2px;">Cuts Virgin Polymer Material Costs</p>
+        <!-- AI Matcher Connector Node -->
+        <div class="network-connector">
+          <div class="ai-pulse-orb">
+            <span class="orb-icon">🤖</span>
+            <span class="orb-text">AI MATCHER ENGINE</span>
+            <span class="orb-sub">Waste-to-Resource</span>
+          </div>
+          <div class="connector-arrows">
+            <span class="arrow-line"></span>
+            <span class="arrow-head">▶</span>
+          </div>
+        </div>
+
+        <!-- Factory B Node -->
+        <div class="network-node buyer-node">
+          <div class="node-badge cyan">FACTORY B (BUYER)</div>
+          <h3 class="node-title">Regional Pipe Manufacturer</h3>
+          <div class="node-detail-item">
+            <span class="detail-label">Secondary Feedstock:</span>
+            <span class="detail-val">Buys Polymer Feedstock @ 30% Discount</span>
+          </div>
+          <div class="node-detail-item">
+            <span class="detail-label">New Circular Route:</span>
+            <span class="detail-val success">Circular Product Input</span>
+          </div>
+          <div class="node-detail-item">
+            <span class="detail-label">Cost Advantage:</span>
+            <span class="detail-val success">30% Below Virgin Polymer Rates</span>
+          </div>
         </div>
       </div>
 
-      <div style="background:rgba(15, 23, 42, 0.9); border:1px solid var(--border-card); border-radius:var(--radius-md); padding:18px; text-align:center;">
-        <h4 style="color:var(--primary); font-size:15px; margin-bottom:6px;">ECOSYSTEM IMPACT & REVENUE CREATION</h4>
-        <div style="font-size:20px; font-weight:800; color:var(--text-main);">
-          Disposal Cost Saved + Sales Revenue = <span style="color:var(--primary);">+₹3,00,000 / year</span>
+      <!-- Financial & Environmental Ecosystem Impact Box -->
+      <div class="ecosystem-impact-banner">
+        <div class="impact-banner-header">
+          <span class="banner-tag">ECOSYSTEM IMPACT</span>
+          <h3>Disposal Cost Saved ➔ Sales Revenue Creation</h3>
+          <div class="impact-revenue-pill">+₹3,00,000 / year Net Scrap Revenue (+₹5,16,000 Total Value Created)</div>
         </div>
-        <div style="display:flex; justify-content:center; gap:24px; font-size:13px; color:var(--text-muted); margin-top:8px;">
-          <span>📉 Raw Material Cost ↓ 30%</span>
-          <span>🗑️ Landfill Waste ↓ 85%</span>
-          <span>🌱 Net Carbon Footprint ↓ 42%</span>
+
+        <div class="impact-metrics-trio">
+          <div class="trio-metric">
+            <span class="trio-val">↓ 30%</span>
+            <span class="trio-label">Raw Material Cost Savings for Buyer</span>
+          </div>
+          <div class="trio-metric">
+            <span class="trio-val">↓ 85%</span>
+            <span class="trio-label">Landfill Waste Diversion Rate</span>
+          </div>
+          <div class="trio-metric">
+            <span class="trio-val">↓ 42%</span>
+            <span class="trio-label">Net Carbon Footprint Cut</span>
+          </div>
         </div>
       </div>
     </div>

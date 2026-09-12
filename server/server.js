@@ -4,7 +4,8 @@ const {
   calculateSimulation,
   getCopilotResponse,
   getCircularMatches,
-  getRoadmap
+  getRoadmap,
+  getRegressionCharts
 } = require('./controllers/mainController');
 
 const PORT = process.env.PORT || 5000;
@@ -60,6 +61,11 @@ const requestHandler = (req, res) => {
   // GET /api/roadmap
   if (url.pathname === '/api/roadmap' && req.method === 'GET') {
     return getRoadmap(req, resWrapper);
+  }
+
+  // GET /api/charts/whatif
+  if (url.pathname === '/api/charts/whatif' && req.method === 'GET') {
+    return getRegressionCharts(req, resWrapper);
   }
 
   // POST /api/simulation/calculate
