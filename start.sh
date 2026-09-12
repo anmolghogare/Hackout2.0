@@ -15,4 +15,4 @@ fi
 echo "Using Node binary: $NODE_BIN"
 
 # Start Backend Server
-$NODE_BIN server/server.js
+$NODE_BIN server/server.js  
