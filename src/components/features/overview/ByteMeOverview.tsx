@@ -24,6 +24,8 @@ import {
   ShieldAlert,
   StickyNote,
   X,
+  Leaf,
+  BookOpen,
 } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { cn } from '../../../lib/utils';
@@ -45,6 +47,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   const [lastRefreshed, setLastRefreshed] = useState('Just now');
   const [selectedAlertForPopup, setSelectedAlertForPopup] = useState<(typeof criticalAlerts)[0] | null>(null);
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -429,11 +432,42 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                     year: 'numeric',
                   })}
                 </span>
-              </div>
               <div className="text-[10px] font-medium text-slate-400/90 mt-0.5 tracking-wider">
                 Time of Access: <span className="text-emerald-400 font-bold">{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
               </div>
             </div>
+          </div>
+
+          {/* CONCISE BYTEME BRANDING BLOCK */}
+          <div className="rounded-xl p-3.5 sm:p-4 bg-gradient-to-r from-slate-900/90 via-[#0b101d]/90 to-slate-900/90 border border-slate-800/80 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            {/* Logo & Name + Crisp Sentence Tagline */}
+            <div className="flex items-center space-x-3 min-w-0">
+              <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shrink-0 shadow-sm">
+                <Leaf className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center space-x-2">
+                  <span className="font-extrabold font-heading text-white text-sm tracking-tight">
+                    ByteMe<span className="text-emerald-400">.ai</span>
+                  </span>
+                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700 uppercase">
+                    v2.0
+                  </span>
+                </div>
+                <p className="text-[11.5px] text-slate-300 leading-snug truncate sm:whitespace-normal mt-0.5">
+                  ByteMe is an AI-powered carbon decision intelligence platform transforming industrial SME emission leaks into verified financial ROI.
+                </p>
+              </div>
+            </div>
+
+            {/* Know More Action Trigger */}
+            <button
+              onClick={() => setIsAboutModalOpen(true)}
+              className="shrink-0 py-1.5 px-3 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 text-xs font-bold font-heading border border-emerald-500/30 transition-all flex items-center space-x-1 self-end sm:self-auto"
+            >
+              <span>Know More</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
 
           {/* STAKEHOLDER ALIGNMENT OPERATIONAL DECISION CARDS */}
@@ -879,6 +913,62 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
               >
                 <span>{selectedAlertForPopup.actionLabel}</span>
                 <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+      {/* ============================================================ */}
+      {/* ABOUT US & PLATFORM GUIDE MODAL OVERLAY */}
+      {/* ============================================================ */}
+      {isAboutModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setIsAboutModalOpen(false)}
+        >
+          <div
+            className="relative max-w-xl w-full bg-[#0d1322] border border-emerald-500/40 shadow-2xl rounded-2xl p-6 sm:p-7 text-slate-100 space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                  <Leaf className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold font-heading text-white">About ByteMe Carbon Intelligence</h3>
+                  <span className="text-xs font-mono text-emerald-400">Industrial SME Carbon-to-ROI Engine</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsAboutModalOpen(false)}
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+              <p className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 font-medium">
+                <strong className="text-white font-semibold">ByteMe</strong> is an AI-powered carbon decision intelligence platform designed specifically for Indian SME manufacturers facing rising energy tariffs and strict SEBI BRSR Principle 6 mandates.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono">
+                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
+                  <span className="text-emerald-400 font-bold block text-[11.5px]">1-Click SEBI Audit</span>
+                  <span className="text-slate-400 text-[10.5px]">Instant BRSR Principle 6 Core & ISO 14064 GHG report packs.</span>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
+                  <span className="text-emerald-400 font-bold block text-[11.5px]">3D Thermal Hotspots</span>
+                  <span className="text-slate-400 text-[10.5px]">Physics-backed furnace telemetry and anomaly leak alerts.</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 flex justify-end">
+              <button
+                onClick={() => setIsAboutModalOpen(false)}
+                className="py-2 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs font-heading transition-colors"
+              >
+                Close Platform Guide
               </button>
             </div>
           </div>
