@@ -61,11 +61,12 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
 
   // Quick navigation shortcuts
   const navShortcuts = [
+    { label: '🏠 Home Overview', tab: 'overview' as TabId },
+    { label: '🏭 Digital Twin', tab: 'simulation' as TabId },
     { label: '🎛️ ROI Simulator', tab: 'simulator_hub' as TabId },
-    { label: '🔥 Thermal 3D Heatmap', tab: 'analytics_hub' as TabId },
-    { label: '🏭 Digital Twin Canvas', tab: 'simulation' as TabId },
-    { label: '📄 OCR Bill Scanner', tab: 'intake' as TabId },
-    { label: '🔄 B2B Waste Sankey', tab: 'circular' as TabId },
+    { label: '🔥 3D Heatmap', tab: 'analytics_hub' as TabId },
+    { label: '📄 OCR Scanner', tab: 'intake' as TabId },
+    { label: '🔄 Waste Sankey', tab: 'circular' as TabId },
     { label: '🧪 Scenario Sandbox', tab: 'sandbox' as TabId },
   ];
 
@@ -80,6 +81,38 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
 
     // Check for direct command keywords
     const lower = prompt.toLowerCase();
+
+    if (lower.includes('home') || lower.includes('about') || lower.includes('overview')) {
+      setTimeout(() => {
+        onNavigateTab('overview');
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'assistant',
+            text: 'Navigated to the ByteMe Home & Product Overview! Here you can review our mission, target audience profiles, and feature architecture.',
+          },
+        ]);
+        setIsTyping(false);
+      }, 400);
+      return;
+    }
+
+    if (lower.includes('twin') || lower.includes('pipeline') || lower.includes('particle')) {
+      setTimeout(() => {
+        onNavigateTab('simulation');
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'assistant',
+            text: 'Navigated to the Digital Twin Process Pipeline! Follow the glowing particle stream from Input to Output and inspect the Stage 02 furnace leak point.',
+          },
+        ]);
+        setIsTyping(false);
+      }, 400);
+      return;
+    }
 
     if (lower.includes('tour') || lower.includes('demo') || lower.includes('judge')) {
       setTimeout(() => {

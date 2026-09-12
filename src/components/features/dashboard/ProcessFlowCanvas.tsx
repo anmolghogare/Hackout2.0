@@ -181,13 +181,22 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                   <stop offset="50%" stopColor="#06b6d4" />
                   <stop offset="100%" stopColor="#8b5cf6" />
                 </linearGradient>
+                <marker id="arrowHeadRose" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0 1, 8 4, 0 7" fill="#ef4444" />
+                </marker>
+                <marker id="arrowHeadCyan" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0 1, 8 4, 0 7" fill="#06b6d4" />
+                </marker>
+                <marker id="arrowHeadPurple" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0 1, 8 4, 0 7" fill="#8b5cf6" />
+                </marker>
                 <filter id="glowEffect" x="-20%" y="-20%" width="140%" height="140%">
                   <feGaussianBlur stdDeviation="3" result="glow" />
                   <feComposite in="SourceGraphic" in2="glow" operator="over" />
                 </filter>
               </defs>
 
-              {/* Pipeline Track 1 -> 2 */}
+              {/* Pipeline Track 1 -> 2 (Input to Thermal) */}
               <path
                 d="M 180 80 L 255 80"
                 stroke="url(#pipeGradCrimson)"
@@ -195,6 +204,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 fill="none"
                 filter="url(#glowEffect)"
                 strokeLinecap="round"
+                markerEnd="url(#arrowHeadRose)"
               />
               <path
                 d="M 180 80 L 255 80"
@@ -204,7 +214,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 className="animate-particle-fast"
               />
 
-              {/* Pipeline Track 2 -> 3 */}
+              {/* Pipeline Track 2 -> 3 (Thermal to Motors) */}
               <path
                 d="M 435 80 L 510 80"
                 stroke="url(#pipeGradTeal)"
@@ -212,6 +222,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 fill="none"
                 filter="url(#glowEffect)"
                 strokeLinecap="round"
+                markerEnd="url(#arrowHeadCyan)"
               />
               <path
                 d="M 435 80 L 510 80"
@@ -221,7 +232,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 className="animate-particle-normal"
               />
 
-              {/* Pipeline Track 3 -> 4 */}
+              {/* Pipeline Track 3 -> 4 (Motors to Output Recovery) */}
               <path
                 d="M 690 80 L 765 80"
                 stroke="url(#pipeGradCrimson)"
@@ -229,6 +240,7 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                 fill="none"
                 filter="url(#glowEffect)"
                 strokeLinecap="round"
+                markerEnd="url(#arrowHeadPurple)"
               />
               <path
                 d="M 690 80 L 765 80"

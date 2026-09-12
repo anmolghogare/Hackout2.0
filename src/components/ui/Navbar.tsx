@@ -40,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isFinancial = viewMode === 'financial';
 
   const tabTitles: Record<TabId, { title: string; category: string }> = {
-    overview: { title: 'Facility Baseline & Profile', category: 'Executive Overview' },
+    overview: { title: 'ByteMe Product Overview', category: 'Platform Home' },
     simulator_hub: { title: 'Unified ROI Playground & Waterfall', category: 'Simulator & Controls' },
     analytics_hub: { title: 'Thermal Analytics & 3D Heatmap', category: 'Hotspot Diagnostics' },
     intake: { title: 'OCR Smart Bill Scanner', category: 'Data Ingestion' },

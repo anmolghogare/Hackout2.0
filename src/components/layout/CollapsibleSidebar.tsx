@@ -55,14 +55,14 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
   viewMode,
 }) => {
   const navItems: NavItem[] = [
-    { id: 'overview', label: 'Facility Context', category: 'Core Platform', icon: Building2, badge: 'SME' },
-    { id: 'simulator_hub', label: 'ROI Playground', category: 'Core Platform', icon: Zap, badge: 'Live' },
-    { id: 'analytics_hub', label: 'Thermal Analytics', category: 'Hotspots & Twin', icon: Activity, badge: '3D' },
-    { id: 'simulation', label: 'Digital Twin Canvas', category: 'Hotspots & Twin', icon: Flame, badge: 'Pipeline' },
-    { id: 'intake', label: 'OCR Bill Scanner', category: 'Data & Sandbox', icon: Scan, badge: 'AI' },
-    { id: 'sandbox', label: 'Scenario Sandbox', category: 'Data & Sandbox', icon: Layers, badge: 'Matrix' },
-    { id: 'circular', label: 'B2B Waste Sankey', category: 'Circular Economy', icon: Recycle, badge: 'ESG' },
-    { id: 'roadmap', label: 'ROI Roadmap Matrix', category: 'Circular Economy', icon: BarChart3, badge: 'BRSR' },
+    { id: 'overview', label: 'Home Overview', category: 'Platform', icon: Sparkles, badge: 'ByteMe' },
+    { id: 'simulation', label: 'Digital Twin Pipeline', category: 'Interactive Tools', icon: Flame, badge: 'Twin' },
+    { id: 'simulator_hub', label: 'ROI Playground', category: 'Interactive Tools', icon: Zap, badge: 'Live' },
+    { id: 'analytics_hub', label: '3D Thermal Analytics', category: 'Interactive Tools', icon: Activity, badge: '3D' },
+    { id: 'intake', label: 'OCR Bill Scanner', category: 'Data & Planning', icon: Scan, badge: 'AI' },
+    { id: 'sandbox', label: 'Scenario Sandbox', category: 'Data & Planning', icon: Layers, badge: 'Matrix' },
+    { id: 'circular', label: 'B2B Waste Sankey', category: 'Circular & Compliance', icon: Recycle, badge: 'Trade' },
+    { id: 'roadmap', label: 'BRSR Roadmap & ROI', category: 'Circular & Compliance', icon: BarChart3, badge: 'SEBI' },
   ];
 
   // Group items
