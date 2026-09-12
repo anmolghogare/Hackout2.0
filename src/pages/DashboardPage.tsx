@@ -253,7 +253,6 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-<<<<<<< HEAD
       {/* 12. COMPLIANCE: CAPEX ROADMAP */}
       {/* ============================================================ */}
       {activeTab === 'roadmap' && (
@@ -265,13 +264,6 @@ export const DashboardPage: React.FC = () => {
               setActiveTab('simulator_hub');
             }}
           />
-=======
-      {/* 9. FUNCTIONAL VIEW: B2B CIRCULAR WASTE SANKEY */}
-      {/* ============================================================ */}
-      {activeTab === 'circular' && (
-        <div className="animate-fadeIn space-y-8">
-          <SankeyVisualizer viewMode={viewMode} />
->>>>>>> aedc57e (fix(ui): remove B2B circular cluster network section and replace photo avatars with initial letter badges)
         </div>
       )}
 
