@@ -244,68 +244,67 @@ Generated At: ${new Date().toLocaleString('en-IN')}
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12">
+    <div className="space-y-8 animate-fadeIn pb-12">
       {/* Top Banner & Heading */}
-      <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/70 border border-slate-800 p-6 lg:p-8 text-white relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-3xl bg-white/95 dark:bg-[#0D0F18]/95 border border-slate-200/80 dark:border-white/[0.08] p-6 sm:p-10 text-slate-900 dark:text-white relative overflow-hidden shadow-xl space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
             <div className="flex items-center space-x-2">
-              <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider flex items-center space-x-1.5">
-                <Building2 className="w-3.5 h-3.5" />
+              <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 uppercase tracking-wider flex items-center space-x-1.5">
+                <Building2 className="w-3.5 h-3.5 text-emerald-500" />
                 <span>Facility Admin Portal</span>
               </span>
               <span className="text-xs text-slate-400 font-mono">Integrated AI Telemetry</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">
               Factory Parameters & Live Onboarding
             </h1>
-            <p className="text-sm text-slate-300 leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
               Input your plant's operational parameters, raw materials, thermal fuels, electricity tariffs, and scrap volumes.
               Our integrated AI automatically reviews your parameters and recalculates carbon baselines, 3D thermal hotspots, and ROI in real time.
             </p>
           </div>
 
           {/* Quick Preset Selector Buttons */}
-          <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-2.5 shrink-0 max-w-xs w-full">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] space-y-2.5 shrink-0 max-w-xs w-full shadow-xs">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
               Load Pre-Configured SME Preset
             </span>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => handleLoadPreset('apex_packaging')}
-                className="p-2 rounded-xl text-left bg-slate-900 hover:bg-emerald-600/30 border border-slate-700 hover:border-emerald-500/50 transition-all text-xs text-slate-200"
+                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
               >
-                <span className="font-bold block truncate">Apex Packaging</span>
-                <span className="text-[10px] text-slate-400">Polymer (Pune)</span>
+                <span className="font-bold block truncate font-heading">Apex Packaging</span>
+                <span className="text-[10px] text-slate-400 font-mono">Polymer (Pune)</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleLoadPreset('rajkot_forging')}
-                className="p-2 rounded-xl text-left bg-slate-900 hover:bg-emerald-600/30 border border-slate-700 hover:border-emerald-500/50 transition-all text-xs text-slate-200"
+                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
               >
-                <span className="font-bold block truncate">Rajkot Forging</span>
-                <span className="text-[10px] text-slate-400">Steel (Gujarat)</span>
+                <span className="font-bold block truncate font-heading">Rajkot Forging</span>
+                <span className="text-[10px] text-slate-400 font-mono">Steel (Gujarat)</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleLoadPreset('surat_textiles')}
-                className="p-2 rounded-xl text-left bg-slate-900 hover:bg-emerald-600/30 border border-slate-700 hover:border-emerald-500/50 transition-all text-xs text-slate-200"
+                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
               >
-                <span className="font-bold block truncate">Surat Textiles</span>
-                <span className="text-[10px] text-slate-400">Dyeing & Mills</span>
+                <span className="font-bold block truncate font-heading">Surat Textiles</span>
+                <span className="text-[10px] text-slate-400 font-mono">Dyeing & Mills</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleLoadPreset('vapi_chemicals')}
-                className="p-2 rounded-xl text-left bg-slate-900 hover:bg-emerald-600/30 border border-slate-700 hover:border-emerald-500/50 transition-all text-xs text-slate-200"
+                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
               >
-                <span className="font-bold block truncate">Vapi Chemicals</span>
-                <span className="text-[10px] text-slate-400">Agrochem Belt</span>
+                <span className="font-bold block truncate font-heading">Vapi Chemicals</span>
+                <span className="text-[10px] text-slate-400 font-mono">Agrochem Belt</span>
               </button>
             </div>
           </div>
@@ -313,14 +312,14 @@ Generated At: ${new Date().toLocaleString('en-IN')}
 
         {/* Flash Message Alert */}
         {saveSuccessMessage && (
-          <div className="mt-4 p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-between animate-fadeIn text-sm text-emerald-200 font-medium">
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between animate-fadeIn text-xs text-emerald-700 dark:text-emerald-300 font-medium">
+            <div className="flex items-center space-x-2.5">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
               <span>{saveSuccessMessage}</span>
             </div>
             <button
               onClick={() => onNavigateTab('simulator_hub')}
-              className="text-xs px-3 py-1 rounded-xl bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 transition-colors"
+              className="text-xs px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-colors"
             >
               Go to Simulator ➔
             </button>
@@ -329,18 +328,18 @@ Generated At: ${new Date().toLocaleString('en-IN')}
       </div>
 
       {/* Navigation Tabs Bar inside Admin */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800">
+      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 dark:bg-white/[0.04] rounded-2xl border border-slate-200/80 dark:border-white/[0.08]">
         <button
           onClick={() => setActiveSection('profile')}
           className={cn(
             'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
             activeSection === 'profile'
-              ? 'bg-white dark:bg-emerald-600 text-slate-900 dark:text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           )}
         >
           <Building2 className="w-4 h-4" />
-          <span>1. Plant Profile & Shifts</span>
+          <span>1. Plant Profile & Schedule</span>
         </button>
 
         <button
@@ -348,12 +347,12 @@ Generated At: ${new Date().toLocaleString('en-IN')}
           className={cn(
             'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
             activeSection === 'stages'
-              ? 'bg-white dark:bg-emerald-600 text-slate-900 dark:text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           )}
         >
           <Layers className="w-4 h-4" />
-          <span>2. Stage 1–4 Energy & Material Telemetry</span>
+          <span>2. Stage 1–4 Energy & Materials</span>
         </button>
 
         <button
@@ -361,12 +360,12 @@ Generated At: ${new Date().toLocaleString('en-IN')}
           className={cn(
             'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
             activeSection === 'financial'
-              ? 'bg-white dark:bg-emerald-600 text-slate-900 dark:text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           )}
         >
           <DollarSign className="w-4 h-4" />
-          <span>3. Financial & CAPEX Constraints</span>
+          <span>3. Financial & CAPEX Parameters</span>
         </button>
 
         <button
@@ -374,10 +373,25 @@ Generated At: ${new Date().toLocaleString('en-IN')}
           className={cn(
             'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
             activeSection === 'ai'
-              ? 'bg-white dark:bg-emerald-600 text-slate-900 dark:text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           )}
         >
+          <Sparkles className="w-4 h-4 text-emerald-500" />
+          <span>4. AI Audit & Review Studio</span>
+        </button>
+
+        <div className="ml-auto pr-2 hidden sm:flex items-center">
+          <button
+            type="button"
+            onClick={onOpenProvenanceModal}
+            className="flex items-center space-x-1.5 text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Statutory Standards (CEA / IPCC)</span>
+          </button>
+        </div>
+      </div>
           <Sparkles className="w-4 h-4 text-amber-400" />
           <span>4. Automated AI Audit & Review Studio</span>
         </button>

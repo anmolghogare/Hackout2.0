@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card';
 import { Badge } from '../../ui/Badge';
 import { Button } from '../../ui/Button';
-import { Recycle, ArrowUpRight, Truck, ShieldCheck, CheckCircle2, X, FileCheck, Sparkles, Building } from 'lucide-react';
+import { Recycle, ArrowUpRight, Truck, ShieldCheck, CheckCircle2, X, FileCheck } from 'lucide-react';
 import { ViewMode } from '../../../types';
 
 export interface SankeyVisualizerProps {
@@ -83,29 +83,31 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
   return (
     <Card className="mb-8 theme-transition">
       <CardHeader>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="flex items-center space-x-2">
-              <Recycle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <CardTitle className="flex items-center space-x-2.5">
+              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <Recycle className="w-5 h-5 text-emerald-500" />
+              </div>
               <span>B2B Circular Waste Stream Sankey Visualizer</span>
             </CardTitle>
-            <CardDescription>
-              Interactive waste-to-feedstock flow paths mapping industrial byproduct diversion across regional SME clusters.
+            <CardDescription className="mt-1">
+              Interactive waste-to-feedstock flow paths mapping industrial byproduct diversion across regional SME manufacturing clusters.
             </CardDescription>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-500/30">
-            ESG Circular Economy Engine
+          <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 font-mono self-start sm:self-center">
+            Circular Economy Engine
           </span>
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="space-y-6">
         {/* Interactive SVG Sankey Diagram */}
-        <div className="relative p-6 rounded-2xl bg-slate-50/90 dark:bg-[#08101e] border border-slate-200/80 dark:border-slate-800 mb-8 shadow-xl overflow-x-auto">
+        <div className="relative p-6 sm:p-8 rounded-2xl bg-slate-50/90 dark:bg-[#0C0E17] border border-slate-200/80 dark:border-white/[0.08] shadow-xs overflow-x-auto">
           <div className="min-w-[700px] relative py-4">
-            <h4 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center justify-between">
+            <h4 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center justify-between">
               <span>SUPPLIER SOURCE NODES</span>
-              <span className="text-emerald-600 dark:text-emerald-400">CIRCULAR BYPRODUCT STREAMS (DUAL GRADIENT)</span>
+              <span className="text-emerald-600 dark:text-emerald-400">CIRCULAR BYPRODUCT FLOW STREAMS</span>
               <span>RECEIVING CONSUMER NODES</span>
             </h4>
 
@@ -113,35 +115,25 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
             <div className="relative h-64 flex items-center justify-between">
               <svg className="absolute inset-0 w-full h-full pointer-events-none">
                 <defs>
-                  {/* Stream 0 Dual Color Gradient (Emerald to Cyan Half Section Shift) */}
                   <linearGradient id="sankeyGrad0" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.9" />
-                    <stop offset="45%" stopColor="#10b981" stopOpacity="0.85" />
-                    <stop offset="55%" stopColor="#06b6d4" stopOpacity="0.85" />
-                    <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.9" />
+                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" />
                   </linearGradient>
-
-                  {/* Stream 1 Dual Color Gradient */}
                   <linearGradient id="sankeyGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.85" />
-                    <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.85" />
+                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" />
                   </linearGradient>
-
-                  {/* Stream 2 Dual Color Gradient */}
                   <linearGradient id="sankeyGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.85" />
-                    <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.85" />
+                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" />
                   </linearGradient>
                 </defs>
 
-                {/* Stream 0 Path (B2B Circular Trim with Half Section Color Transition) */}
+                {/* Stream 0 Path */}
                 <path
                   d="M 180 40 C 350 40, 350 180, 520 180"
                   stroke="url(#sankeyGrad0)"
-                  strokeWidth={selectedFlow === 0 ? '14' : '7'}
-                  strokeDasharray={selectedFlow === 0 ? '8 4' : undefined}
+                  strokeWidth={selectedFlow === 0 ? '10' : '5'}
                   fill="none"
                   className="transition-all duration-300 pointer-events-auto cursor-pointer"
                   onClick={() => setSelectedFlow(0)}
@@ -151,7 +143,7 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
                 <path
                   d="M 180 120 C 350 120, 350 40, 520 40"
                   stroke="url(#sankeyGrad1)"
-                  strokeWidth={selectedFlow === 1 ? '14' : '6'}
+                  strokeWidth={selectedFlow === 1 ? '10' : '5'}
                   fill="none"
                   className="transition-all duration-300 pointer-events-auto cursor-pointer"
                   onClick={() => setSelectedFlow(1)}
@@ -161,7 +153,7 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
                 <path
                   d="M 180 200 C 350 200, 350 120, 520 120"
                   stroke="url(#sankeyGrad2)"
-                  strokeWidth={selectedFlow === 2 ? '14' : '6'}
+                  strokeWidth={selectedFlow === 2 ? '10' : '5'}
                   fill="none"
                   className="transition-all duration-300 pointer-events-auto cursor-pointer"
                   onClick={() => setSelectedFlow(2)}
@@ -172,38 +164,38 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
               <div className="flex flex-col space-y-6 z-10 w-48">
                 <div
                   onClick={() => setSelectedFlow(0)}
-                  className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 0
-                      ? 'bg-emerald-50 dark:bg-emerald-950/90 border-emerald-500 shadow-lg shadow-emerald-500/20'
-                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
+                      ? 'bg-emerald-500/10 border-emerald-500 shadow-sm'
+                      : 'bg-white dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/30'
                   }`}
                 >
-                  <span className="font-bold text-slate-900 dark:text-white block">Apex Packaging</span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">12T Trim Scrap/mo (Seller)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block font-heading">Apex Packaging</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">12T Trim Scrap/mo (Seller)</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(1)}
-                  className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 1
-                      ? 'bg-amber-50 dark:bg-amber-950/90 border-amber-500 shadow-lg shadow-amber-500/20'
-                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
+                      ? 'bg-emerald-500/10 border-emerald-500 shadow-sm'
+                      : 'bg-white dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/30'
                   }`}
                 >
-                  <span className="font-bold text-slate-900 dark:text-white block">GreenFuel Agro</span>
-                  <span className="text-[10px] text-amber-600 dark:text-amber-400 font-mono">50T Biomass/mo (Supplier)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block font-heading">GreenFuel Agro</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">50T Biomass/mo (Supplier)</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(2)}
-                  className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 2
-                      ? 'bg-blue-50 dark:bg-blue-950/90 border-blue-500 shadow-lg shadow-blue-500/20'
-                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
+                      ? 'bg-emerald-500/10 border-emerald-500 shadow-sm'
+                      : 'bg-white dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/30'
                   }`}
                 >
-                  <span className="font-bold text-slate-900 dark:text-white block">ResinTech Synthetics</span>
-                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono">20T PCR Granules/mo</span>
+                  <span className="font-bold text-slate-900 dark:text-white block font-heading">ResinTech Synthetics</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">20T PCR Granules/mo</span>
                 </div>
               </div>
 
@@ -211,38 +203,38 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
               <div className="flex flex-col space-y-6 z-10 w-48 text-right">
                 <div
                   onClick={() => setSelectedFlow(1)}
-                  className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 1
-                      ? 'bg-amber-50 dark:bg-amber-950/90 border-amber-500 shadow-lg'
-                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
+                      ? 'bg-emerald-500/10 border-emerald-500 shadow-sm'
+                      : 'bg-white dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/30'
                   }`}
                 >
-                  <span className="font-bold text-slate-900 dark:text-white block">Apex Furnace Unit</span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Biomass Receiver (Factory A)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block font-heading">Apex Furnace Unit</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">Biomass Receiver (Factory A)</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(2)}
-                  className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 2
-                      ? 'bg-blue-50 dark:bg-blue-950/90 border-blue-500 shadow-lg'
-                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
+                      ? 'bg-emerald-500/10 border-emerald-500 shadow-sm'
+                      : 'bg-white dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/30'
                   }`}
                 >
-                  <span className="font-bold text-slate-900 dark:text-white block">Apex Blending Line</span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">PCR Feedstock Receiver</span>
+                  <span className="font-bold text-slate-900 dark:text-white block font-heading">Apex Blending Line</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">PCR Feedstock Receiver</span>
                 </div>
 
                 <div
                   onClick={() => setSelectedFlow(0)}
-                  className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                  className={`p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
                     selectedFlow === 0
-                      ? 'bg-cyan-50 dark:bg-cyan-950/90 border-cyan-500 shadow-lg shadow-cyan-500/20'
-                      : 'bg-white/95 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-xs'
+                      ? 'bg-emerald-500/10 border-emerald-500 shadow-sm'
+                      : 'bg-white dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/30'
                   }`}
                 >
-                  <span className="font-bold text-slate-900 dark:text-white block">Apex Pipe Mfg</span>
-                  <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono">Scrap Buyer (Factory B)</span>
+                  <span className="font-bold text-slate-900 dark:text-white block font-heading">Apex Pipe Mfg</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">Scrap Buyer (Factory B)</span>
                 </div>
               </div>
             </div>
@@ -261,13 +253,13 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
                 onClick={() => setSelectedFlow(item.id)}
                 className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-white dark:bg-slate-800/90 border-emerald-500 shadow-md ring-1 ring-emerald-500/20'
-                    : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                    ? 'bg-white dark:bg-[#0D0F18] border-emerald-500 shadow-md ring-1 ring-emerald-500/20'
+                    : 'bg-slate-50/80 dark:bg-white/[0.03] border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500/30'
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                       {item.matchScore}% Match
                     </span>
                     <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
@@ -279,22 +271,22 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
                     {item.flowName}
                   </h4>
 
-                  <div className="space-y-2 text-xs py-3 border-y border-slate-200 dark:border-slate-700/60">
+                  <div className="space-y-2 text-xs py-3 border-y border-slate-200/80 dark:border-white/[0.06]">
                     <div className="flex justify-between">
-                      <span className="text-slate-500">From Node:</span>
+                      <span className="text-slate-400">From Node:</span>
                       <span className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[150px]">
                         {item.from}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">To Node:</span>
+                      <span className="text-slate-400">To Node:</span>
                       <span className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[150px]">
                         {item.to}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-[11px] pt-1">
-                      <span className="flex items-center space-x-1 text-slate-500">
-                        <Truck className="w-3 h-3 text-slate-400" />
+                      <span className="flex items-center space-x-1 text-slate-400">
+                        <Truck className="w-3.5 h-3.5" />
                         <span>{item.distance}</span>
                       </span>
                       <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
@@ -312,17 +304,17 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
                       e.stopPropagation();
                       handleExecuteContract(item);
                     }}
-                    className="w-full flex items-center justify-center space-x-1 font-bold"
+                    className="w-full flex items-center justify-center space-x-1.5 font-bold"
                   >
                     {isExecuted ? (
                       <>
                         <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        <span>Contract Active & Deployed</span>
+                        <span>Contract Deployed</span>
                       </>
                     ) : (
                       <>
                         <span>Execute Stream Contract</span>
-                        <ArrowUpRight className="w-4 h-4" />
+                        <ArrowUpRight className="w-3.5 h-3.5" />
                       </>
                     )}
                   </Button>
@@ -335,52 +327,52 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
 
       {/* Interactive Execute Stream Contract Modal */}
       {contractModalItem && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center space-x-2">
-                <FileCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white dark:bg-[#0D0F18] border border-slate-200 dark:border-white/[0.12] rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-white/[0.08] pb-3">
+              <div className="flex items-center space-x-2.5">
+                <FileCheck className="w-5 h-5 text-emerald-500" />
+                <h3 className="text-base font-bold font-heading text-slate-900 dark:text-white">
                   Execute Circular Stream Contract
                 </h3>
               </div>
               <button
                 onClick={() => setContractModalItem(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-1.5">
-                <div className="text-slate-500">Material Stream:</div>
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] space-y-1.5">
+                <div className="text-slate-400">Material Stream:</div>
                 <div className="font-bold text-slate-900 dark:text-white text-sm">
                   {contractModalItem.flowName}
                 </div>
-                <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-white/[0.06] text-slate-600 dark:text-slate-300">
                   <span>Monthly Off-Take Volume:</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">{contractModalItem.volume}</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500 block">Carbon Abatement</span>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08]">
+                  <span className="text-slate-400 block">Carbon Abatement</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
                     {contractModalItem.avoidedCO2}
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500 block">Annual Financial ROI</span>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08]">
+                  <span className="text-slate-400 block">Annual Financial ROI</span>
                   <span className="font-bold text-slate-900 dark:text-white text-sm">
                     {contractModalItem.netSavingsINR}
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-[11px] text-emerald-800 dark:text-emerald-300 space-y-1">
-                <div className="font-bold flex items-center space-x-1">
+              <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-800 dark:text-emerald-300 space-y-1">
+                <div className="font-bold flex items-center space-x-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>ISO 14064 & SEBI BRSR Principle 6 Protocol</span>
                 </div>
@@ -388,13 +380,13 @@ export const SankeyVisualizer: React.FC<SankeyVisualizerProps> = ({ viewMode = '
               </div>
             </div>
 
-            <div className="flex justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex justify-end space-x-2 pt-3 border-t border-slate-200/80 dark:border-white/[0.08]">
               <Button variant="outline" size="sm" onClick={() => setContractModalItem(null)}>
                 Cancel
               </Button>
               <Button variant="primary" size="sm" onClick={handleConfirmContract} className="flex items-center space-x-1.5">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Sign & Deploy Contract to Ledger</span>
+                <span>Deploy to Ledger</span>
               </Button>
             </div>
           </div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,30 +23,9 @@ textarea {
   color: #f8fafc !important;
 }
 
-
 @keyframes flowParticle {
   0% { stroke-dashoffset: 60; }
   100% { stroke-dashoffset: 0; }
-}
-
-@keyframes ambientPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4), inset 0 0 10px rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.8);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(239, 68, 68, 0.8), inset 0 0 20px rgba(239, 68, 68, 0.4);
-    border-color: rgba(239, 68, 68, 1);
-  }
-}
-
-@keyframes financialPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.7);
-  }
 }
 
 .animate-particle-fast {
@@ -59,25 +38,9 @@ textarea {
   animation: flowParticle 2s linear infinite;
 }
 
-.ambient-halo-danger {
-  animation: ambientPulse 2s infinite ease-in-out;
-}
-
-.ambient-halo-financial {
-  animation: financialPulse 2.5s infinite ease-in-out;
-}
-
-@keyframes slideRight {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-
-.animate-slideRight {
-  animation: slideRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.4);
@@ -91,55 +54,51 @@ textarea {
 }
 
 .theme-transition {
-  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* 
-  Modern Dark Glassmorphism Design System 
-  Industrial Emission Leak-Point Detector & Circular Alternative Recommender 
+  Institutional Clean Design System 
+  Industrial Carbon Intelligence & ESG Auditing
   Team: ByteMe (Hackout 2.0)
 */
 
-
-
 :root {
-  /* High-Contrast Dark Canvas Tokens */
-  --bg-dark: #090A0F;
-  --bg-card: #151824;
-  --bg-card-glass: rgba(21, 24, 36, 0.85);
-  --bg-card-hover: rgba(30, 35, 52, 0.95);
+  /* High-Contrast Canvas Tokens */
+  --bg-dark: #080C14;
+  --bg-card: #0F1624;
+  --bg-card-glass: rgba(15, 22, 36, 0.85);
+  --bg-card-hover: rgba(22, 31, 49, 0.95);
   
   --border-card: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.12);
-  --border-accent: rgba(16, 185, 129, 0.45);
+  --border-accent: rgba(16, 185, 129, 0.4);
   
-  /* Primary & Accent Colors */
+  /* Primary Institutional Palette */
   --primary: #10b981;        /* Emerald Green */
-  --primary-glow: rgba(16, 185, 129, 0.4);
-  --secondary: #06b6d4;      /* Cyan */
-  --secondary-glow: rgba(6, 182, 212, 0.4);
-  --accent-purple: #8b5cf6;  /* Purple */
-  --purple-glow: rgba(139, 92, 246, 0.4);
+  --primary-glow: rgba(16, 185, 129, 0.25);
+  --secondary: #0ea5e9;      /* Sky Blue */
+  --secondary-glow: rgba(14, 165, 233, 0.25);
   
-  /* Alert & Status Colors */
-  --danger: #ef4444;         /* Red Alert */
-  --danger-glow: rgba(239, 68, 68, 0.4);
+  /* Semantic Status */
+  --danger: #f43f5e;         /* Rose Alert */
   --warning: #f59e0b;        /* Amber Evaluate */
-  --success: #10b981;
+  --success: #10b981;        /* Emerald Success */
   
   /* Typography Tokens */
   --text-main: #f8fafc;
-  --text-muted: #cbd5e1;
-  --text-dim: #94a3b8;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
   
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   
   /* Borders & Shadows */
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-sm: 8px;
-  --shadow-glow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
 }
 
 * {
@@ -150,27 +109,15 @@ textarea {
 
 body {
   font-family: var(--font-family);
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.6;
   background-color: var(--bg-dark);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
-body {
-  font-family: var(--font-family);
-  background-color: var(--bg-dark);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 45%),
-    radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.1) 0px, transparent 45%),
-    radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-    radial-gradient(at 80% 50%, rgba(16, 185, 129, 0.05) 0px, transparent 40%);
-  background-attachment: fixed;
-  color: var(--text-main);
-  min-height: 100vh;
-  padding-bottom: 60px;
-  line-height: 1.5;
-}
 
 /* ==========================================================================
    App Header & KPI Scorecards
