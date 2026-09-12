@@ -18,6 +18,7 @@ export interface BaseLayoutProps {
   onOpenGoogleAuthModal?: () => void;
   onStartJudgeTour?: () => void;
   onApplyPreset?: (preset: Partial<SliderInputs>) => void;
+  sliderInputs?: SliderInputs;
   isBackendOnline?: boolean;
   children: React.ReactNode;
 }
@@ -36,6 +37,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
   onOpenGoogleAuthModal,
   onStartJudgeTour,
   onApplyPreset = () => {},
+  sliderInputs,
   isBackendOnline = true,
   children,
 }) => {
@@ -99,6 +101,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         onOpenBRSRModal={onOpenBRSRModal}
         onApplyPreset={onApplyPreset}
         onStartJudgeTour={onStartJudgeTour}
+        facilityConfig={facilityConfig}
+        sliderInputs={sliderInputs}
       />
     </div>
   );

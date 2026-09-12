@@ -80,6 +80,7 @@ export const DashboardPage: React.FC = () => {
       onOpenGoogleAuthModal={() => setIsGoogleModalOpen(true)}
       onStartJudgeTour={startJudgeTour}
       onApplyPreset={applyPreset}
+      sliderInputs={sliderInputs}
       isBackendOnline={isBackendOnline}
     >
       {/* Google Identity Services Authentication Modal */}
@@ -247,7 +248,7 @@ export const DashboardPage: React.FC = () => {
       {/* ============================================================ */}
       {activeTab === 'copilot' && (
         <div className="animate-fadeIn">
-          <CopilotPanel />
+          <CopilotPanel facilityConfig={facilityConfig} sliderInputs={sliderInputs} />
         </div>
       )}
 

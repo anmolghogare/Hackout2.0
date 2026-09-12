@@ -20,6 +20,7 @@ export interface AIAssistantChatbotProps {
   onApplyPreset: (preset: Partial<SliderInputs>) => void;
   onStartJudgeTour?: () => void;
   facilityConfig?: FacilityConfig;
+  sliderInputs?: SliderInputs;
 }
 
 export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
@@ -31,6 +32,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
   onApplyPreset,
   onStartJudgeTour,
   facilityConfig = DEFAULT_FACILITY_PRESETS.apex_packaging,
+  sliderInputs = { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 },
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -153,26 +155,13 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     }
 
     // Check for natural language what-if adjustments
-    const whatIf = parseNaturalLanguageWhatIf(prompt, { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 });
+    const whatIf = parseNaturalLanguageWhatIf(prompt, sliderInputs);
     if (whatIf.hasMatches) {
-      setTimeout(() => {
-        onApplyPreset(whatIf.newSliders);
-        onNavigateTab('simulator_hub');
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: (Date.now() + 1).toString(),
-            sender: 'assistant',
-            text: `Executed live simulation adjustment: ${whatIf.explanation} Jumped to ROI Playground.`,
-          },
-        ]);
-        setIsTyping(false);
-      }, 400);
-      return;
+      onApplyPreset(whatIf.newSliders);
     }
 
     try {
-      const aiRes = await queryAICopilot(prompt, facilityConfig, { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 });
+      const aiRes = await queryAICopilot(prompt, facilityConfig, whatIf.hasMatches ? whatIf.newSliders : sliderInputs);
       if (aiRes) {
         if (aiRes.navigationTarget) {
           onNavigateTab(aiRes.navigationTarget as TabId);
@@ -180,8 +169,8 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
 
         let formattedText = aiRes.summary;
         if (aiRes.actionItems && Array.isArray(aiRes.actionItems) && aiRes.actionItems.length > 0) {
-          formattedText += '\n\n**Action Plan:**\n' + aiRes.actionItems.map((item) =>
-            `• **Step ${item.step}: ${item.title}**\n  - ${item.co2Impact || ''}\n  - ${item.financialImpact || ''}`
+          formattedText += '\n\n**Calculated Action Plan:**\n' + aiRes.actionItems.map((item) =>
+            `• **Step ${item.step}: ${item.title}**\n  - CO₂ Impact: ${item.co2Impact || ''}\n  - Financial Savings: ${item.financialImpact || ''}`
           ).join('\n');
         }
 

@@ -3,12 +3,20 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Button } from '../../ui/Button';
 import { Bot, Send, Sparkles, User, ShieldCheck } from 'lucide-react';
 import { queryCopilot } from '../../../lib/api';
+import { queryAICopilot } from '../../../services/aiService';
+import { DEFAULT_FACILITY_PRESETS } from '../../../lib/utils';
+import { FacilityConfig, SliderInputs } from '../../../types';
 
 export interface CopilotPanelProps {
   initialCopilotData?: any;
+  facilityConfig?: FacilityConfig;
+  sliderInputs?: SliderInputs;
 }
 
-export const CopilotPanel: React.FC<CopilotPanelProps> = () => {
+export const CopilotPanel: React.FC<CopilotPanelProps> = ({
+  facilityConfig = DEFAULT_FACILITY_PRESETS.apex_packaging,
+  sliderInputs = { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 },
+}) => {
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<
     { id: string; sender: 'user' | 'assistant'; text: string; structuredData?: any; rec?: any }[]
@@ -73,31 +81,33 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = () => {
     setQuery('');
     setIsAsking(true);
 
-    const apiResult = await queryCopilot(textToSend);
-
-    if (apiResult && apiResult.data) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          sender: 'assistant',
-          text: apiResult.data.text || apiResult.data.summary || 'Here is your response:',
-          structuredData: (apiResult.data.actionItems && apiResult.data.actionItems.length > 0) ? apiResult.data : null,
-          rec: apiResult.data.recommendation,
-        },
-      ]);
-    } else {
-      setTimeout(() => {
+    try {
+      const aiRes = await queryAICopilot(textToSend, facilityConfig, sliderInputs);
+      if (aiRes) {
         setMessages((prev) => [
           ...prev,
           {
             id: (Date.now() + 1).toString(),
             sender: 'assistant',
-            text: `Based on Apex Packaging's baseline telemetry, substituting 20% Virgin Polymer with PCR Resin and upgrading furnace thermal efficiency cuts monthly carbon intensity by 21% while generating ₹6.5 Lakh/year in net operational profit increase.`,
+            text: aiRes.summary,
             structuredData: {
-              aiTitle: 'Apex Packaging Operational Plan',
-              referenceStandards: 'IPCC 2006 & CEA India Factor Database v19',
-              actionItems: [
+              aiTitle: `${facilityConfig.profile.name} Calculated Strategy`,
+              referenceStandards: 'CEA India Grid v19 & IPCC 2006',
+              actionItems: aiRes.actionItems,
+              totalImpact: {
+                co2ReductionPct: `${aiRes.totalImpact.co2ReductionPct} CO₂ Cut`,
+                annualProfitIncrease: `${aiRes.totalImpact.annualProfitIncrease} Savings`,
+                paybackPeriodMonths: 'Sub-11 Month Payback',
+              },
+            },
+          },
+        ]);
+      }
+    } catch (err) {
+      console.warn('Copilot error:', err);
+    }
+    setIsAsking(false);
+  };
                 {
                   step: 1,
                   title: 'Furnace Insulation & 5% Temp Overshoot Reduction',
