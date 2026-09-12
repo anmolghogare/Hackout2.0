@@ -606,9 +606,4 @@ export const getRegressionCharts = (req, res) => {
     success: true,
     data: empiricalRegressionData
   });
-};sionCharts = (req, res) => {
-  res.json({
-    success: true,
-    data: empiricalRegressionData
-  });
 };

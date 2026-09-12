@@ -29,6 +29,7 @@ export interface NavbarProps {
   activeGoogleUser?: GoogleUser | null;
   onOpenGoogleAuthModal?: () => void;
   isBackendOnline?: boolean;
+  onTabChange?: (tab: TabId) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -43,31 +44,32 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleSidebarDesktop,
   activeGoogleUser,
   onOpenGoogleAuthModal,
+  onTabChange,
 }) => {
   const isFinancial = viewMode === 'financial';
 
   const tabTitles: Record<TabId, { title: string; category: string }> = {
-    overview: { title: 'Executive Overview & Live Telemetry', category: 'Core Platform' },
-    admin: { title: 'Facility Onboarding & Parameter Setup', category: 'Core Platform' },
-    sensors: { title: 'Real-Time IoT Sensor Array & Telemetry', category: 'Core Platform' },
-    simulation: { title: 'Digital Twin Process Pipeline', category: 'Simulation & Engineering' },
-    simulator_hub: { title: 'What-If ROI & Decarbonization Studio', category: 'Simulation & Engineering' },
-    analytics_hub: { title: '3D Thermal Diagnostics & Heatmap', category: 'Simulation & Engineering' },
-    sandbox: { title: 'Scenario Matrix & Sensitivity Testing', category: 'Simulation & Engineering' },
-    circular: { title: 'B2B Byproduct & Scrap Marketplace', category: 'Circular Economy' },
-    sankey: { title: 'Material & Energy Sankey Stream', category: 'Circular Economy' },
-    intake: { title: 'OCR Smart Bill & Ingestion Scanner', category: 'Data & AI' },
-    copilot: { title: 'AI Engineering Intelligence Copilot', category: 'Data & AI' },
-    roadmap: { title: 'Decarbonization CapEx & Payback Matrix', category: 'Compliance & Finance' },
-    compliance: { title: 'SEBI BRSR Principle 6 Core Audit Pack', category: 'Compliance & Finance' },
-    carbon_credits: { title: 'Green Finance, Offsets & Carbon Credits', category: 'Compliance & Finance' },
+    overview: { title: 'Executive Overview', category: '' },
+    admin: { title: 'Facility Setup', category: 'Config' },
+    sensors: { title: 'IoT Sensors', category: 'Telemetry' },
+    simulation: { title: 'Process Pipeline', category: 'Digital Twin' },
+    simulator_hub: { title: 'What-If Studio', category: 'Simulation' },
+    analytics_hub: { title: 'Thermal Diagnostics', category: 'Simulation' },
+    sandbox: { title: 'Scenario Matrix', category: 'Simulation' },
+    circular: { title: 'Scrap Marketplace', category: 'Circular Economy' },
+    sankey: { title: 'Sankey Stream', category: 'Circular Economy' },
+    intake: { title: 'OCR Scanner', category: 'Data & AI' },
+    roadmap: { title: 'CapEx Matrix', category: 'Compliance' },
+    compliance: { title: 'SEBI BRSR Pack', category: 'Compliance' },
+    carbon_credits: { title: 'Green Finance', category: 'Finance' },
+    copilot: { title: 'AI Copilot', category: 'Data & AI' },
   };
 
-  const currentSection = tabTitles[activeTab] || { title: 'Industrial Carbon Intelligence', category: 'Platform' };
+  const currentSection = tabTitles[activeTab] || { title: 'Carbon Intelligence', category: 'Platform' };
 
   return (
     <header className="sticky top-0 z-30 w-full h-16 border-b border-slate-200/80 dark:border-white/[0.08] bg-white/95 dark:bg-[#0D0F18]/95 backdrop-blur-xl transition-colors duration-300 px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-xs">
-      {/* Left: Sidebar Toggle & Section Breadcrumb */}
+      {/* Left: Sidebar Toggle & Top Priority Alert Indicator */}
       <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1 mr-3">
         {/* Mobile Hamburger Drawer Trigger */}
         <button
@@ -78,16 +80,41 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Breadcrumb Section Indicator */}
-        <div className="flex items-center space-x-2 text-xs min-w-0 truncate">
-          <span className="text-slate-400 dark:text-slate-500 font-mono text-[11px] uppercase tracking-wider hidden lg:inline font-semibold shrink-0">
-            {currentSection.category}
-          </span>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-700 hidden lg:inline shrink-0" />
-          <h2 className="font-heading font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm md:text-base tracking-tight truncate">
-            {currentSection.title}
-          </h2>
-        </div>
+        {/* Top Priority Hotspot Red Alert Bar on Overview / Header */}
+        {activeTab === 'overview' ? (
+          <div className="flex items-center space-x-2.5 px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 font-mono text-xs shadow-xs">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
+            <span className="font-extrabold text-[11px] uppercase tracking-wider hidden sm:inline">
+              PRIORITY 1 RED ALERT: Zone 2 Furnace Thermal Leak (48 tCO₂e/mo)
+            </span>
+            <span className="font-extrabold text-[11px] uppercase tracking-wider sm:hidden">
+              Priority 1 Leak (48t)
+            </span>
+            {onTabChange && (
+              <button
+                onClick={() => onTabChange('simulator_hub')}
+                className="px-2 py-0.5 rounded-md bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] transition-colors shrink-0 shadow-xs"
+              >
+                Fix in Simulator →
+              </button>
+            )}
+          </div>
+        ) : (
+          /* Breadcrumb Section Indicator for other tabs */
+          <div className="flex items-center space-x-2 text-xs min-w-0 truncate">
+            {currentSection.category && (
+              <>
+                <span className="text-slate-400 dark:text-slate-500 font-mono text-[11px] uppercase tracking-wider hidden lg:inline font-semibold shrink-0">
+                  {currentSection.category}
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-700 hidden lg:inline shrink-0" />
+              </>
+            )}
+            <h2 className="font-heading font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm md:text-base tracking-tight truncate">
+              {currentSection.title}
+            </h2>
+          </div>
+        )}
       </div>
 
       {/* Right: High-Level Controls (Search, Rupee Toggle, Export, Theme) */}

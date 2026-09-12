@@ -79,6 +79,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
           activeGoogleUser={activeGoogleUser}
           onOpenGoogleAuthModal={onOpenGoogleAuthModal}
           isBackendOnline={isBackendOnline}
+          onTabChange={onTabChange}
         />
 
         <main className="flex-1 w-full max-w-[1680px] mx-auto px-5 sm:px-10 lg:px-14 xl:px-16 py-10 md:py-12 space-y-10 md:space-y-12 min-w-0 flex flex-col justify-start relative isolate">
