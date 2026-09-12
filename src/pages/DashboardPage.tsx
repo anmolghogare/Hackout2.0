@@ -62,15 +62,7 @@ export const DashboardPage: React.FC = () => {
       onApplyPreset={applyPreset}
       isBackendOnline={isBackendOnline}
     >
-      {/* Top Guided "Judge Tour" Banner */}
-      <JudgeTourBanner
-        isActive={isJudgeTourActive}
-        currentStep={judgeTourStep}
-        steps={judgeTourSteps}
-        onStart={startJudgeTour}
-        onNext={nextJudgeTourStep}
-        onStop={stopJudgeTour}
-      />
+
 
       {/* Top Executive Metric Cards Bar (Rendered for in-depth functional tools) */}
       {activeTab !== 'overview' && (

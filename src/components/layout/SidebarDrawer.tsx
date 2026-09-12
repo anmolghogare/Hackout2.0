@@ -242,21 +242,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
 
         {/* Drawer Bottom Action Quick Tools */}
         <div className="p-4 border-t border-slate-800 bg-slate-950/60 space-y-2">
-          {onStartJudgeTour && (
-            <button
-              onClick={() => {
-                onStartJudgeTour();
-                onClose();
-              }}
-              className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-md shadow-emerald-600/25 transition-all"
-            >
-              <div className="flex items-center space-x-2">
-                <PlayCircle className="w-4 h-4 text-white" />
-                <span>3-Min Judge Demo Flow</span>
-              </div>
-              <span className="text-[10px] px-2 py-0.5 bg-white/20 rounded-full">Guided</span>
-            </button>
-          )}
+
 
           <div className="grid grid-cols-2 gap-2">
             <button
