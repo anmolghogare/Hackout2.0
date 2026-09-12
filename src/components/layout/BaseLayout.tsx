@@ -10,6 +10,7 @@ export interface BaseLayoutProps {
   onOpenCopilotModal: () => void;
   onOpenBRSRModal: () => void;
   onOpenAuditExportModal: () => void;
+  onStartJudgeTour?: () => void;
   isBackendOnline?: boolean;
   children: React.ReactNode;
 }
@@ -22,6 +23,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
   onOpenCopilotModal,
   onOpenBRSRModal,
   onOpenAuditExportModal,
+  onStartJudgeTour,
   isBackendOnline = true,
   children,
 }) => {
@@ -36,6 +38,7 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
         onOpenCopilotModal={onOpenCopilotModal}
         onOpenBRSRModal={onOpenBRSRModal}
         onOpenAuditExportModal={onOpenAuditExportModal}
+        onStartJudgeTour={onStartJudgeTour}
         isBackendOnline={isBackendOnline}
       />
 

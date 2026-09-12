@@ -58,6 +58,7 @@ export const DashboardPage: React.FC = () => {
       onOpenCopilotModal={() => setIsCopilotOpen(true)}
       onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
       onOpenAuditExportModal={() => setIsAuditExportOpen(true)}
+      onStartJudgeTour={startJudgeTour}
       isBackendOnline={isBackendOnline}
     >
       {/* Top Guided "Judge Tour" Banner */}
