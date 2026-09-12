@@ -1,13 +1,30 @@
 import { useState, useEffect, useCallback } from 'react';
-import { KPIData, ProcessStage, SliderInputs, TabId, ViewMode, SavedScenario, GoogleUser } from '../types';
+import {
+  KPIData,
+  ProcessStage,
+  SliderInputs,
+  TabId,
+  ViewMode,
+  SavedScenario,
+  GoogleUser,
+  FacilityConfig,
+  AISettings,
+} from '../types';
 import { fetchSimulationResult } from '../lib/api';
-import { calculateLocalSimulation } from '../lib/utils';
+import { calculateDynamicFacilitySimulation, DEFAULT_FACILITY_PRESETS } from '../lib/utils';
 
 const INITIAL_SLIDERS: SliderInputs = {
   fuelShiftPct: 50,
   tempReductionPct: 5,
   pcrResinPct: 20,
   scrapRecyclePct: 100,
+};
+
+const DEFAULT_AI_SETTINGS: AISettings = {
+  apiKey: '',
+  model: 'gemini-1.5-flash',
+  enableAutoAnalysis: true,
+  temperature: 0.2,
 };
 
 const DEFAULT_GOOGLE_USER: GoogleUser = {
@@ -33,6 +50,43 @@ export function useDashboardData() {
   const [isBackendOnline, setIsBackendOnline] = useState<boolean>(false);
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
   const [isBRSRModalOpen, setIsBRSRModalOpen] = useState<boolean>(false);
+  const [isDataProvenanceModalOpen, setIsDataProvenanceModalOpen] = useState<boolean>(false);
+
+  // Facility Configuration State with LocalStorage Persistence
+  const [facilityConfig, setFacilityConfig] = useState<FacilityConfig>(() => {
+    const saved = localStorage.getItem('byteme_facility_config');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+    return DEFAULT_FACILITY_PRESETS.apex_packaging;
+  });
+
+  // AI Configuration Settings with LocalStorage Persistence
+  const [aiSettings, setAISettings] = useState<AISettings>(() => {
+    const saved = localStorage.getItem('byteme_ai_settings');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+    return DEFAULT_AI_SETTINGS;
+  });
+
+  const saveFacilityConfig = (newConfig: FacilityConfig) => {
+    setFacilityConfig(newConfig);
+    localStorage.setItem('byteme_facility_config', JSON.stringify(newConfig));
+  };
+
+  const saveAISettings = (newSettings: AISettings) => {
+    setAISettings(newSettings);
+    localStorage.setItem('byteme_ai_settings', JSON.stringify(newSettings));
+  };
 
   // Google Authentication State
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState<boolean>(false);
@@ -98,42 +152,60 @@ export function useDashboardData() {
   const [judgeTourStep, setJudgeTourStep] = useState<number>(0);
 
   // Saved Scenarios Sandbox State
-  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([
-    {
-      id: 'sc-1',
-      name: 'Plan A: 50% Biomass Fuel Shift + 20% PCR Blend',
-      sliderInputs: { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 },
-      savedKpi: calculateLocalSimulation({ fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 }).kpiData,
-      createdAt: 'Just now',
-      capexEst: '₹15,40,000',
-      paybackMonths: '7.5 Months',
-    },
-    {
-      id: 'sc-2',
-      name: 'Plan B: Aggressive PNG Shift (80%) + Zero Waste',
-      sliderInputs: { fuelShiftPct: 80, tempReductionPct: 10, pcrResinPct: 35, scrapRecyclePct: 100 },
-      savedKpi: calculateLocalSimulation({ fuelShiftPct: 80, tempReductionPct: 10, pcrResinPct: 35, scrapRecyclePct: 100 }).kpiData,
-      createdAt: '10 mins ago',
-      capexEst: '₹35,00,000',
-      paybackMonths: '10.0 Months',
-    },
-  ]);
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>(() => {
+    const defaultA = calculateDynamicFacilitySimulation(facilityConfig, {
+      fuelShiftPct: 50,
+      tempReductionPct: 5,
+      pcrResinPct: 20,
+      scrapRecyclePct: 100,
+    });
+    const defaultB = calculateDynamicFacilitySimulation(facilityConfig, {
+      fuelShiftPct: 80,
+      tempReductionPct: 10,
+      pcrResinPct: 35,
+      scrapRecyclePct: 100,
+    });
+    return [
+      {
+        id: 'sc-1',
+        name: 'Plan A: 50% Biomass Fuel Shift + 20% PCR Blend',
+        sliderInputs: { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 },
+        savedKpi: defaultA.kpiData,
+        createdAt: 'Just now',
+        capexEst: '₹15,40,000',
+        paybackMonths: '7.5 Months',
+      },
+      {
+        id: 'sc-2',
+        name: 'Plan B: Aggressive PNG Shift (80%) + Zero Waste',
+        sliderInputs: { fuelShiftPct: 80, tempReductionPct: 10, pcrResinPct: 35, scrapRecyclePct: 100 },
+        savedKpi: defaultB.kpiData,
+        createdAt: '10 mins ago',
+        capexEst: '₹35,00,000',
+        paybackMonths: '10.0 Months',
+      },
+    ];
+  });
 
-  // Computed simulation state
-  const [kpiData, setKpiData] = useState<KPIData>(() => calculateLocalSimulation(INITIAL_SLIDERS).kpiData);
-  const [stages, setStages] = useState<ProcessStage[]>(() => calculateLocalSimulation(INITIAL_SLIDERS).stages);
+  // Computed simulation state dynamically calculated from facilityConfig
+  const [kpiData, setKpiData] = useState<KPIData>(
+    () => calculateDynamicFacilitySimulation(facilityConfig, INITIAL_SLIDERS).kpiData
+  );
+  const [stages, setStages] = useState<ProcessStage[]>(
+    () => calculateDynamicFacilitySimulation(facilityConfig, INITIAL_SLIDERS).stages
+  );
 
-  // Recalculate simulation state when sliders change
-  const recalculateSimulation = useCallback(async (inputs: SliderInputs) => {
+  // Recalculate simulation state when sliders or facilityConfig change
+  const recalculateSimulation = useCallback(async (inputs: SliderInputs, config: FacilityConfig) => {
     setIsLoading(true);
     const remoteResult = await fetchSimulationResult(inputs);
-    
-    if (remoteResult) {
+
+    if (remoteResult && config.id === 'apex_packaging') {
       setKpiData(remoteResult.kpiData);
       setStages(remoteResult.stages);
       setIsBackendOnline(true);
     } else {
-      const localResult = calculateLocalSimulation(inputs);
+      const localResult = calculateDynamicFacilitySimulation(config, inputs);
       setKpiData(localResult.kpiData);
       setStages(localResult.stages);
       setIsBackendOnline(false);
@@ -142,8 +214,8 @@ export function useDashboardData() {
   }, []);
 
   useEffect(() => {
-    recalculateSimulation(sliderInputs);
-  }, [sliderInputs, recalculateSimulation]);
+    recalculateSimulation(sliderInputs, facilityConfig);
+  }, [sliderInputs, facilityConfig, recalculateSimulation]);
 
   const updateSlider = (key: keyof SliderInputs, value: number) => {
     setSliderInputs((prev) => ({
@@ -186,12 +258,13 @@ export function useDashboardData() {
 
   // Automated 3-Min Judge Demo Flow
   const judgeTourSteps: { tab: TabId; title: string; desc: string }[] = [
-    { tab: 'intake', title: '1. OCR Smart Bill Intake', desc: 'Drag-and-drop utility bills with laser scanning animation to auto-fill plant baselines.' },
-    { tab: 'simulation', title: '2. Digital Twin Leak Hotspots', desc: 'Inspect particle stream connectors and expandable radial hotspot breakdown wheel.' },
-    { tab: 'whatif', title: '3. What-If Empirical Sliders', desc: 'Adjust fuel shifts and PCR resin substitution in real time.' },
-    { tab: 'sandbox', title: '4. Scenario Sandbox Matrix', desc: 'Compare saved decarbonization plans side-by-side against baseline CAPEX and ROI.' },
-    { tab: 'circular', title: '5. B2B Circular Waste Sankey', desc: 'Trace waste stream monetization between Factory A and regional buyer clusters.' },
-    { tab: 'roadmap', title: '6. BRSR Regulatory Export', desc: 'Generate SEBI-compliant BRSR Core ESG audit packs in one click.' },
+    { tab: 'admin', title: '1. Facility Admin & Onboarding', desc: 'Configure factory profiles, fuels, tariffs, and Gemini API connection in seconds.' },
+    { tab: 'intake', title: '2. OCR Smart Bill Intake', desc: 'Drag-and-drop utility bills with laser scanning animation to auto-fill plant baselines.' },
+    { tab: 'simulation', title: '3. Digital Twin Leak Hotspots', desc: 'Inspect particle stream connectors and expandable radial hotspot breakdown wheel.' },
+    { tab: 'simulator_hub', title: '4. What-If Empirical Sliders', desc: 'Adjust fuel shifts and PCR resin substitution in real time.' },
+    { tab: 'sandbox', title: '5. Scenario Sandbox Matrix', desc: 'Compare saved decarbonization plans side-by-side against baseline CAPEX and ROI.' },
+    { tab: 'circular', title: '6. B2B Circular Waste Sankey', desc: 'Trace waste stream monetization between Factory A and regional buyer clusters.' },
+    { tab: 'roadmap', title: '7. BRSR Regulatory Export', desc: 'Generate SEBI-compliant BRSR Core ESG audit packs in one click.' },
   ];
 
   const startJudgeTour = () => {
@@ -207,7 +280,7 @@ export function useDashboardData() {
       setActiveTab(judgeTourSteps[nextIdx].tab);
     } else {
       setIsJudgeTourActive(false);
-      setIsBRSRModalOpen(true); // Open BRSR export modal at tour end
+      setIsBRSRModalOpen(true);
     }
   };
 
@@ -225,6 +298,10 @@ export function useDashboardData() {
     updateSlider,
     applyPreset,
     resetSliders,
+    facilityConfig,
+    saveFacilityConfig,
+    aiSettings,
+    saveAISettings,
     kpiData,
     stages,
     isLoading,
@@ -233,6 +310,8 @@ export function useDashboardData() {
     setIsCopilotOpen,
     isBRSRModalOpen,
     setIsBRSRModalOpen,
+    isDataProvenanceModalOpen,
+    setIsDataProvenanceModalOpen,
     isGoogleModalOpen,
     setIsGoogleModalOpen,
     googleAccounts,

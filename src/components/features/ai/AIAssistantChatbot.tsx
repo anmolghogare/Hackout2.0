@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TabId, ViewMode, SliderInputs } from '../../../types';
+import { TabId, ViewMode, SliderInputs, FacilityConfig } from '../../../types';
 import {
   Bot,
   X,
@@ -7,6 +7,8 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { queryCopilot } from '../../../lib/api';
+import { queryAICopilot, parseNaturalLanguageWhatIf } from '../../../services/aiService';
+import { DEFAULT_FACILITY_PRESETS } from '../../../lib/utils';
 import { cn } from '../../../lib/utils';
 
 export interface AIAssistantChatbotProps {
@@ -17,6 +19,7 @@ export interface AIAssistantChatbotProps {
   onOpenBRSRModal: () => void;
   onApplyPreset: (preset: Partial<SliderInputs>) => void;
   onStartJudgeTour?: () => void;
+  facilityConfig?: FacilityConfig;
 }
 
 export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
@@ -27,6 +30,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
   onOpenBRSRModal,
   onApplyPreset,
   onStartJudgeTour,
+  facilityConfig = DEFAULT_FACILITY_PRESETS.apex_packaging,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -36,14 +40,15 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     {
       id: 'welcome',
       sender: 'assistant',
-      text: "👋 Hi! I'm your ByteMe Assistant. I can guide you through the platform, answer questions on facility carbon emissions & ROI, or run live simulations for you.",
+      text: `👋 Hi! I'm your ByteMe Assistant for ${facilityConfig.profile.name}. I can guide you through the platform, answer questions on facility carbon emissions & ROI, or run live simulations for you.`,
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
   // Quick navigation shortcuts
   const navShortcuts = [
-    { label: '🏠 Home Overview', tab: 'overview' as TabId },
+    { label: '🏠 Overview', tab: 'overview' as TabId },
+    { label: '⚙️ Admin Setup', tab: 'admin' as TabId },
     { label: '🏭 Digital Twin', tab: 'simulation' as TabId },
     { label: '🎛️ ROI Simulator', tab: 'simulator_hub' as TabId },
     { label: '🔥 3D Heatmap', tab: 'analytics_hub' as TabId },
@@ -62,6 +67,22 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     setIsTyping(true);
 
     const lower = prompt.toLowerCase().trim();
+
+    if (lower.includes('admin') || lower.includes('setup') || lower.includes('onboard') || lower.includes('config') || lower.includes('api key')) {
+      setTimeout(() => {
+        onNavigateTab('admin');
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'assistant',
+            text: 'Navigated to the Facility Admin & Parameters Setup Hub! Here you can customize factory fuels, electricity tariffs, and Gemini API keys.',
+          },
+        ]);
+        setIsTyping(false);
+      }, 300);
+      return;
+    }
 
     if (lower.includes('home') || lower.includes('about') || lower.includes('overview')) {
       setTimeout(() => {
@@ -131,16 +152,18 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
       return;
     }
 
-    if (lower.includes('preset') || lower.includes('net-zero') || lower.includes('net zero') || lower.includes('biomass')) {
+    // Check for natural language what-if adjustments
+    const whatIf = parseNaturalLanguageWhatIf(prompt, { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 });
+    if (whatIf.hasMatches) {
       setTimeout(() => {
-        onApplyPreset({ fuelShiftPct: 80, tempReductionPct: 15, pcrResinPct: 40, scrapRecyclePct: 100 });
+        onApplyPreset(whatIf.newSliders);
         onNavigateTab('simulator_hub');
         setMessages((prev) => [
           ...prev,
           {
             id: (Date.now() + 1).toString(),
             sender: 'assistant',
-            text: 'Applied the Net-Zero 2030 target simulation preset (80% fuel shift, 40% PCR resin, 100% scrap circularity) and jumped to the ROI Playground!',
+            text: `Executed live simulation adjustment: ${whatIf.explanation} Jumped to ROI Playground.`,
           },
         ]);
         setIsTyping(false);
@@ -149,23 +172,17 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     }
 
     try {
-      const res = await queryCopilot(prompt);
-      const data = res?.data || res;
-      const resText = data?.text || res?.response || data?.summary;
-
-      if (resText) {
-        if (data?.navigationTarget) {
-          onNavigateTab(data.navigationTarget as TabId);
+      const aiRes = await queryAICopilot(prompt, facilityConfig, { fuelShiftPct: 50, tempReductionPct: 5, pcrResinPct: 20, scrapRecyclePct: 100 });
+      if (aiRes) {
+        if (aiRes.navigationTarget) {
+          onNavigateTab(aiRes.navigationTarget as TabId);
         }
 
-        let formattedText = resText;
-        if (data?.actionItems && Array.isArray(data.actionItems) && data.actionItems.length > 0) {
-          formattedText += '\n\n**Action Plan:**\n' + data.actionItems.map((item: any) =>
+        let formattedText = aiRes.summary;
+        if (aiRes.actionItems && Array.isArray(aiRes.actionItems) && aiRes.actionItems.length > 0) {
+          formattedText += '\n\n**Action Plan:**\n' + aiRes.actionItems.map((item) =>
             `• **Step ${item.step}: ${item.title}**\n  - ${item.co2Impact || ''}\n  - ${item.financialImpact || ''}`
           ).join('\n');
-        }
-        if (data?.totalImpact) {
-          formattedText += `\n\n**Total Impact:** ${data.totalImpact.co2ReductionPct || ''} CO₂ reduction, ${data.totalImpact.annualProfitIncrease || ''} savings.`;
         }
 
         setMessages((prev) => [
@@ -191,9 +208,9 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
 
     const greetings = ['hi', 'hello', 'hey', 'greetings', 'namaste', 'good morning', 'good afternoon', 'good evening'];
     if (greetings.some((g) => lower === g || lower.startsWith(g + ' ') || lower.endsWith(' ' + g))) {
-      text = "👋 Hello! How can I assist you with Apex Packaging's carbon emissions reduction, ROI modeling, or circular waste network today?";
+      text = `👋 Hello! How can I assist you with ${facilityConfig.profile.name}'s carbon emissions reduction, ROI modeling, or circular waste network today?`;
     } else if (lower.includes('emiss') || lower.includes('carbon') || lower.includes('co2') || lower.includes('furnace')) {
-      text = "At Apex Packaging, Stage 2 Furnace Heating generates 48 tCO₂e/month (the largest hotspot). Shifting 50% furnace fuel to biomass briquettes reduces emissions by 28.8% with ₹6.5 Lakhs/year net operational savings.";
+      text = `At ${facilityConfig.profile.name}, Stage 2 Furnace Heating (${facilityConfig.stage2.fuelType}) is the largest Scope 1 hotspot. Shifting 50% furnace fuel to biomass/PNG reduces emissions with high net operational savings.`;
     }
 
     setMessages((prev) => [
@@ -341,7 +358,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
             )}
           </div>
 
-          {/* Bottom Chat Input Bar - Fully Visible and High Contrast */}
+          {/* Bottom Chat Input Bar */}
           <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
             <form
               onSubmit={(e) => {
@@ -354,7 +371,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ask or command (e.g., 'Jump to Sankey', 'BRSR report')..."
+                placeholder="Ask or command (e.g., 'Jump to Admin', 'BRSR report')..."
                 className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
               />
               <button

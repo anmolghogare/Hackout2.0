@@ -10,10 +10,10 @@ import {
   Leaf,
   PanelLeft,
   ChevronRight,
+  ShieldCheck,
   Sparkles,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-
 import { GoogleUser } from '../../types';
 
 export interface NavbarProps {
@@ -23,6 +23,7 @@ export interface NavbarProps {
   onOpenCopilotModal: () => void;
   onOpenBRSRModal: () => void;
   onOpenAuditExportModal: () => void;
+  onOpenProvenanceModal?: () => void;
   onToggleSidebarMobile: () => void;
   onToggleSidebarDesktop: () => void;
   activeGoogleUser?: GoogleUser | null;
@@ -37,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCopilotModal,
   onOpenBRSRModal,
   onOpenAuditExportModal,
+  onOpenProvenanceModal,
   onToggleSidebarMobile,
   onToggleSidebarDesktop,
   activeGoogleUser,
@@ -46,6 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const tabTitles: Record<TabId, { title: string; category: string }> = {
     overview: { title: 'Product Overview & Executive Summary', category: 'Platform Home' },
+    admin: { title: 'Facility Admin & Factory Onboarding', category: 'Platform Setup' },
     simulator_hub: { title: 'Unified ROI Playground & Waterfall', category: 'Simulator & Controls' },
     analytics_hub: { title: 'Thermal Analytics & 3D Heatmap', category: 'Hotspot Diagnostics' },
     intake: { title: 'OCR Smart Bill Scanner', category: 'Data Ingestion' },
@@ -53,6 +56,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     sandbox: { title: 'Scenario Sandbox Comparison', category: 'Planning Matrix' },
     circular: { title: 'B2B Circular Waste Stream Sankey', category: 'Circular Logistics' },
     roadmap: { title: 'Financial ROI & BRSR Roadmap', category: 'Compliance Matrix' },
+    whatif: { title: 'What-If Empirical Sliders', category: 'Scenario Planning' },
+    copilot: { title: 'ByteMe AI Copilot Panel', category: 'AI Intelligence' },
   };
 
   const currentSection = tabTitles[activeTab] || { title: 'Industrial Carbon Intelligence', category: 'Platform' };
@@ -93,6 +98,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Right: High-Level Controls (Search, Rupee Toggle, Export, Theme) */}
       <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
+        {/* Scientific Sources Badge Modal Trigger */}
+        {onOpenProvenanceModal && (
+          <button
+            onClick={onOpenProvenanceModal}
+            className="hidden xl:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all shadow-xs shrink-0"
+            title="Inspect Statutory Sources (CEA India, IPCC, BEE, CPCB)"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span className="font-mono text-[11px]">CEA / IPCC</span>
+          </button>
+        )}
+
         {/* Rupee-to-Carbon Shift Toggle */}
         <div className="flex items-center bg-slate-100 dark:bg-slate-800/70 p-0.5 sm:p-1 rounded-xl border border-slate-200 dark:border-slate-700/60">
           <button
@@ -123,16 +140,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden sm:inline">₹ INR</span>
           </button>
         </div>
-
-        {/* Global AI Copilot Assistant Trigger */}
-        <button
-          onClick={onOpenCopilotModal}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md transition-all duration-200 shrink-0"
-          title="Launch AI Copilot Assistant (Server-Side IPCC/CEA Grounded)"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-emerald-200 animate-pulse" />
-          <span>AI Assistant</span>
-        </button>
 
         {/* Global Command Terminal Trigger (Cmd + K) */}
         <button

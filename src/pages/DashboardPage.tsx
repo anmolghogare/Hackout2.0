@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { BaseLayout } from '../components/layout/BaseLayout';
 import { ByteMeOverview } from '../components/features/overview/ByteMeOverview';
+import { AdminHub } from '../components/features/dashboard/AdminHub';
 import { UnifiedSimulatorHub } from '../components/features/dashboard/UnifiedSimulatorHub';
 import { AdvancedAnalyticsHub } from '../components/features/dashboard/AdvancedAnalyticsHub';
 import { OCRIntakeHub } from '../components/features/dashboard/OCRIntakeHub';
@@ -11,6 +12,7 @@ import { CopilotPanel } from '../components/features/dashboard/CopilotPanel';
 import { CopilotCommandModal } from '../components/features/dashboard/CopilotCommandModal';
 import { BRSRExportModal } from '../components/features/dashboard/BRSRExportModal';
 import { AuditReportExportModal } from '../components/features/dashboard/AuditReportExportModal';
+import { DataProvenanceModal } from '../components/features/dashboard/DataProvenanceModal';
 import { GoogleAuthModal } from '../components/auth/GoogleAuthModal';
 import { KPICards } from '../components/features/dashboard/KPICards';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
@@ -27,6 +29,10 @@ export const DashboardPage: React.FC = () => {
     updateSlider,
     applyPreset,
     resetSliders,
+    facilityConfig,
+    saveFacilityConfig,
+    aiSettings,
+    saveAISettings,
     kpiData,
     stages,
     isBackendOnline,
@@ -34,6 +40,8 @@ export const DashboardPage: React.FC = () => {
     setIsCopilotOpen,
     isBRSRModalOpen,
     setIsBRSRModalOpen,
+    isDataProvenanceModalOpen,
+    setIsDataProvenanceModalOpen,
     isGoogleModalOpen,
     setIsGoogleModalOpen,
     googleAccounts,
@@ -63,16 +71,16 @@ export const DashboardPage: React.FC = () => {
       onOpenCopilotModal={() => setIsCopilotOpen(true)}
       onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
       onOpenAuditExportModal={() => setIsAuditExportOpen(true)}
+      onOpenProvenanceModal={() => setIsDataProvenanceModalOpen(true)}
+      facilityConfig={facilityConfig}
       activeGoogleUser={activeGoogleUser}
       onOpenGoogleAuthModal={() => setIsGoogleModalOpen(true)}
       onStartJudgeTour={startJudgeTour}
       onApplyPreset={applyPreset}
       isBackendOnline={isBackendOnline}
     >
-
-
       {/* Top Executive Metric Cards Bar (Rendered for in-depth functional tools) */}
-      {activeTab !== 'overview' && (
+      {activeTab !== 'overview' && activeTab !== 'admin' && (
         <div className="animate-fadeIn">
           <KPICards kpiData={kpiData} viewMode={viewMode} />
         </div>
@@ -112,8 +120,15 @@ export const DashboardPage: React.FC = () => {
         kpiData={kpiData}
       />
 
+      {/* Scientific Data Provenance & Regulatory Inspector Modal */}
+      <DataProvenanceModal
+        isOpen={isDataProvenanceModalOpen}
+        onClose={() => setIsDataProvenanceModalOpen(false)}
+        facilityConfig={facilityConfig}
+      />
+
       {/* ============================================================ */}
-      {/* 1. HOME / PRODUCT OVERVIEW (Clean, Spacious, Narrative-Led) */}
+      {/* 1. HOME / PRODUCT OVERVIEW */}
       {/* ============================================================ */}
       {activeTab === 'overview' && (
         <ByteMeOverview
@@ -124,7 +139,23 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 2. FUNCTIONAL VIEW: WHAT-IF SIMULATOR & LIVE ROI HUB */}
+      {/* 2. FACILITY ADMIN & ONBOARDING HUB */}
+      {/* ============================================================ */}
+      {activeTab === 'admin' && (
+        <div className="animate-fadeIn">
+          <AdminHub
+            currentConfig={facilityConfig}
+            onSaveConfig={saveFacilityConfig}
+            aiSettings={aiSettings}
+            onSaveAISettings={saveAISettings}
+            onNavigateTab={setActiveTab}
+            onOpenProvenanceModal={() => setIsDataProvenanceModalOpen(true)}
+          />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 3. FUNCTIONAL VIEW: WHAT-IF SIMULATOR & LIVE ROI HUB */}
       {/* ============================================================ */}
       {activeTab === 'simulator_hub' && (
         <div className="animate-fadeIn space-y-6">
@@ -139,7 +170,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 3. FUNCTIONAL VIEW: ADVANCED ANALYTICS & 3D THERMAL HEATMAP */}
+      {/* 4. FUNCTIONAL VIEW: ADVANCED ANALYTICS & 3D THERMAL HEATMAP */}
       {/* ============================================================ */}
       {activeTab === 'analytics_hub' && (
         <div className="animate-fadeIn space-y-6">
@@ -151,7 +182,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 4. FUNCTIONAL VIEW: OCR SMART BILL SCANNER */}
+      {/* 5. FUNCTIONAL VIEW: OCR SMART BILL SCANNER */}
       {/* ============================================================ */}
       {activeTab === 'intake' && (
         <div className="animate-fadeIn space-y-6">
@@ -160,7 +191,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 5. FUNCTIONAL VIEW: DIGITAL TWIN PIPELINE CANVAS */}
+      {/* 6. FUNCTIONAL VIEW: DIGITAL TWIN PIPELINE CANVAS */}
       {/* ============================================================ */}
       {activeTab === 'simulation' && (
         <div className="animate-fadeIn space-y-6">
@@ -169,7 +200,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 6. FUNCTIONAL VIEW: SCENARIO SANDBOX */}
+      {/* 7. FUNCTIONAL VIEW: SCENARIO SANDBOX */}
       {/* ============================================================ */}
       {activeTab === 'sandbox' && (
         <div className="animate-fadeIn space-y-6">
@@ -184,7 +215,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 7. FUNCTIONAL VIEW: AI COPILOT */}
+      {/* 8. FUNCTIONAL VIEW: AI COPILOT */}
       {/* ============================================================ */}
       {activeTab === 'copilot' && (
         <div className="animate-fadeIn">
@@ -193,7 +224,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 8. FUNCTIONAL VIEW: B2B CIRCULAR WASTE SANKEY & CLUSTER */}
+      {/* 9. FUNCTIONAL VIEW: B2B CIRCULAR WASTE SANKEY & CLUSTER */}
       {/* ============================================================ */}
       {activeTab === 'circular' && (
         <div className="animate-fadeIn space-y-8">
@@ -203,7 +234,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 9. FUNCTIONAL VIEW: ROI ROADMAP & SEBI BRSR AUDIT */}
+      {/* 10. FUNCTIONAL VIEW: ROI ROADMAP & SEBI BRSR AUDIT */}
       {/* ============================================================ */}
       {activeTab === 'roadmap' && (
         <div className="animate-fadeIn space-y-6">
