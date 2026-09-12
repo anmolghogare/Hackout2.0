@@ -22,9 +22,12 @@ export const ProcessSimulation: React.FC<ProcessSimulationProps> = ({ stages }) 
               Live breakdown of manufacturing stages, carbon share, and high-emission alert flags.
             </CardDescription>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-semibold border border-rose-500/20">
-            Real-time Telemetry
-          </span>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold border border-rose-500/30 flex items-center space-x-1">
+              <Flame className="w-3.5 h-3.5" />
+              <span>⚡ AI Telemetry Leak Monitor</span>
+            </span>
+          </div>
         </div>
       </CardHeader>
 

@@ -432,6 +432,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                     year: 'numeric',
                   })}
                 </span>
+              </div>
               <div className="text-[10px] font-medium text-slate-400/90 mt-0.5 tracking-wider">
                 Time of Access: <span className="text-emerald-400 font-bold">{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
               </div>
@@ -566,6 +567,243 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                   <span>ROI Simulator</span>
                 </Button>
               </div>
+            </div>
+          </section>
+
+          {/* AI INTELLIGENCE ARCHITECTURE FEATURE SHOWCASE */}
+          <section className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-emerald-950/40 border border-emerald-500/30 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <Sparkles className="w-4 h-4 animate-pulse" />
+                  </span>
+                  <h3 className="text-base sm:text-lg font-heading font-black text-white tracking-tight">
+                    AI Intelligence & Server-Side Core Architecture
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-300">
+                  Zero-hallucination industrial carbon decision intelligence grounded in facility datasets, IPCC 2006 guidelines & CEA India Grid v19 factors.
+                </p>
+              </div>
+              <span className="text-[11px] font-mono font-extrabold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shrink-0 self-start sm:self-center">
+                ✨ Server-Side AI Engine Active
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Card 1: AI Natural Language Q&A */}
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 transition-all space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <h4 className="font-heading font-bold text-white text-sm">
+                      1. Natural Language Q&A Engine
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
+                    POST /api/copilot/query
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Accepts natural language operational queries (e.g. <em>"How can I reduce emissions by 20% without raising cost?"</em>) and returns structured action plans with step-by-step CO₂ reductions, ₹ cost/savings, and payback schedules.
+                </p>
+                <div className="text-[11px] font-mono text-slate-300 pt-1.5 border-t border-slate-800/80 flex items-center justify-between">
+                  <span className="text-slate-500">Citation Dataset:</span>
+                  <span className="text-emerald-400 font-semibold">IPCC 2006 & CEA India Grid v19</span>
+                </div>
+              </div>
+
+              {/* Card 2: AI Circular Economy By-Product Matcher */}
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 transition-all space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                      <Recycle className="w-4 h-4" />
+                    </div>
+                    <h4 className="font-heading font-bold text-white text-sm">
+                      2. AI Circular Economy Matcher
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-teal-400 bg-teal-950/60 px-2 py-0.5 rounded border border-teal-800">
+                    POST /api/circular/analyze-product
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Analyzes added industrial scrap (e.g. Off-Cut Film, PET Flakes, Fly Ash), predicts recipient buyer industries, calculates 30% feedstock discount, avoided landfill fees (₹1,500/Ton), and annual sales revenue.
+                </p>
+                <div className="text-[11px] font-mono text-slate-300 pt-1.5 border-t border-slate-800/80 flex items-center justify-between">
+                  <span className="text-slate-500">Economic Impact:</span>
+                  <span className="text-teal-400 font-semibold">+₹3.0L/yr Revenue • 85% Diversion</span>
+                </div>
+              </div>
+
+              {/* Card 3: AI Thermal Leak-Point Monitor */}
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 transition-all space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                      <Activity className="w-4 h-4" />
+                    </div>
+                    <h4 className="font-heading font-bold text-white text-sm">
+                      3. AI Workflow & Leak Monitor
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-rose-400 bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800">
+                    Telemetry Engine
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Continuous process pipeline monitoring that pinpoints 1,418°C furnace overshoots and 380°C refractory shell radiation heat loss, predicting fuel shifts before thermal efficiency drops.
+                </p>
+                <div className="text-[11px] font-mono text-slate-300 pt-1.5 border-t border-slate-800/80 flex items-center justify-between">
+                  <span className="text-slate-500">Monitored Hotspot:</span>
+                  <span className="text-rose-400 font-semibold">Stage 2 Furnace (48 tCO₂e/mo)</span>
+                </div>
+              </div>
+
+              {/* Card 4: Server-Side API Security */}
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 transition-all space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                    <h4 className="font-heading font-bold text-white text-sm">
+                      4. Server-Side Security & Uptime
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">
+                    Enterprise Ready
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Server-side execution ensures API keys (e.g. Gemini LLM) are never exposed to browser clients. Integrates a deterministic zero-hallucination fallback engine for 99.9% uptime.
+                </p>
+                <div className="text-[11px] font-mono text-slate-300 pt-1.5 border-t border-slate-800/80 flex items-center justify-between">
+                  <span className="text-slate-500">Security Architecture:</span>
+                  <span className="text-amber-400 font-semibold">100% Server-Side Key Vault</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* CORE PLATFORM MODULES GRID */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <Target className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold font-heading text-white uppercase tracking-wider">
+                  Interactive Platform Modules
+                </h3>
+              </div>
+              <span className="text-xs text-slate-400">Click any card to launch tool</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {featurePillars.map((pillar) => {
+                const Icon = pillar.icon;
+                return (
+                  <Card
+                    key={pillar.id}
+                    onClick={() => onNavigate(pillar.id)}
+                    className="group p-4 cursor-pointer hover:border-emerald-500/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between bg-slate-900/70 border-slate-800"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="p-2 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 group-hover:scale-105 transition-transform">
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <span className={cn('text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full border', pillar.badgeColor)}>
+                          {pillar.badge}
+                        </span>
+                      </div>
+
+                      <h4 className="text-sm font-bold font-heading text-white mb-0.5 group-hover:text-emerald-400 transition-colors">
+                        {pillar.title}
+                      </h4>
+                      <span className="text-[11px] text-emerald-400 font-mono block mb-2 font-medium">
+                        {pillar.headline}
+                      </span>
+
+                      <p className="text-xs text-slate-400 leading-relaxed mb-3 line-clamp-2">
+                        {pillar.summary}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                      <span className="text-slate-500 text-[10.5px] truncate max-w-[150px]">
+                        {pillar.benefit}
+                      </span>
+                      <div className="flex items-center space-x-1 text-emerald-400 font-bold group-hover:translate-x-1 transition-transform">
+                        <span className="text-xs">Launch</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* TARGET AUDIENCE PROFILES */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <Users className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold font-heading text-white uppercase tracking-wider">
+                  Who Is ByteMe Built For?
+                </h3>
+              </div>
+              <span className="text-xs text-slate-400">Role-specific workflows</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {targetAudience.map((audience, idx) => {
+                const Icon = audience.icon;
+                return (
+                  <Card
+                    key={idx}
+                    className="p-4 flex flex-col justify-between bg-slate-900/60 border-slate-800"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className={cn('p-2 rounded-xl border shadow-sm', audience.color)}>
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
+                          {audience.tag}
+                        </span>
+                      </div>
+
+                      <h4 className="text-sm font-bold font-heading text-white mb-1">
+                        {audience.role}
+                      </h4>
+
+                      <p className="text-xs text-slate-400 leading-relaxed mb-3">
+                        {audience.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-500">Key Outcome</span>
+                        <span className="text-emerald-400 font-bold">{audience.metrics}</span>
+                      </div>
+
+                      <button
+                        onClick={() => onNavigate(audience.tabTarget)}
+                        className="w-full py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-1 transition-colors border border-slate-700"
+                      >
+                        <span>{audience.actionLabel}</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
           </section>
         </main>
@@ -871,6 +1109,8 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
               </button>
             </div>
           </div>
+        </div>
+      )}
       {/* ============================================================ */}
       {/* ABOUT US & PLATFORM GUIDE MODAL OVERLAY */}
       {/* ============================================================ */}

@@ -10,6 +10,7 @@ import {
   Leaf,
   PanelLeft,
   ChevronRight,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -122,6 +123,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden sm:inline">₹ INR</span>
           </button>
         </div>
+
+        {/* Global AI Copilot Assistant Trigger */}
+        <button
+          onClick={onOpenCopilotModal}
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md transition-all duration-200 shrink-0"
+          title="Launch AI Copilot Assistant (Server-Side IPCC/CEA Grounded)"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-emerald-200 animate-pulse" />
+          <span>AI Assistant</span>
+        </button>
 
         {/* Global Command Terminal Trigger (Cmd + K) */}
         <button

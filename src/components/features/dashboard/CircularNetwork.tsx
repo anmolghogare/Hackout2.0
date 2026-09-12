@@ -138,16 +138,43 @@ export const CircularNetwork: React.FC = () => {
             <Button
               onClick={() => setIsAddModalOpen(true)}
               variant="primary"
-              className="flex items-center space-x-1.5 shadow-sm"
+              className="flex items-center space-x-1.5 shadow-sm font-bold"
             >
-              <Plus className="w-4 h-4" />
-              <span>Add By-Product for AI Match</span>
+              <Sparkles className="w-4 h-4 text-emerald-200 animate-pulse" />
+              <span>✨ Add By-Product for AI Match</span>
             </Button>
           </div>
         </div>
       </CardHeader>
 
       <CardContent>
+        {/* AI Industry Matcher Highlight Banner */}
+        <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-xl bg-emerald-600 text-white font-bold shrink-0">
+              <Sparkles className="w-4 h-4 animate-pulse" />
+            </div>
+            <div>
+              <div className="font-bold text-slate-900 dark:text-white font-heading text-sm flex items-center space-x-2">
+                <span>AI Industry By-Product Matcher Engine</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-bold">✨ Server-Side AI</span>
+              </div>
+              <p className="text-slate-600 dark:text-slate-300">
+                Adds custom by-products, predicts buyer industries (e.g. Pipe & Conduit Mfrs, Cement Mills), calculates 30% feedstock discount, & saves ₹1,500/Ton in avoided landfill fees.
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            variant="primary"
+            size="sm"
+            className="flex items-center space-x-1.5 shrink-0 font-bold"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Test AI By-Product Analyzer</span>
+          </Button>
+        </div>
+
         {/* Listings Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {listings.map((item) => (
