@@ -568,123 +568,6 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
               </div>
             </div>
           </section>
-
-          {/* CORE PLATFORM MODULES GRID */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center space-x-2">
-                <Target className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-bold font-heading text-white uppercase tracking-wider">
-                  Interactive Platform Modules
-                </h3>
-              </div>
-              <span className="text-xs text-slate-400">Click any card to launch tool</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {featurePillars.map((pillar) => {
-                const Icon = pillar.icon;
-                return (
-                  <Card
-                    key={pillar.id}
-                    onClick={() => onNavigate(pillar.id)}
-                    className="group p-4 cursor-pointer hover:border-emerald-500/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between bg-slate-900/70 border-slate-800"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="p-2 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 group-hover:scale-105 transition-transform">
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <span className={cn('text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full border', pillar.badgeColor)}>
-                          {pillar.badge}
-                        </span>
-                      </div>
-
-                      <h4 className="text-sm font-bold font-heading text-white mb-0.5 group-hover:text-emerald-400 transition-colors">
-                        {pillar.title}
-                      </h4>
-                      <span className="text-[11px] text-emerald-400 font-mono block mb-2 font-medium">
-                        {pillar.headline}
-                      </span>
-
-                      <p className="text-xs text-slate-400 leading-relaxed mb-3 line-clamp-2">
-                        {pillar.summary}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                      <span className="text-slate-500 text-[10.5px] truncate max-w-[150px]">
-                        {pillar.benefit}
-                      </span>
-                      <div className="flex items-center space-x-1 text-emerald-400 font-bold group-hover:translate-x-1 transition-transform">
-                        <span className="text-xs">Launch</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* TARGET AUDIENCE PROFILES */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-bold font-heading text-white uppercase tracking-wider">
-                  Who Is ByteMe Built For?
-                </h3>
-              </div>
-              <span className="text-xs text-slate-400">Role-specific workflows</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {targetAudience.map((audience, idx) => {
-                const Icon = audience.icon;
-                return (
-                  <Card
-                    key={idx}
-                    className="p-4 flex flex-col justify-between bg-slate-900/60 border-slate-800"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className={cn('p-2 rounded-xl border shadow-sm', audience.color)}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
-                          {audience.tag}
-                        </span>
-                      </div>
-
-                      <h4 className="text-sm font-bold font-heading text-white mb-1">
-                        {audience.role}
-                      </h4>
-
-                      <p className="text-xs text-slate-400 leading-relaxed mb-3">
-                        {audience.description}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-800 space-y-2">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="text-slate-500">Key Outcome</span>
-                        <span className="text-emerald-400 font-bold">{audience.metrics}</span>
-                      </div>
-
-                      <button
-                        onClick={() => onNavigate(audience.tabTarget)}
-                        className="w-full py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-1 transition-colors border border-slate-700"
-                      >
-                        <span>{audience.actionLabel}</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          </section>
         </main>
 
         {/* ============================================================ */}
@@ -798,6 +681,76 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
           </div>
         </aside>
       </div>
+
+      {/* ============================================================ */}
+      {/* FULL-WIDTH LOWER BAND: INTERACTIVE PLATFORM MODULES SECTION (100% WIDTH) */}
+      {/* ============================================================ */}
+      <section className="w-full space-y-6 pt-6 border-t border-slate-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+          <div className="flex items-center space-x-2.5">
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm">
+              <Target className="w-5 h-5 text-emerald-400 animate-pulse" />
+            </div>
+            <div>
+              <h3 className="text-lg font-black font-heading text-white uppercase tracking-wider">
+                Interactive Platform Modules
+              </h3>
+              <p className="text-xs text-slate-400">
+                Launch real-time telemetry, 3D thermal diagnostics, OCR scanner, and B2B waste streams.
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold self-start sm:self-auto">
+            6 Interactive Tools Live
+          </span>
+        </div>
+
+        {/* 3-Column Full-Width Module Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {featurePillars.map((pillar) => {
+            const Icon = pillar.icon;
+            return (
+              <Card
+                key={pillar.id}
+                onClick={() => onNavigate(pillar.id)}
+                className="group p-5 cursor-pointer hover:border-emerald-500/60 hover:shadow-[0_0_25px_rgba(0,230,118,0.15)] transition-all duration-300 flex flex-col justify-between bg-[#0d1322]/90 border-slate-800/90"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 group-hover:scale-105 transition-transform">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className={cn('text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border', pillar.badgeColor)}>
+                      {pillar.badge}
+                    </span>
+                  </div>
+
+                  <h4 className="text-base font-bold font-heading text-white mb-1 group-hover:text-emerald-400 transition-colors">
+                    {pillar.title}
+                  </h4>
+                  <span className="text-xs text-emerald-400 font-mono block mb-2 font-semibold">
+                    {pillar.headline}
+                  </span>
+
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    {pillar.summary}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
+                  <span className="text-slate-400 text-[11px] truncate max-w-[190px]">
+                    {pillar.benefit}
+                  </span>
+                  <div className="flex items-center space-x-1.5 text-emerald-400 font-bold group-hover:translate-x-1 transition-transform shrink-0">
+                    <span>Launch Tool</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
 
       {/* ============================================================ */}
       {/* INTERACTIVE STICKY-NOTE POP-UP OVERLAY (Isolated Fixed Container Modal) */}
