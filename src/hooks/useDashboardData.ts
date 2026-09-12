@@ -95,39 +95,73 @@ export function useDashboardData() {
     if (saved) {
       try {
         const parsed: GoogleUser[] = JSON.parse(saved);
-        return parsed.map((u, i) => ({
-          ...u,
-          avatar: !u.avatar || u.avatar.includes('dicebear')
-            ? BOY_FALLBACK_AVATARS[i % BOY_FALLBACK_AVATARS.length]
-            : u.avatar,
-        }));
+        return parsed.filter(u => u && u.email && !u.id.startsWith('preset-'));
       } catch (e) {
         // ignore parse error
       }
     }
-    return [DEFAULT_GOOGLE_USER];
+    return [];
   });
+
   const [activeGoogleUser, setActiveGoogleUser] = useState<GoogleUser | null>(() => {
     const saved = localStorage.getItem('byteme_active_google_user');
     if (saved) {
       try {
         const parsed: GoogleUser = JSON.parse(saved);
-        return {
-          ...parsed,
-          avatar: !parsed.avatar || parsed.avatar.includes('dicebear')
-            ? DEFAULT_GOOGLE_USER.avatar
-            : parsed.avatar,
-        };
+        if (parsed && parsed.email && !parsed.id.startsWith('preset-')) {
+          return parsed;
+        }
       } catch (e) {
         // ignore parse error
       }
     }
-    return DEFAULT_GOOGLE_USER;
+    return null;
   });
+
+  // Load per-user facility config whenever active Google account changes
+  useEffect(() => {
+    if (activeGoogleUser?.id) {
+      const userConfigKey = `byteme_facility_config_${activeGoogleUser.id}`;
+      const savedUserConfig = localStorage.getItem(userConfigKey);
+      if (savedUserConfig) {
+        try {
+          setFacilityConfig(JSON.parse(savedUserConfig));
+          return;
+        } catch (e) {
+          // ignore parse error
+        }
+      }
+    }
+    const defaultSaved = localStorage.getItem('byteme_facility_config');
+    if (defaultSaved) {
+      try {
+        setFacilityConfig(JSON.parse(defaultSaved));
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [activeGoogleUser?.id]);
+
+  const saveFacilityConfig = (newConfig: FacilityConfig) => {
+    setFacilityConfig(newConfig);
+    localStorage.setItem('byteme_facility_config', JSON.stringify(newConfig));
+    if (activeGoogleUser?.id) {
+      localStorage.setItem(`byteme_facility_config_${activeGoogleUser.id}`, JSON.stringify(newConfig));
+    }
+  };
 
   const selectGoogleAccount = (user: GoogleUser) => {
     setActiveGoogleUser(user);
     localStorage.setItem('byteme_active_google_user', JSON.stringify(user));
+    const userConfigKey = `byteme_facility_config_${user.id}`;
+    const savedUserConfig = localStorage.getItem(userConfigKey);
+    if (savedUserConfig) {
+      try {
+        setFacilityConfig(JSON.parse(savedUserConfig));
+      } catch (e) {
+        // ignore
+      }
+    }
   };
 
   const addGoogleAccount = (newUser: GoogleUser) => {

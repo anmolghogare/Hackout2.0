@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, Plus, ShieldCheck, LogOut, UserCheck, Mail, Key, Globe, ExternalLink, RefreshCw } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { X, ShieldCheck, LogOut, CheckCircle2, UserCheck, RefreshCw } from 'lucide-react';
 import { GoogleUser } from '../../types';
 
 export interface GoogleAuthModalProps {
@@ -11,15 +11,6 @@ export interface GoogleAuthModalProps {
   onAddAccount: (newUser: GoogleUser) => void;
   onSignOut: () => void;
 }
-
-const BOY_AVATARS = [
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1628157582853-a796fa650a6a?w=150&auto=format&fit=crop&q=80',
-];
 
 /**
  * Decodes standard Google OAuth 2.0 JWT ID token payload safely.
@@ -46,36 +37,22 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   isOpen,
   onClose,
   activeUser,
-  accounts,
-  onSelectAccount,
   onAddAccount,
+  onSelectAccount,
   onSignOut,
 }) => {
-  const [isAddingNew, setIsAddingNew] = useState(false);
-  const [newEmail, setNewEmail] = useState('');
-  const [newName, setNewName] = useState('');
-
-  // Environment Client ID or stored custom client ID
-  const envClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '421007877682-1qu3qtria81ul2k0ce37ihma45kd8n25.apps.googleusercontent.com';
-  const [customClientId, setCustomClientId] = useState<string>(() => {
-    return localStorage.getItem('byteme_custom_google_client_id') || envClientId;
-  });
-  const [isEditingKey, setIsEditingKey] = useState(false);
-
   const googleBtnRef = useRef<HTMLDivElement>(null);
-  const activeClientId = customClientId.trim() || envClientId;
-  const isClientIdConfigured = Boolean(
-    activeClientId && !activeClientId.includes('your_google_client_id_here')
-  );
+
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '421007877682-1qu3qtria81ul2k0ce37ihma45kd8n25.apps.googleusercontent.com';
 
   // Initialize official Google Identity Services GIS button
   useEffect(() => {
     if (!isOpen) return;
 
-    if (window.google?.accounts?.id && isClientIdConfigured) {
+    if (window.google?.accounts?.id && clientId) {
       try {
         window.google.accounts.id.initialize({
-          client_id: activeClientId,
+          client_id: clientId,
           callback: (response: { credential: string }) => {
             const payload = parseJwt(response.credential);
             if (payload) {
@@ -108,74 +85,17 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
         console.error('Google Identity Services Initialization Error:', e);
       }
     }
-  }, [isOpen, activeClientId, isClientIdConfigured]);
-
-  const handleSaveCustomClientId = (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem('byteme_custom_google_client_id', customClientId.trim());
-    setIsEditingKey(false);
-  };
+  }, [isOpen, clientId, onAddAccount, onSelectAccount]);
 
   if (!isOpen) return null;
 
-  const handleCreateAccount = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newEmail.trim() || !newName.trim()) return;
-
-    const boyAvatar = BOY_AVATARS[newName.trim().length % BOY_AVATARS.length];
-
-    const user: GoogleUser = {
-      id: `google-${Date.now()}`,
-      name: newName.trim(),
-      email: newEmail.trim().toLowerCase(),
-      avatar: boyAvatar,
-      verified: true,
-    };
-
-    onAddAccount(user);
-    setIsAddingNew(false);
-    setNewEmail('');
-    setNewName('');
-  };
-
-  const samplePresets: GoogleUser[] = [
-    {
-      id: 'preset-1',
-      name: 'Anmol Ghogare',
-      email: 'anmol.ghogare@gmail.com',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-      verified: true,
-    },
-    {
-      id: 'preset-2',
-      name: 'Rohan Gohil',
-      email: 'rohan.gohil@byteme.io',
-      avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
-      verified: true,
-    },
-    {
-      id: 'preset-3',
-      name: 'Aarav Sharma',
-      email: 'aarav.sharma@byteme.io',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      verified: true,
-    },
-    {
-      id: 'preset-4',
-      name: 'Karan Patel',
-      email: 'karan.patel@apex-packaging.com',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-      verified: true,
-    },
-  ];
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-md bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100 transition-all max-h-[90vh] flex flex-col">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100 transition-all">
         {/* Header with official Google Branding */}
-        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40 shrink-0">
+        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 p-1.5 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 p-2 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0">
               <svg viewBox="0 0 24 24" className="w-full h-full">
                 <path
                   fill="#4285F4"
@@ -213,293 +133,86 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
           </button>
         </div>
 
-        <div className="p-6 space-y-5 overflow-y-auto flex-1">
-          {/* Active Account Banner if logged in */}
-          {activeUser && (
-            <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
-              <div className="flex items-center space-x-3 truncate">
-                {activeUser.avatar ? (
-                  <img
-                    src={activeUser.avatar}
-                    alt={activeUser.name}
-                    className="w-10 h-10 rounded-full border border-emerald-500 bg-white shrink-0 object-cover"
-                    style={{ width: '40px', height: '40px', minWidth: '40px', minHeight: '40px' }}
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-base flex items-center justify-center shrink-0 border border-emerald-500/30">
-                    {(activeUser.name || 'User').charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="truncate">
-                  <div className="flex items-center space-x-1.5">
-                    <span className="font-bold text-sm text-slate-900 dark:text-white font-heading truncate">
-                      {activeUser.name}
+        <div className="p-6 space-y-6">
+          {/* Active Logged In Google Account Card */}
+          {activeUser ? (
+            <div className="space-y-4 animate-fadeIn">
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-slate-50 to-emerald-500/5 dark:from-emerald-950/40 dark:via-slate-900 dark:to-slate-900 border border-emerald-500/30 shadow-sm space-y-4">
+                <div className="flex items-center space-x-3.5">
+                  {activeUser.avatar ? (
+                    <img
+                      src={activeUser.avatar}
+                      alt={activeUser.name}
+                      className="w-12 h-12 rounded-full border-2 border-emerald-500 bg-white shrink-0 object-cover shadow-md"
+                      style={{ width: '48px', height: '48px', minWidth: '48px', minHeight: '48px' }}
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-lg flex items-center justify-center shrink-0 border-2 border-emerald-500/30 shadow-md">
+                      {(activeUser.name || 'User').charAt(0).toUpperCase()}
+                    </div>
+                  )}
+
+                  <div className="truncate flex-1">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="font-bold text-base text-slate-900 dark:text-white font-heading truncate">
+                        {activeUser.name}
+                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    </div>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate block">
+                      {activeUser.email}
                     </span>
-                    <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                   </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate block">
-                    {activeUser.email}
+                </div>
+
+                <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-emerald-500/20 text-xs text-slate-600 dark:text-slate-300 flex items-center space-x-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span className="leading-tight">
+                    Facility configuration and carbon telemetry are synced to this Google account.
                   </span>
                 </div>
               </div>
 
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500 text-white font-bold uppercase tracking-wider shrink-0 ml-2">
-                Active
-              </span>
-            </div>
-          )}
-
-          {/* Official Google OAuth 2.0 Live Widget Container */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3 text-center">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-                <Globe className="w-3.5 h-3.5 text-blue-500" />
-                <span>Real Google OAuth 2.0 Auth</span>
-              </span>
-              <button
-                onClick={() => setIsEditingKey(!isEditingKey)}
-                className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center space-x-1"
-              >
-                <Key className="w-3 h-3" />
-                <span>{isEditingKey ? 'Close Config' : 'Client ID Config'}</span>
-              </button>
-            </div>
-
-            {/* Client ID Configuration Panel */}
-            {isEditingKey ? (
-              <form onSubmit={handleSaveCustomClientId} className="space-y-2 text-left pt-2">
-                <label className="text-[11px] text-slate-500 dark:text-slate-400 block">
-                  Google OAuth Client ID (<code className="text-emerald-600 font-mono">VITE_GOOGLE_CLIENT_ID</code>):
-                </label>
-                <input
-                  type="text"
-                  value={customClientId}
-                  onChange={(e) => setCustomClientId(e.target.value)}
-                  placeholder="xxxx-xxxx.apps.googleusercontent.com"
-                  className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-[10px] text-slate-400">
-                    File location: <code className="text-slate-300 font-mono">.env</code> in project root
-                  </span>
-                  <button
-                    type="submit"
-                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
-                  >
-                    Save & Apply
-                  </button>
-                </div>
-              </form>
-            ) : isClientIdConfigured ? (
-              <div className="space-y-3 pt-1">
-                <p className="text-xs text-slate-600 dark:text-slate-300">
-                  Click below to log in with your official Google Account:
-                </p>
+              {/* Sign In with different account or Sign Out */}
+              <div className="space-y-3 pt-2">
+                <span className="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider block text-center">
+                  Switch or Re-authenticate Account:
+                </span>
                 <div className="flex justify-center min-h-[44px]">
                   <div ref={googleBtnRef} id="googleSignInButton" className="flex justify-center"></div>
                 </div>
-              </div>
-            ) : (
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-left space-y-2 text-xs">
-                <div className="flex items-center space-x-1.5 font-bold">
-                  <Key className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>Google Client ID Pending Configuration</span>
-                </div>
-                <p className="text-[11.5px] leading-relaxed text-slate-600 dark:text-slate-300">
-                  To enable live Google Sign-In popups, add your Google OAuth Client ID to the <code className="font-mono bg-amber-500/20 px-1 py-0.5 rounded text-amber-800 dark:text-amber-200">.env</code> file at:
-                </p>
-                <code className="block p-2 rounded-lg bg-slate-900 text-emerald-400 font-mono text-[11px] break-all border border-slate-800">
-                  VITE_GOOGLE_CLIENT_ID=your_id.apps.googleusercontent.com
-                </code>
-                <a
-                  href="https://console.cloud.google.com/apis/credentials"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline pt-1"
-                >
-                  <span>Get Client ID from Google Cloud Console</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            )}
-          </div>
 
-          {/* Add New Google Account Custom Form */}
-          {isAddingNew ? (
-            <form onSubmit={handleCreateAccount} className="space-y-4 animate-fadeIn">
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
-                <h4 className="text-xs font-bold font-mono text-slate-500 uppercase tracking-wider">
-                  Add Account Manually:
-                </h4>
-
-                <div>
-                  <label className="text-xs text-slate-500 block mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    placeholder="e.g. Anmol Ghogare"
-                    className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-slate-500 block mb-1">Google Email Address</label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                    <input
-                      type="email"
-                      required
-                      value={newEmail}
-                      onChange={(e) => setNewEmail(e.target.value)}
-                      placeholder="user@gmail.com"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
                 <button
-                  type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
+                  onClick={onSignOut}
+                  className="w-full py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 font-bold text-xs transition-all flex items-center justify-center space-x-2"
                 >
-                  <Check className="w-4 h-4" />
-                  <span>Authenticate Account</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAddingNew(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                >
-                  Cancel
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out of Google Account</span>
                 </button>
               </div>
-            </form>
+            </div>
           ) : (
-            <div className="space-y-4">
-              {/* Account Selector List */}
-              <div>
-                <span className="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                  Connected Accounts:
-                </span>
-
-                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                  {accounts.length > 0 ? (
-                    accounts.map((user) => {
-                      const isCurrent = activeUser?.id === user.id;
-
-                      return (
-                        <div
-                          key={user.id}
-                          onClick={() => onSelectAccount(user)}
-                          className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
-                            isCurrent
-                              ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500 shadow-sm'
-                              : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                          }`}
-                        >
-                          <div className="flex items-center space-x-3 truncate">
-                            {user.avatar ? (
-                              <img
-                                src={user.avatar}
-                                alt={user.name}
-                                className="w-8 h-8 rounded-full border border-emerald-500 bg-white shrink-0 object-cover"
-                                style={{ width: '32px', height: '32px', minWidth: '32px', minHeight: '32px' }}
-                              />
-                            ) : (
-                              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-xs flex items-center justify-center shrink-0 border border-emerald-500/30">
-                                {(user.name || 'User').charAt(0).toUpperCase()}
-                              </div>
-                            )}
-                            <div className="truncate">
-                              <span className="font-bold text-xs text-slate-900 dark:text-white block truncate font-heading">
-                                {user.name}
-                              </span>
-                              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate block">
-                                {user.email}
-                              </span>
-                            </div>
-                          </div>
-
-                          {isCurrent ? (
-                            <UserCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-                          ) : (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold">
-                              Switch
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-center text-xs text-slate-400">
-                      No Google accounts linked yet. Use Google Auth above or add an account.
-                    </div>
-                  )}
-                </div>
+            /* Clean Prompt for Google OAuth Login */
+            <div className="space-y-6 text-center animate-fadeIn py-2">
+              <div className="space-y-2">
+                <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">
+                  Sign in with your Google Account
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+                  Authenticate securely to access your saved facility parameters, carbon audit telemetry, and AI models.
+                </p>
               </div>
 
-              {/* Sample Quick Login Presets */}
-              <div>
-                <span className="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider block mb-2">
-                  Quick Auth Profiles:
-                </span>
-                <div className="space-y-1.5">
-                  {samplePresets.map((preset) => (
-                    <button
-                      key={preset.id}
-                      onClick={() => {
-                        onAddAccount(preset);
-                        onSelectAccount(preset);
-                      }}
-                      className="w-full p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 text-left transition-all flex items-center justify-between text-xs"
-                    >
-                      <div className="flex items-center space-x-2.5 truncate">
-                        <div className="w-6 h-6 rounded-full bg-emerald-600 text-white dark:bg-gradient-to-br dark:from-emerald-400 dark:to-cyan-500 dark:text-slate-950 font-black text-[11px] flex items-center justify-center shrink-0">
-                          {(preset.name || 'User').charAt(0).toUpperCase()}
-                        </div>
-                        <span className="font-medium text-slate-800 dark:text-slate-200 truncate">
-                          {preset.name} ({preset.email})
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold font-mono">
-                        Select
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Buttons: Add Account & Sign Out */}
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
-                <button
-                  onClick={() => setIsAddingNew(true)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-sm"
-                >
-                  <Plus className="w-4 h-4 text-emerald-400" />
-                  <span>Add Account</span>
-                </button>
-
-                {activeUser && (
-                  <button
-                    onClick={onSignOut}
-                    className="px-4 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 hover:bg-rose-100 font-bold text-xs transition-all flex items-center space-x-1.5"
-                    title="Sign Out Current Account"
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                    <span>Sign Out</span>
-                  </button>
-                )}
+              <div className="flex justify-center min-h-[48px] py-1">
+                <div ref={googleBtnRef} id="googleSignInButton" className="flex justify-center"></div>
               </div>
             </div>
           )}
         </div>
 
         {/* Footer Security Badge */}
-        <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 text-center text-[10.5px] text-slate-400 font-mono flex items-center justify-center space-x-1.5 shrink-0">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+        <div className="p-3.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 text-center text-[11px] text-slate-400 font-mono flex items-center justify-center space-x-1.5">
+          <ShieldCheck className="w-4 h-4 text-emerald-500" />
           <span>OAuth 2.0 Google Identity Services Secured</span>
         </div>
       </div>
