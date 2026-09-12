@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { KPIData, ProcessStage, SliderInputs, TabId, ViewMode, SavedScenario } from '../types';
+import { KPIData, ProcessStage, SliderInputs, TabId, ViewMode, SavedScenario, GoogleUser } from '../types';
 import { fetchSimulationResult } from '../lib/api';
 import { calculateLocalSimulation } from '../lib/utils';
 
@@ -10,6 +10,14 @@ const INITIAL_SLIDERS: SliderInputs = {
   scrapRecyclePct: 100,
 };
 
+const DEFAULT_GOOGLE_USER: GoogleUser = {
+  id: 'g-default-1',
+  name: 'Anmol Ghogare',
+  email: 'anmol.ghogare@gmail.com',
+  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Anmol',
+  verified: true,
+};
+
 export function useDashboardData() {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [viewMode, setViewMode] = useState<ViewMode>('carbon');
@@ -18,6 +26,39 @@ export function useDashboardData() {
   const [isBackendOnline, setIsBackendOnline] = useState<boolean>(false);
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
   const [isBRSRModalOpen, setIsBRSRModalOpen] = useState<boolean>(false);
+
+  // Google Authentication State
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState<boolean>(false);
+  const [googleAccounts, setGoogleAccounts] = useState<GoogleUser[]>(() => {
+    const saved = localStorage.getItem('byteme_google_users');
+    return saved ? JSON.parse(saved) : [DEFAULT_GOOGLE_USER];
+  });
+  const [activeGoogleUser, setActiveGoogleUser] = useState<GoogleUser | null>(() => {
+    const saved = localStorage.getItem('byteme_active_google_user');
+    return saved ? JSON.parse(saved) : DEFAULT_GOOGLE_USER;
+  });
+
+  const selectGoogleAccount = (user: GoogleUser) => {
+    setActiveGoogleUser(user);
+    localStorage.setItem('byteme_active_google_user', JSON.stringify(user));
+  };
+
+  const addGoogleAccount = (newUser: GoogleUser) => {
+    setGoogleAccounts((prev) => {
+      const exists = prev.some((u) => u.email.toLowerCase() === newUser.email.toLowerCase());
+      const updated = exists
+        ? prev.map((u) => (u.email.toLowerCase() === newUser.email.toLowerCase() ? newUser : u))
+        : [newUser, ...prev];
+      localStorage.setItem('byteme_google_users', JSON.stringify(updated));
+      return updated;
+    });
+    selectGoogleAccount(newUser);
+  };
+
+  const signOutGoogleAccount = () => {
+    setActiveGoogleUser(null);
+    localStorage.removeItem('byteme_active_google_user');
+  };
 
   // Judge Tour State
   const [isJudgeTourActive, setIsJudgeTourActive] = useState<boolean>(false);
@@ -159,6 +200,13 @@ export function useDashboardData() {
     setIsCopilotOpen,
     isBRSRModalOpen,
     setIsBRSRModalOpen,
+    isGoogleModalOpen,
+    setIsGoogleModalOpen,
+    googleAccounts,
+    activeGoogleUser,
+    selectGoogleAccount,
+    addGoogleAccount,
+    signOutGoogleAccount,
     savedScenarios,
     saveScenario,
     deleteScenario,

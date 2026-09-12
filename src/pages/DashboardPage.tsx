@@ -12,6 +12,7 @@ import { CopilotPanel } from '../components/features/dashboard/CopilotPanel';
 import { CopilotCommandModal } from '../components/features/dashboard/CopilotCommandModal';
 import { BRSRExportModal } from '../components/features/dashboard/BRSRExportModal';
 import { AuditReportExportModal } from '../components/features/dashboard/AuditReportExportModal';
+import { GoogleAuthModal } from '../components/auth/GoogleAuthModal';
 import { KPICards } from '../components/features/dashboard/KPICards';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
 import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
@@ -35,6 +36,13 @@ export const DashboardPage: React.FC = () => {
     setIsCopilotOpen,
     isBRSRModalOpen,
     setIsBRSRModalOpen,
+    isGoogleModalOpen,
+    setIsGoogleModalOpen,
+    googleAccounts,
+    activeGoogleUser,
+    selectGoogleAccount,
+    addGoogleAccount,
+    signOutGoogleAccount,
     savedScenarios,
     saveScenario,
     deleteScenario,
@@ -57,6 +65,8 @@ export const DashboardPage: React.FC = () => {
       onOpenCopilotModal={() => setIsCopilotOpen(true)}
       onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
       onOpenAuditExportModal={() => setIsAuditExportOpen(true)}
+      activeGoogleUser={activeGoogleUser}
+      onOpenGoogleAuthModal={() => setIsGoogleModalOpen(true)}
       onStartJudgeTour={startJudgeTour}
       onApplyPreset={applyPreset}
       isBackendOnline={isBackendOnline}
@@ -69,6 +79,17 @@ export const DashboardPage: React.FC = () => {
           <KPICards kpiData={kpiData} viewMode={viewMode} />
         </div>
       )}
+
+      {/* Google Identity Services Authentication Modal */}
+      <GoogleAuthModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+        activeUser={activeGoogleUser}
+        accounts={googleAccounts}
+        onSelectAccount={selectGoogleAccount}
+        onAddAccount={addGoogleAccount}
+        onSignOut={signOutGoogleAccount}
+      />
 
       {/* Global AI Command Modal (Cmd + K) */}
       <CopilotCommandModal
@@ -198,25 +219,6 @@ export const DashboardPage: React.FC = () => {
       {/* ============================================================ */}
       {activeTab === 'simulation' && (
         <div className="animate-fadeIn space-y-6">
-          <ViewHeaderBanner
-            category="DIGITAL TWIN TELEMETRY"
-            title="Process Flow Digital Twin & Particle Stream Visualizer"
-            description="End-to-end material-to-output pipeline diagram. Follow virgin polymer resin through furnace combustion, extrusion motor drives, and circular scrap recovery with animated particle tracks."
-            howToInteract={[
-              'Observe animated directional particle flows across stages',
-              'Click any process node to inspect carbon and cost share',
-              'Click radial breakdown wheel slices to view localized drivers',
-              'Review empirical mathematical formulas behind every stage',
-            ]}
-            keyMetrics={[
-              { label: 'Telemetry Nodes', value: '4 Stages', hint: 'Input ➔ Processing ➔ Output' },
-              { label: 'Primary Bottleneck', value: 'Stage 02 Furnace', hint: '28% footprint' },
-              { label: 'Particle Streams', value: 'Active Flow', hint: 'Real-time sync' },
-            ]}
-            icon={Flame}
-            badgeText="Particle Stream"
-            badgeVariant="rose"
-          />
           <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
         </div>
       )}

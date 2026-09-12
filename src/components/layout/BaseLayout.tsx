@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TabId, ViewMode, SliderInputs } from '../../types';
+import { TabId, ViewMode, SliderInputs, GoogleUser } from '../../types';
 import { Navbar } from '../ui/Navbar';
 import { CollapsibleSidebar } from './CollapsibleSidebar';
 import { AIAssistantChatbot } from '../features/ai/AIAssistantChatbot';
@@ -12,6 +12,8 @@ export interface BaseLayoutProps {
   onOpenCopilotModal: () => void;
   onOpenBRSRModal: () => void;
   onOpenAuditExportModal: () => void;
+  activeGoogleUser?: GoogleUser | null;
+  onOpenGoogleAuthModal?: () => void;
   onStartJudgeTour?: () => void;
   onApplyPreset?: (preset: Partial<SliderInputs>) => void;
   isBackendOnline?: boolean;
@@ -26,6 +28,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
   onOpenCopilotModal,
   onOpenBRSRModal,
   onOpenAuditExportModal,
+  activeGoogleUser,
+  onOpenGoogleAuthModal,
   onStartJudgeTour,
   onApplyPreset = () => {},
   isBackendOnline = true,
@@ -62,6 +66,8 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
           onOpenAuditExportModal={onOpenAuditExportModal}
           onToggleSidebarMobile={() => setIsMobileOpen((prev) => !prev)}
           onToggleSidebarDesktop={() => setIsSidebarCollapsed((prev) => !prev)}
+          activeGoogleUser={activeGoogleUser}
+          onOpenGoogleAuthModal={onOpenGoogleAuthModal}
           isBackendOnline={isBackendOnline}
         />
 

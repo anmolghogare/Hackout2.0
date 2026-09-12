@@ -4,6 +4,15 @@ export type ViewMode = 'carbon' | 'financial';
 
 export type StageStatus = 'NORMAL' | 'EVALUATE' | 'RED ALERT';
 
+export interface GoogleUser {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  locale?: string;
+  verified?: boolean;
+}
+
 export interface ProcessStage {
   id?: string;
   name: string;
