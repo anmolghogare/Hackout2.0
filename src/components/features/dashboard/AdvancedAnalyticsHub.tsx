@@ -2,75 +2,79 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card';
 import { Badge } from '../../ui/Badge';
 import { Button } from '../../ui/Button';
-import { Flame, Activity, TrendingUp, AlertTriangle, Info, Sparkles } from 'lucide-react';
-import { AnomalyLog, ViewMode } from '../../../types';
+import { Flame, Activity, TrendingUp, AlertTriangle, Sparkles } from 'lucide-react';
+import { ViewMode } from '../../../types';
 
 export interface AdvancedAnalyticsHubProps {
-  onOpenAnomalyCopilot?: (anomaly: AnomalyLog) => void;
+  onOpenAnomalyCopilot?: (anomaly: any) => void;
   viewMode?: ViewMode;
 }
 
-export const AdvancedAnalyticsHub: React.FC<AdvancedAnalyticsHubProps> = ({
-  onOpenAnomalyCopilot,
-  viewMode = 'carbon',
-}) => {
-  const [selectedPoint, setSelectedPoint] = useState<number | null>(1);
-  const [selectedFacilityNode, setSelectedFacilityNode] = useState<string | null>('furnace');
+type NodeId = 'polymer' | 'furnace' | 'extrusion' | 'scrap';
+
+const NODES: {
+  id: NodeId;
+  scope: string;
+  title: string;
+  metric: string;
+  detail: string;
+  share: number;
+  tone: 'ok' | 'alert' | 'power' | 'circular';
+}[] = [
+  { id: 'polymer', scope: 'Scope 3 · Supplier', title: 'Raw Resin Storage Silo', metric: '100T LLDPE', detail: '2.80 tCO₂e / T embodied', share: 10, tone: 'ok' },
+  { id: 'furnace', scope: 'Critical hotspot · 1,418°C', title: 'Zone 2 Heavy Oil Burner', metric: '48.0 tCO₂e / mo', detail: '₹3.72L / mo uninsulated radiation', share: 48, tone: 'alert' },
+  { id: 'extrusion', scope: 'Scope 2 · Electricity', title: 'Extruder Drive Motors', metric: '32,500 kWh / mo', detail: '25.0 tCO₂e grid load', share: 25, tone: 'power' },
+  { id: 'scrap', scope: 'Circular offtake', title: 'Trim Scrap Yard', metric: '12T trim / mo', detail: '17.0 tCO₂e if landfilled', share: 17, tone: 'circular' },
+];
+
+const REVIEWS: Record<NodeId, { verdict: string; steps: string[]; recover: string }> = {
+  polymer: {
+    verdict: 'Embodied resin carbon is secondary. Keep 20% PCR so Scope 3 does not rebound when the furnace is fixed.',
+    steps: ['Hold PCR blend at ≥20%', 'Prefer Pune supplier over Vapi haul'],
+    recover: 'Avoids +14% resin spike',
+  },
+  furnace: {
+    verdict: 'Primary bottleneck. Uncalibrated oil burner at 1,418°C is 48% of plant tCO₂e and ₹3.72L/mo OPEX.',
+    steps: ['Retune air-fuel / PID this week (₹0.8L capex, 2.6 mo payback)', 'Shift 50% thermal load to biomass briquettes', 'Add ceramic fiber lining on the shell'],
+    recover: 'Recovers ₹3.72L/mo',
+  },
+  extrusion: {
+    verdict: 'Motors are a real Scope 2 load but not the leak. Peak DISCOM tariff is the risk, not heat loss.',
+    steps: ['Shift 30% kWh off 18:00–22:00 peak', 'VFDs on the two largest drives'],
+    recover: 'Cuts peak ₹ without touching heat',
+  },
+  scrap: {
+    verdict: '12T trim is inventory, not a thermal leak. Landfill is the only carbon event.',
+    steps: ['Contract B2B pipe offtake at ₹25k/T', 'Do not bale to municipal landfill'],
+    recover: '+₹3.0L/yr scrap sales',
+  },
+};
+
+const toneClass = {
+  ok: 'border-emerald-200 dark:border-emerald-500/30 bg-white dark:bg-[#0E131F]',
+  alert: 'border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/[0.08]',
+  power: 'border-cyan-200 dark:border-cyan-500/30 bg-white dark:bg-[#0E131F]',
+  circular: 'border-violet-200 dark:border-violet-500/30 bg-white dark:bg-[#0E131F]',
+};
+
+const dotClass = { ok: 'bg-emerald-500', alert: 'bg-rose-500 animate-pulse', power: 'bg-cyan-500', circular: 'bg-violet-500' };
+
+export const AdvancedAnalyticsHub: React.FC<AdvancedAnalyticsHubProps> = ({ viewMode = 'carbon' }) => {
+  const [selectedPoint, setSelectedPoint] = useState<number>(1);
+  const [selectedNode, setSelectedNode] = useState<NodeId>('furnace');
+  const [reviewOpen, setReviewOpen] = useState(false);
   const isFinancial = viewMode === 'financial';
 
-  const anomalies: AnomalyLog[] = [
-    {
-      id: 'anom-1',
-      title: 'Raw Material Resin Embodied Carbon Spike',
-      stageName: '1. RAW MATERIAL RESIN',
-      spikeMetric: '+14.2% Emissions Spike',
-      severity: 'MEDIUM',
-      featureImportance: [
-        { feature: 'Virgin LLDPE Ratio', weight: 0.65 },
-        { feature: 'Supplier Logistics Distance', weight: 0.25 },
-        { feature: 'Recycled Content %', weight: 0.10 },
-      ],
-      naturalExplanation: 'Virgin LLDPE polymer ratio increased to 100% due to temporary PCR resin supply shortage from Vapi plant.',
-      mitigationSteps: ['Substitute 20% PCR resin from ResinTech', 'Re-route supplier to local Pune plant'],
-    },
-    {
-      id: 'anom-2',
-      title: 'Furnace Burner Thermal Loss & Overshoot',
-      stageName: '2. FURNACE HEATING',
-      spikeMetric: '+28.4% Heavy Oil Over-consumption',
-      severity: 'HIGH',
-      featureImportance: [
-        { feature: 'Burner Temp Overshoot (>1400°C)', weight: 0.72 },
-        { feature: 'Heavy Oil Sulphur Grade', weight: 0.18 },
-        { feature: 'Combustion Air Ratio', weight: 0.10 },
-      ],
-      naturalExplanation: 'Furnace temperature overshoot at 1418°C caused 15.4 KL heavy fuel oil waste during night shift operations.',
-      mitigationSteps: ['Install automated PID ceramic burner controller', 'Shift 50% thermal load to biomass briquettes'],
-    },
-    {
-      id: 'anom-3',
-      title: 'Scrap Waste Landfill Accumulation',
-      stageName: '4. WASTE SCRAP DISPOSAL',
-      spikeMetric: '+17.0 tCO₂e Landfill Footprint',
-      severity: 'HIGH',
-      featureImportance: [
-        { feature: 'Off-Cut Edge Trim Scrap', weight: 0.85 },
-        { feature: 'Internal Regrind Efficiency', weight: 0.15 },
-      ],
-      naturalExplanation: '12 Tons/mo of off-cut LLDPE trim scrap dumped at un-segregated municipal landfill without secondary off-take.',
-      mitigationSteps: ['Trade 12T trim scrap to Apex Pipe Mfg via B2B Waste Exchange', 'Generate ₹3,00,000/yr scrap revenue'],
-    },
-  ];
-
   const regressionPoints = [
-    { fuelPct: 0, co2Tons: 100, costINR: '₹28.5L', anomalyIdx: 0, label: '0% Shift (Baseline)' },
-    { fuelPct: 25, co2Tons: 84.6, costINR: '₹24.1L', anomalyIdx: 1, label: '25% Hybrid Shift' },
-    { fuelPct: 50, co2Tons: 71.2, costINR: '₹22.0L', anomalyIdx: 2, label: '50% Shift Target' },
-    { fuelPct: 75, co2Tons: 57.8, costINR: '₹19.5L', anomalyIdx: 1, label: '75% PNG Shift' },
-    { fuelPct: 100, co2Tons: 44.4, costINR: '₹16.8L', anomalyIdx: 0, label: '100% Green Biomass' },
+    { fuelPct: 0, co2Tons: 100, costINR: '₹28.5L', label: '0% shift · baseline' },
+    { fuelPct: 25, co2Tons: 84.6, costINR: '₹24.1L', label: '25% hybrid shift' },
+    { fuelPct: 50, co2Tons: 71.2, costINR: '₹22.0L', label: '50% shift target' },
+    { fuelPct: 75, co2Tons: 57.8, costINR: '₹19.5L', label: '75% PNG shift' },
+    { fuelPct: 100, co2Tons: 44.4, costINR: '₹16.8L', label: '100% biomass' },
   ];
 
-  const activeAnomaly = selectedPoint !== null ? anomalies[regressionPoints[selectedPoint].anomalyIdx] : anomalies[1];
+  const review = REVIEWS[selectedNode];
+  const node = NODES.find((n) => n.id === selectedNode)!;
 
   return (
     <Card className="mb-8 theme-transition">
@@ -79,281 +83,155 @@ export const AdvancedAnalyticsHub: React.FC<AdvancedAnalyticsHubProps> = ({
           <div>
             <CardTitle className="flex items-center space-x-2.5">
               <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                <Activity className="w-5 h-5 text-emerald-500" />
+                <Activity className="w-5 h-5" />
               </div>
-              <span>Advanced Thermal Hotspot Diagnostics & Regression Engine</span>
+              <span>Thermal Hotspot Diagnostics</span>
             </CardTitle>
             <CardDescription className="mt-1">
-              Multi-node facility thermal intensity map, empirical fuel regression model, and explainable AI root-cause diagnostics.
+              Four plant nodes, fuel-shift curve, and an on-page AI review. No chatbot overlay.
             </CardDescription>
           </div>
-          <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 flex items-center space-x-1.5 self-start sm:self-center">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-            <span>AI Thermal Diagnostics Active</span>
+          <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
+            FLIR calibrated · IPCC / CEA grounded
           </span>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* 1. Facility Heatmap Canvas */}
-          <div className="p-6 rounded-2xl bg-slate-50/80 dark:bg-white/[0.03] text-slate-900 dark:text-white border border-slate-200/80 dark:border-white/[0.08] shadow-xs relative overflow-hidden flex flex-col justify-between space-y-4">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono text-slate-400 uppercase font-bold tracking-wider flex items-center space-x-2">
-                  <Flame className="w-4 h-4 text-emerald-500" />
-                  <span>PLANT THERMAL INTENSITY MAP (DESCRIPTIVE DIAGNOSTIC)</span>
-                </span>
-                <div className="flex items-center space-x-2">
-                  <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
-                    FLIR Infrared Calibrated
-                  </span>
-                </div>
-              </div>
-
-              {/* Plant Layout Graphic - Enlarged to h-80 */}
-              <div className="relative h-80 rounded-xl bg-white dark:bg-[#090C14] border border-slate-200/80 dark:border-white/[0.08] p-5 overflow-hidden shadow-inner flex flex-col justify-between">
-                {/* Radial Heat Gradient for Hotspot Zone */}
-                <div className="absolute top-8 left-36 w-56 h-56 bg-rose-500/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
-                <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:18px_18px] opacity-40 pointer-events-none" />
-
-                {/* SVG Flow Vectors connecting plant nodes */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                  <line x1="120" y1="50" x2="220" y2="70" stroke="#10b981" strokeWidth="2" strokeDasharray="4 4" />
-                  <line x1="260" y1="110" x2="200" y2="200" stroke="#ef4444" strokeWidth="2.5" strokeDasharray="4 4" className="animate-pulse" />
-                  <line x1="280" y1="220" x2="420" y2="220" stroke="#10b981" strokeWidth="2" strokeDasharray="4 4" />
-                </svg>
-
-                {/* Node 1: Resin Storage */}
-                <div
-                  onClick={() => setSelectedFacilityNode('polymer')}
-                  className={`absolute top-6 left-6 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    selectedFacilityNode === 'polymer'
-                      ? 'bg-emerald-500/10 border-emerald-500 shadow-md ring-2 ring-emerald-500/20'
-                      : 'bg-white/95 dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500'
-                  }`}
-                >
-                  <div className="flex items-center space-x-1.5 mb-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">Scope 3 Supplier</span>
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white block font-heading">Raw Resin Storage Silo</span>
-                  <span className="text-[10px] text-slate-400 font-mono">100T LLDPE • 2.80 tCO₂/T</span>
-                </div>
-
-                {/* Node 2: Furnace Heating Unit (CRITICAL THERMAL HOTSPOT) */}
-                <div
-                  onClick={() => setSelectedFacilityNode('furnace')}
-                  className={`absolute top-10 left-48 p-4 rounded-xl border cursor-pointer transition-all ${
-                    selectedFacilityNode === 'furnace'
-                      ? 'bg-rose-500/15 border-rose-500 shadow-lg ring-2 ring-rose-500/40'
-                      : 'bg-rose-500/10 border-rose-500/40 hover:border-rose-500'
-                  }`}
-                >
-                  <div className="flex items-center space-x-1.5 mb-1">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
-                    <span className="text-[10px] font-extrabold font-mono text-rose-600 dark:text-rose-400 uppercase tracking-wider">
-                      CRITICAL HOTSPOT ALERT (1,418°C)
-                    </span>
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white block font-heading">
-                    Zone 2 Heavy Oil Burner Unit
-                  </span>
-                  <span className="text-[10px] text-rose-600 dark:text-rose-400 font-mono font-bold block mt-0.5">
-                    48.0 tCO₂e/mo (48% Net Plant Leak)
-                  </span>
-                  <span className="text-[9px] text-slate-400 font-mono block mt-1">
-                    Loss: ₹3,72,000 / month in uninsulated thermal radiation
-                  </span>
-                </div>
-
-                {/* Node 3: Extrusion Line Operations */}
-                <div
-                  onClick={() => setSelectedFacilityNode('extrusion')}
-                  className={`absolute bottom-6 left-36 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    selectedFacilityNode === 'extrusion'
-                      ? 'bg-emerald-500/10 border-emerald-500 shadow-md ring-2 ring-emerald-500/20'
-                      : 'bg-white/95 dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-slate-400'
-                  }`}
-                >
-                  <div className="flex items-center space-x-1.5 mb-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-cyan-500" />
-                    <span className="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 font-bold">Scope 2 Electricity</span>
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white block font-heading">Extruder Drive Motors</span>
-                  <span className="text-[10px] text-slate-400 font-mono">32,500 kWh/mo • 25.0 tCO₂</span>
-                </div>
-
-                {/* Node 4: Scrap Yard */}
-                <div
-                  onClick={() => setSelectedFacilityNode('scrap')}
-                  className={`absolute bottom-6 right-6 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    selectedFacilityNode === 'scrap'
-                      ? 'bg-purple-500/10 border-purple-500 shadow-md ring-2 ring-purple-500/20'
-                      : 'bg-white/95 dark:bg-[#111624] border-slate-200 dark:border-white/[0.08] hover:border-slate-400'
-                  }`}
-                >
-                  <div className="flex items-center space-x-1.5 mb-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
-                    <span className="text-[10px] font-mono text-purple-600 dark:text-purple-400 font-bold">Circular Offtake</span>
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white block font-heading">Trim Scrap Yard</span>
-                  <span className="text-[10px] text-slate-400 font-mono">12T Trim Scrap • 17.0 tCO₂</span>
-                </div>
-              </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono text-slate-400 uppercase font-bold tracking-wider flex items-center gap-2">
+                <Flame className="w-4 h-4 text-rose-500" />
+                Plant thermal nodes
+              </span>
+              <span className="text-[10px] font-mono text-slate-400">Click a node · shares sum to 100%</span>
             </div>
 
-            {/* AI Thermal Diagram Verification & Audit Review Box */}
-            <div className="p-4 rounded-xl bg-white dark:bg-[#0D101C] border border-slate-200/80 dark:border-emerald-500/30 text-xs font-mono space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center space-x-1.5">
-                  <Sparkles className="w-4 h-4 text-emerald-500" />
-                  <span>AI THERMAL DIAGRAM REVIEW & VERIFICATION</span>
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold">
-                  VERIFIED ACCURATE
-                </span>
-              </div>
-              <p className="text-slate-600 dark:text-slate-300 font-sans text-xs leading-relaxed">
-                <strong>AI Audit Feedback:</strong> The Plant Thermal Intensity Map accurately captures physics-based thermal dissipation. Zone 2 Heavy Oil Burner is verified as the primary thermal bottleneck (48 tCO₂e/mo).
-              </p>
-              <div className="pt-2 border-t border-slate-200 dark:border-white/[0.06] flex items-center justify-between text-[11px]">
-                <span className="text-slate-400">AI Recommendation: Shift 50% thermal load to Biomass Briquettes & add ceramic lining.</span>
-                <span className="text-emerald-500 font-bold">Recovers ₹3.72L/mo</span>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {NODES.map((n) => (
+                <button
+                  key={n.id}
+                  type="button"
+                  onClick={() => { setSelectedNode(n.id); setReviewOpen(false); }}
+                  className={`text-left rounded-2xl border p-4 transition-all ${
+                    selectedNode === n.id ? 'ring-2 ring-offset-1 ring-emerald-500/40 ' : ''
+                  } ${toneClass[n.tone]}`}
+                >
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className={`w-2 h-2 rounded-full ${dotClass[n.tone]}`} />
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{n.scope}</span>
+                  </div>
+                  <div className="text-sm font-bold text-slate-900 dark:text-white leading-snug">{n.title}</div>
+                  <div className={`mt-1 text-xs font-mono font-semibold ${n.tone === 'alert' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-300'}`}>{n.metric}</div>
+                  <div className="text-[11px] text-slate-500 mt-0.5">{n.detail}</div>
+                </button>
+              ))}
             </div>
 
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-mono flex justify-between">
-              <span>Active Node: <strong className="text-slate-900 dark:text-white uppercase">{selectedFacilityNode}</strong></span>
-              <span className="text-rose-500 font-bold">Max Hotspot: Furnace Burner Unit (1418°C)</span>
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-white/[0.03] p-4 space-y-3">
+              <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                <span>Monthly load share</span>
+                <span>100 tCO₂e baseline</span>
+              </div>
+              <div className="h-3 w-full rounded-full overflow-hidden flex bg-slate-200 dark:bg-slate-800">
+                {NODES.map((n) => (
+                  <div
+                    key={n.id}
+                    title={`${n.title}: ${n.share}%`}
+                    className={`${n.tone === 'alert' ? 'bg-rose-500' : n.tone === 'power' ? 'bg-cyan-500' : n.tone === 'circular' ? 'bg-violet-500' : 'bg-emerald-500'} ${selectedNode === n.id ? 'opacity-100' : 'opacity-70'}`}
+                    style={{ width: `${n.share}%` }}
+                  />
+                ))}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-mono text-slate-500">
+                {NODES.map((n) => (
+                  <div key={n.id} className={selectedNode === n.id ? 'text-slate-900 dark:text-white font-bold' : ''}>
+                    {n.share}% {n.id}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* 2. Fuel vs. Emission Regression Graph */}
-          <div className="p-6 rounded-2xl bg-slate-50/80 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-2">
-                  <TrendingUp className="w-4 h-4 text-emerald-500" />
-                  <span>Fuel Shift Empirical Regression Plot</span>
-                </h4>
-                <Badge variant="normal">Linear Fit (R² = 0.984)</Badge>
-              </div>
-
-              {/* SVG Scatter & Line Plot */}
-              <div className="relative h-48 rounded-xl bg-white dark:bg-[#090C14] border border-slate-200/80 dark:border-white/[0.08] p-4">
-                <svg className="w-full h-full overflow-visible">
-                  {/* Regression Line */}
-                  <line x1="30" y1="150" x2="280" y2="30" stroke="#10b981" strokeWidth="2.5" strokeDasharray="4 4" />
-
-                  {/* Interactive Points */}
-                  {regressionPoints.map((pt, i) => {
-                    const cx = 30 + i * 62;
-                    const cy = 150 - i * 30;
-                    const isSelected = selectedPoint === i;
-
-                    return (
-                      <g key={i} className="cursor-pointer" onClick={() => setSelectedPoint(i)}>
-                        <circle
-                          cx={cx}
-                          cy={cy}
-                          r={isSelected ? '7' : '4.5'}
-                          fill={isSelected ? '#10b981' : '#334155'}
-                          stroke={isSelected ? '#ffffff' : '#10b981'}
-                          strokeWidth="2"
-                          className="transition-all duration-300 hover:r-7"
-                        />
-                        <text x={cx - 10} y={cy - 12} fontSize="9" fill="#94a3b8" fontFamily="monospace">
-                          {pt.co2Tons}t
-                        </text>
-                      </g>
-                    );
-                  })}
-                </svg>
-              </div>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-white/[0.03] p-5 flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-emerald-500" />
+                Fuel-shift curve
+              </h4>
+              <Badge variant="normal">R² = 0.984</Badge>
             </div>
-
-            {selectedPoint !== null && (
-              <div className="mt-4 p-4 rounded-xl bg-white dark:bg-[#0D0F18] border border-slate-200/80 dark:border-white/[0.08] text-xs font-mono flex justify-between items-center shadow-xs">
+            <div className="relative h-48 rounded-xl bg-white dark:bg-[#090C14] border border-slate-200 dark:border-white/[0.08] p-4">
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 320 170" preserveAspectRatio="none">
+                <line x1="24" y1="155" x2="310" y2="155" stroke="#cbd5e1" strokeWidth="1" />
+                <line x1="24" y1="20" x2="24" y2="155" stroke="#cbd5e1" strokeWidth="1" />
+                <polyline fill="none" stroke="#10b981" strokeWidth="2.5" points="40,148 100,118 160,92 220,64 280,36" />
+                {regressionPoints.map((pt, i) => {
+                  const cx = 40 + i * 60;
+                  const cy = 148 - i * 28;
+                  const on = selectedPoint === i;
+                  return (
+                    <g key={i} className="cursor-pointer" onClick={() => setSelectedPoint(i)}>
+                      <circle cx={cx} cy={cy} r={on ? 7 : 4.5} fill={on ? '#10b981' : '#334155'} stroke="#10b981" strokeWidth="2" />
+                      <text x={cx - 12} y={cy - 12} fontSize="9" fill="#94a3b8" fontFamily="ui-monospace,monospace">{isFinancial ? pt.costINR : `${pt.co2Tons}t`}</text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+            <div className="mt-4 rounded-xl bg-white dark:bg-[#0D0F18] border border-slate-200 dark:border-white/[0.08] p-4 space-y-3">
+              <div className="flex items-center justify-between gap-3">
                 <div>
-                  <span className="text-[10px] text-slate-400 block">SELECTED REGRESSION POINT</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                    {regressionPoints[selectedPoint].label} ({regressionPoints[selectedPoint].co2Tons} tCO₂e)
+                  <span className="text-[10px] text-slate-400 block font-mono uppercase">Selected point</span>
+                  <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                    {regressionPoints[selectedPoint].label} · {isFinancial ? regressionPoints[selectedPoint].costINR : `${regressionPoints[selectedPoint].co2Tons} tCO₂e`}
                   </span>
                 </div>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => onOpenAnomalyCopilot && onOpenAnomalyCopilot(activeAnomaly)}
-                  className="flex items-center space-x-1.5"
-                >
-                  <span>Diagnostic Review</span>
-                  <Info className="w-3.5 h-3.5" />
+                <Button variant="primary" size="sm" onClick={() => setReviewOpen(true)}>
+                  Diagnostic review
                 </Button>
               </div>
-            )}
+              {reviewOpen && (
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                  <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    AI review · {node.title}
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{review.verdict}</p>
+                  <ul className="space-y-1">
+                    {review.steps.map((s) => (
+                      <li key={s} className="text-xs text-slate-700 dark:text-slate-200 flex gap-2">
+                        <span className="text-emerald-500">•</span>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">{review.recover}</div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* 3. AI Copilot Anomaly Root-Cause Explainability Card */}
-        <div className="p-6 rounded-2xl bg-slate-50/90 dark:bg-[#111624] border border-slate-200/80 dark:border-emerald-500/20 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                <AlertTriangle className="w-5 h-5 text-emerald-500" />
+        <div className="p-6 rounded-2xl bg-slate-50/90 dark:bg-[#111624] border border-slate-200/80 dark:border-emerald-500/20 space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                <AlertTriangle className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider">
-                  AI EXPLAINABILITY ENGINE (SHAP FEATURE IMPORTANCE)
-                </span>
-                <h4 className="font-bold text-slate-900 dark:text-white text-base font-heading">
-                  {activeAnomaly.title}
-                </h4>
+                <div className="text-[10px] font-mono text-rose-600 uppercase font-bold tracking-wider">Priority action</div>
+                <h4 className="font-bold text-slate-900 dark:text-white">{node.title}</h4>
               </div>
             </div>
-
-            <Badge variant="alert">{activeAnomaly.spikeMetric}</Badge>
+            <Badge variant="alert">{node.metric}</Badge>
           </div>
-
-          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
-            {activeAnomaly.naturalExplanation}
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 border-t border-slate-200/80 dark:border-white/[0.06]">
-            {/* Feature Importance SHAP Bars */}
-            <div className="space-y-2.5">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block font-bold tracking-wider">
-                FEATURE IMPORTANCE BREAKDOWN:
-              </span>
-              <div className="space-y-2">
-                {activeAnomaly.featureImportance.map((f, idx) => (
-                  <div key={idx} className="space-y-1 text-xs">
-                    <div className="flex justify-between font-mono text-[11px]">
-                      <span className="text-slate-500 dark:text-slate-400">{f.feature}</span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">{(f.weight * 100).toFixed(0)}%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${f.weight * 100}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Recommended Mitigation Steps */}
-            <div className="space-y-2.5">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block font-bold tracking-wider">
-                RECOMMENDED MITIGATION STEPS:
-              </span>
-              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                {activeAnomaly.mitigationSteps.map((step, i) => (
-                  <li key={i} className="flex items-center space-x-2 font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{review.verdict}</p>
+          <div className="grid sm:grid-cols-3 gap-2">
+            {review.steps.map((s) => (
+              <div key={s} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E131F] p-3 text-xs text-slate-700 dark:text-slate-200">{s}</div>
+            ))}
           </div>
         </div>
       </CardContent>
