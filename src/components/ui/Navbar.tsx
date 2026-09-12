@@ -47,17 +47,20 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isFinancial = viewMode === 'financial';
 
   const tabTitles: Record<TabId, { title: string; category: string }> = {
-    overview: { title: 'Product Overview & Executive Summary', category: 'Platform Home' },
-    admin: { title: 'Facility Admin & Factory Onboarding', category: 'Platform Setup' },
-    simulator_hub: { title: 'Unified ROI Playground & Waterfall', category: 'Simulator & Controls' },
-    analytics_hub: { title: 'Thermal Analytics & 3D Heatmap', category: 'Hotspot Diagnostics' },
-    intake: { title: 'OCR Smart Bill Scanner', category: 'Data Ingestion' },
-    simulation: { title: 'Digital Twin Process Pipeline', category: 'Process Telemetry' },
-    sandbox: { title: 'Scenario Sandbox Comparison', category: 'Planning Matrix' },
-    circular: { title: 'B2B Circular Waste Stream Sankey', category: 'Circular Logistics' },
-    roadmap: { title: 'Financial ROI & BRSR Roadmap', category: 'Compliance Matrix' },
-    whatif: { title: 'What-If Empirical Sliders', category: 'Scenario Planning' },
-    copilot: { title: 'ByteMe AI Copilot Panel', category: 'AI Intelligence' },
+    overview: { title: 'Executive Overview & Live Telemetry', category: 'Core Platform' },
+    admin: { title: 'Facility Onboarding & Parameter Setup', category: 'Core Platform' },
+    sensors: { title: 'Real-Time IoT Sensor Array & Telemetry', category: 'Core Platform' },
+    simulation: { title: 'Digital Twin Process Pipeline', category: 'Simulation & Engineering' },
+    simulator_hub: { title: 'What-If ROI & Decarbonization Studio', category: 'Simulation & Engineering' },
+    analytics_hub: { title: '3D Thermal Diagnostics & Heatmap', category: 'Simulation & Engineering' },
+    sandbox: { title: 'Scenario Matrix & Sensitivity Testing', category: 'Simulation & Engineering' },
+    circular: { title: 'B2B Byproduct & Scrap Marketplace', category: 'Circular Economy' },
+    sankey: { title: 'Material & Energy Sankey Stream', category: 'Circular Economy' },
+    intake: { title: 'OCR Smart Bill & Ingestion Scanner', category: 'Data & AI' },
+    copilot: { title: 'AI Engineering Intelligence Copilot', category: 'Data & AI' },
+    roadmap: { title: 'Decarbonization CapEx & Payback Matrix', category: 'Compliance & Finance' },
+    compliance: { title: 'SEBI BRSR Principle 6 Core Audit Pack', category: 'Compliance & Finance' },
+    carbon_credits: { title: 'Green Finance, Offsets & Carbon Credits', category: 'Compliance & Finance' },
   };
 
   const currentSection = tabTitles[activeTab] || { title: 'Industrial Carbon Intelligence', category: 'Platform' };

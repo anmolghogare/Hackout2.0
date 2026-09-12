@@ -3,6 +3,7 @@ import { useDashboardData } from '../hooks/useDashboardData';
 import { BaseLayout } from '../components/layout/BaseLayout';
 import { ByteMeOverview } from '../components/features/overview/ByteMeOverview';
 import { AdminHub } from '../components/features/dashboard/AdminHub';
+import { SensorsTelemetryHub } from '../components/features/dashboard/SensorsTelemetryHub';
 import { UnifiedSimulatorHub } from '../components/features/dashboard/UnifiedSimulatorHub';
 import { AdvancedAnalyticsHub } from '../components/features/dashboard/AdvancedAnalyticsHub';
 import { OCRIntakeHub } from '../components/features/dashboard/OCRIntakeHub';
@@ -18,6 +19,8 @@ import { KPICards } from '../components/features/dashboard/KPICards';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
 import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
 import { RoadmapTable } from '../components/features/dashboard/RoadmapTable';
+import { ComplianceHub } from '../components/features/dashboard/ComplianceHub';
+import { CarbonCreditsHub } from '../components/features/dashboard/CarbonCreditsHub';
 
 export const DashboardPage: React.FC = () => {
   const {
@@ -79,7 +82,7 @@ export const DashboardPage: React.FC = () => {
       onApplyPreset={applyPreset}
       isBackendOnline={isBackendOnline}
     >
-      {/* Top Executive Metric Cards Bar (Rendered for in-depth functional tools) */}
+      {/* Top Executive Metric Cards Bar (Rendered for deep functional tools) */}
       {activeTab !== 'overview' && activeTab !== 'admin' && (
         <div className="animate-fadeIn">
           <KPICards kpiData={kpiData} viewMode={viewMode} />
@@ -128,7 +131,7 @@ export const DashboardPage: React.FC = () => {
       />
 
       {/* ============================================================ */}
-      {/* 1. HOME / PRODUCT OVERVIEW */}
+      {/* 1. CORE PLATFORM: EXECUTIVE OVERVIEW */}
       {/* ============================================================ */}
       {activeTab === 'overview' && (
         <ByteMeOverview
@@ -139,7 +142,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 2. FACILITY ADMIN & ONBOARDING HUB */}
+      {/* 2. CORE PLATFORM: FACILITY ONBOARDING & CONFIG */}
       {/* ============================================================ */}
       {activeTab === 'admin' && (
         <div className="animate-fadeIn">
@@ -155,7 +158,25 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 3. FUNCTIONAL VIEW: WHAT-IF SIMULATOR & LIVE ROI HUB */}
+      {/* 3. CORE PLATFORM: REAL-TIME IOT SENSORS */}
+      {/* ============================================================ */}
+      {activeTab === 'sensors' && (
+        <div className="animate-fadeIn space-y-6">
+          <SensorsTelemetryHub facilityConfig={facilityConfig} />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 4. SIMULATION: DIGITAL TWIN PIPELINE */}
+      {/* ============================================================ */}
+      {activeTab === 'simulation' && (
+        <div className="animate-fadeIn space-y-6">
+          <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 5. SIMULATION: WHAT-IF ROI STUDIO */}
       {/* ============================================================ */}
       {activeTab === 'simulator_hub' && (
         <div className="animate-fadeIn space-y-6">
@@ -170,7 +191,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 4. FUNCTIONAL VIEW: ADVANCED ANALYTICS & 3D THERMAL HEATMAP */}
+      {/* 6. SIMULATION: 3D THERMAL DIAGNOSTICS & HEATMAP */}
       {/* ============================================================ */}
       {activeTab === 'analytics_hub' && (
         <div className="animate-fadeIn space-y-6">
@@ -182,25 +203,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 5. FUNCTIONAL VIEW: OCR SMART BILL SCANNER */}
-      {/* ============================================================ */}
-      {activeTab === 'intake' && (
-        <div className="animate-fadeIn space-y-6">
-          <OCRIntakeHub />
-        </div>
-      )}
-
-      {/* ============================================================ */}
-      {/* 6. FUNCTIONAL VIEW: DIGITAL TWIN PIPELINE CANVAS */}
-      {/* ============================================================ */}
-      {activeTab === 'simulation' && (
-        <div className="animate-fadeIn space-y-6">
-          <ProcessFlowCanvas stages={stages} viewMode={viewMode} />
-        </div>
-      )}
-
-      {/* ============================================================ */}
-      {/* 7. FUNCTIONAL VIEW: SCENARIO SANDBOX */}
+      {/* 7. SIMULATION: SCENARIO MATRIX */}
       {/* ============================================================ */}
       {activeTab === 'sandbox' && (
         <div className="animate-fadeIn space-y-6">
@@ -215,7 +218,34 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 8. FUNCTIONAL VIEW: AI COPILOT */}
+      {/* 8. CIRCULAR ECONOMY: B2B SCRAP MARKETPLACE */}
+      {/* ============================================================ */}
+      {activeTab === 'circular' && (
+        <div className="animate-fadeIn space-y-8">
+          <CircularNetwork />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 9. CIRCULAR ECONOMY: SANKEY STREAM */}
+      {/* ============================================================ */}
+      {activeTab === 'sankey' && (
+        <div className="animate-fadeIn space-y-6">
+          <SankeyVisualizer viewMode={viewMode} />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 10. DATA & AI: OCR INGESTION */}
+      {/* ============================================================ */}
+      {activeTab === 'intake' && (
+        <div className="animate-fadeIn space-y-6">
+          <OCRIntakeHub />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 11. DATA & AI: COPILOT PANEL */}
       {/* ============================================================ */}
       {activeTab === 'copilot' && (
         <div className="animate-fadeIn">
@@ -224,21 +254,38 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ============================================================ */}
-      {/* 9. FUNCTIONAL VIEW: B2B CIRCULAR WASTE SANKEY & CLUSTER */}
-      {/* ============================================================ */}
-      {activeTab === 'circular' && (
-        <div className="animate-fadeIn space-y-8">
-          <SankeyVisualizer viewMode={viewMode} />
-          <CircularNetwork />
-        </div>
-      )}
-
-      {/* ============================================================ */}
-      {/* 10. FUNCTIONAL VIEW: ROI ROADMAP & SEBI BRSR AUDIT */}
+      {/* 12. COMPLIANCE: CAPEX ROADMAP */}
       {/* ============================================================ */}
       {activeTab === 'roadmap' && (
         <div className="animate-fadeIn space-y-6">
           <RoadmapTable viewMode={viewMode} />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 13. COMPLIANCE: SEBI BRSR ESG */}
+      {/* ============================================================ */}
+      {activeTab === 'compliance' && (
+        <div className="animate-fadeIn space-y-6">
+          <ComplianceHub
+            kpiData={kpiData}
+            stages={stages}
+            facilityConfig={facilityConfig}
+            onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
+          />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 14. FINANCE: GREEN CREDITS */}
+      {/* ============================================================ */}
+      {activeTab === 'carbon_credits' && (
+        <div className="animate-fadeIn space-y-6">
+          <CarbonCreditsHub
+            kpiData={kpiData}
+            facilityConfig={facilityConfig}
+            onNavigateTab={setActiveTab}
+          />
         </div>
       )}
     </BaseLayout>

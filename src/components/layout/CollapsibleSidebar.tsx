@@ -20,6 +20,10 @@ import {
   ShieldCheck,
   Compass,
   Sliders,
+  Radio,
+  TrendingDown,
+  Cpu,
+  Coins,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -59,15 +63,29 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
   const [isModalGuideOpen, setIsModalGuideOpen] = useState(false);
 
   const navItems: NavItem[] = [
-    { id: 'overview', label: 'Executive Overview', category: 'Platform', icon: Sparkles },
-    { id: 'admin', label: 'Facility Parameters & AI', category: 'Platform', icon: Building2 },
-    { id: 'simulation', label: 'Digital Twin Process', category: 'Simulation & Diagnostics', icon: Flame, badge: 'Live' },
-    { id: 'simulator_hub', label: 'What-If ROI Simulator', category: 'Simulation & Diagnostics', icon: Sliders, badge: 'Interactive' },
-    { id: 'analytics_hub', label: '3D Thermal Diagnostics', category: 'Simulation & Diagnostics', icon: Activity },
-    { id: 'sandbox', label: 'Scenario Matrix', category: 'Simulation & Diagnostics', icon: Layers },
-    { id: 'circular', label: 'B2B Circular Waste', category: 'Circularity & Reporting', icon: Recycle, badge: 'Scrap' },
-    { id: 'roadmap', label: 'SEBI BRSR & Capital ROI', category: 'Circularity & Reporting', icon: BarChart3, badge: 'BRSR' },
-    { id: 'intake', label: 'OCR Utility Ingestion', category: 'Circularity & Reporting', icon: Scan },
+    // 1. Core Platform
+    { id: 'overview', label: 'Executive Overview', category: 'Core Platform', icon: Sparkles },
+    { id: 'admin', label: 'Facility Configuration', category: 'Core Platform', icon: Building2 },
+    { id: 'sensors', label: 'Real-Time IoT Sensors', category: 'Core Platform', icon: Radio, badge: 'Live' },
+
+    // 2. Simulation & Engineering
+    { id: 'simulation', label: 'Digital Twin Process', category: 'Simulation & Engineering', icon: Flame, badge: '4 Stages' },
+    { id: 'simulator_hub', label: 'What-If ROI Simulator', category: 'Simulation & Engineering', icon: Sliders, badge: 'Interactive' },
+    { id: 'analytics_hub', label: '3D Thermal Diagnostics', category: 'Simulation & Engineering', icon: Activity },
+    { id: 'sandbox', label: 'Scenario Matrix', category: 'Simulation & Engineering', icon: Layers },
+
+    // 3. Circular Economy & Supply Chain
+    { id: 'circular', label: 'B2B Scrap Marketplace', category: 'Circular Economy', icon: Recycle, badge: 'B2B' },
+    { id: 'sankey', label: 'Material & Energy Sankey', category: 'Circular Economy', icon: TrendingDown },
+
+    // 4. Data Intake & Automation
+    { id: 'intake', label: 'OCR Utility Ingestion', category: 'Data & AI', icon: Scan, badge: 'OCR' },
+    { id: 'copilot', label: 'AI Intelligence Copilot', category: 'Data & AI', icon: Cpu },
+
+    // 5. Compliance & Green Capital
+    { id: 'roadmap', label: 'CapEx & Payback Matrix', category: 'Compliance & Finance', icon: BarChart3 },
+    { id: 'compliance', label: 'SEBI BRSR Core ESG', category: 'Compliance & Finance', icon: ShieldCheck, badge: 'BRSR' },
+    { id: 'carbon_credits', label: 'Green Finance & Credits', category: 'Compliance & Finance', icon: Coins, badge: '₹ Carbon' },
   ];
 
   const categories = Array.from(new Set(navItems.map((item) => item.category)));
@@ -122,14 +140,14 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
 
               <button
                 onClick={() => {
-                  onTabChange('admin');
+                  onTabChange('sensors');
                   setIsModalGuideOpen(false);
                   if (isMobileOpen) onCloseMobile();
                 }}
                 className="w-full p-3 rounded-xl bg-slate-50 hover:bg-emerald-50/60 dark:bg-slate-800/40 dark:hover:bg-emerald-500/10 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 text-left transition-all"
               >
-                <span className="font-bold text-slate-900 dark:text-white block">2. Facility Parameters & AI Review</span>
-                <span className="text-slate-500 dark:text-slate-400 text-[11px]">Configure fuels, materials, tariffs, and run automated AI decarbonization audits.</span>
+                <span className="font-bold text-slate-900 dark:text-white block">2. Real-Time IoT Sensors</span>
+                <span className="text-slate-500 dark:text-slate-400 text-[11px]">Continuous sensor telemetry for pyrometers, O₂ analyzers, and power factors.</span>
               </button>
 
               <button
@@ -222,11 +240,11 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
         </div>
 
         {/* Navigation Groups */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4 custom-scrollbar">
           {categories.map((category) => {
             const items = navItems.filter((i) => i.category === category);
             return (
-              <div key={category} className="space-y-1">
+              <div key={category} className="space-y-0.5">
                 {(!isCollapsed || isMobileOpen) && (
                   <span className="px-3 text-[10px] font-mono font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase block mb-1">
                     {category}

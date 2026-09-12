@@ -195,12 +195,15 @@ export interface ScientificSourceItem {
 export type TabId =
   | 'overview'
   | 'admin'
+  | 'sensors'
+  | 'simulation'
   | 'simulator_hub'
   | 'analytics_hub'
-  | 'intake'
-  | 'simulation'
-  | 'whatif'
   | 'sandbox'
-  | 'copilot'
   | 'circular'
-  | 'roadmap';
+  | 'sankey'
+  | 'intake'
+  | 'copilot'
+  | 'roadmap'
+  | 'compliance'
+  | 'carbon_credits';
