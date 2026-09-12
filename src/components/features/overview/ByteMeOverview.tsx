@@ -283,20 +283,20 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         {/* LEFT COLUMN: Condensed Site Statistics (3 cols) */}
         {/* ------------------------------------------------------------ */}
         <aside className="lg:col-span-3 flex flex-col">
-          <div className="rounded-2xl p-5 bg-[#111827] border border-[#1F2937] shadow-xl space-y-5 flex-1 flex flex-col justify-between">
+          <div className="rounded-2xl p-5 bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#1F2937] shadow-xl space-y-5 flex-1 flex flex-col justify-between">
             <div>
               {/* Title Header with Live Green Indicator */}
-              <div className="flex items-center justify-between border-b border-[#1F2937] pb-3 mb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#1F2937] pb-3 mb-4">
                 <div className="flex items-center space-x-2">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
                   </span>
-                  <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-slate-200">
+                  <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-slate-800 dark:text-slate-200">
                     SITE OVERVIEW STATISTICS
                   </h3>
                 </div>
-                <span className="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 uppercase">
+                <span className="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase">
                   LIVE
                 </span>
               </div>
@@ -360,39 +360,39 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         {/* CENTER COLUMN: ByteMe Hero & Welcome Section (6 cols) */}
         {/* ------------------------------------------------------------ */}
         <main className="lg:col-span-6 flex flex-col">
-          <div className="rounded-2xl p-6 sm:p-8 bg-[#111827] border border-[#1F2937] shadow-xl relative overflow-hidden flex-1 flex flex-col justify-between space-y-6">
+          <div className="rounded-2xl p-6 sm:p-8 bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#1F2937] shadow-xl relative overflow-hidden flex-1 flex flex-col justify-between space-y-6">
             {/* Subtle Cyan Ambient Glow */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-[#06B6D4]/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 space-y-5">
               {/* Top Badge Tag */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#06B6D4]/15 text-[#06B6D4] border border-[#06B6D4]/30 text-xs font-mono font-bold tracking-wide">
-                  <Sparkles className="w-3.5 h-3.5 text-[#06B6D4]" />
+                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-cyan-500/10 dark:bg-[#06B6D4]/15 text-cyan-600 dark:text-[#06B6D4] border border-cyan-500/30 text-xs font-mono font-bold tracking-wide">
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-600 dark:text-[#06B6D4]" />
                   <span>ByteMe v2.0 • Carbon Decision Intelligence</span>
                 </span>
-                <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-white/[0.05] text-slate-300 border border-white/10 text-xs font-mono font-medium">
-                  <Globe className="w-3 h-3 text-slate-400" />
+                <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-white/[0.05] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 text-xs font-mono font-medium">
+                  <Globe className="w-3 h-3 text-slate-500 dark:text-slate-400" />
                   <span>SME Manufacturing</span>
                 </span>
               </div>
 
               {/* Dynamic Header */}
               <div className="space-y-2">
-                <h2 className="text-xl sm:text-2xl font-black font-heading text-white tracking-tight">
-                  Welcome back, <span className="text-[#06B6D4]">{userRole}</span>!
+                <h2 className="text-xl sm:text-2xl font-black font-heading text-slate-900 dark:text-white tracking-tight">
+                  Welcome back, <span className="text-cyan-600 dark:text-[#06B6D4]">{userRole}</span>!
                 </h2>
-                <h1 className="text-2xl sm:text-3xl font-black font-heading tracking-tight text-white leading-tight">
+                <h1 className="text-2xl sm:text-3xl font-black font-heading tracking-tight text-slate-900 dark:text-white leading-tight">
                   Transforming Industrial Emission Leaks into{' '}
-                  <span className="bg-gradient-to-r from-[#06B6D4] to-emerald-400 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-cyan-600 to-emerald-600 dark:from-[#06B6D4] dark:to-emerald-400 bg-clip-text text-transparent">
                     Measurable Financial ROI
                   </span>
                 </h1>
               </div>
 
               {/* Value Summary */}
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-                Indian SME manufacturers face mounting pressure from SEBI BRSR mandates and rising fuel costs. <strong className="text-white font-semibold">ByteMe</strong> bridges compliance with balance-sheet profitability through an automated digital twin, physics-backed thermal diagnostics, and real-time circular byproduct trading.
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                Indian SME manufacturers face mounting pressure from SEBI BRSR mandates and rising fuel costs. <strong className="text-slate-900 dark:text-white font-semibold">ByteMe</strong> bridges compliance with balance-sheet profitability through an automated digital twin, physics-backed thermal diagnostics, and real-time circular byproduct trading.
               </p>
             </div>
 
@@ -401,9 +401,9 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
               <Button
                 variant="primary"
                 onClick={() => onNavigate('simulation')}
-                className="flex items-center space-x-2 px-5 py-2.5 text-xs font-bold shadow-md bg-[#06B6D4] hover:bg-[#06B6D4]/80 text-slate-950 border-none"
+                className="flex items-center space-x-2 px-5 py-2.5 text-xs font-bold shadow-md bg-cyan-500 hover:bg-cyan-600 dark:bg-[#06B6D4] dark:hover:bg-[#06B6D4]/80 text-white dark:text-slate-950 border-none"
               >
-                <Flame className="w-4 h-4 text-slate-950" />
+                <Flame className="w-4 h-4 text-white dark:text-slate-950" />
                 <span>Digital Twin Pipeline</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
@@ -411,9 +411,9 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
               <Button
                 variant="secondary"
                 onClick={() => onNavigate('simulator_hub')}
-                className="flex items-center space-x-2 px-5 py-2.5 text-xs font-medium border border-[#1F2937]"
+                className="flex items-center space-x-2 px-5 py-2.5 text-xs font-medium border border-slate-200 dark:border-[#1F2937] text-slate-800 dark:text-slate-200"
               >
-                <Zap className="w-4 h-4 text-[#06B6D4]" />
+                <Zap className="w-4 h-4 text-cyan-600 dark:text-[#06B6D4]" />
                 <span>ROI Simulator</span>
               </Button>
 
@@ -421,7 +421,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                 <Button
                   variant="outline"
                   onClick={onStartJudgeTour}
-                  className="flex items-center space-x-2 px-4 py-2.5 text-xs font-medium border-[#1F2937] text-slate-300"
+                  className="flex items-center space-x-2 px-4 py-2.5 text-xs font-medium border-slate-200 dark:border-[#1F2937] text-slate-700 dark:text-slate-300"
                 >
                   <PlayCircle className="w-4 h-4" />
                   <span>3-Min Tour</span>
@@ -435,7 +435,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         {/* RIGHT COLUMN: Condensed Urgent Hotspot & Hazard (3 cols) */}
         {/* ------------------------------------------------------------ */}
         <aside className="lg:col-span-3 flex flex-col">
-          <div className="rounded-2xl p-4 sm:p-5 bg-[#111827] border border-red-500/50 shadow-[0_0_20px_rgba(255,59,48,0.2)] space-y-4 flex-1 flex flex-col justify-between relative overflow-hidden">
+          <div className="rounded-2xl p-4 sm:p-5 bg-white dark:bg-[#111827] border border-red-500/50 shadow-[0_0_20px_rgba(255,59,48,0.2)] space-y-4 flex-1 flex flex-col justify-between relative overflow-hidden">
             {/* Ambient Red Glow Halo Effect */}
             <div className="absolute top-0 right-0 w-28 h-28 bg-red-500/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -447,7 +447,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF3B30]" />
                   </span>
-                  <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-red-400">
+                  <h3 className="text-xs font-bold font-heading uppercase tracking-wider text-red-600 dark:text-red-400">
                     URGENT HOTSPOT
                   </h3>
                 </div>
@@ -457,23 +457,23 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
               </div>
 
               {/* Single Highest Priority Issue Card */}
-              <div className="p-3.5 rounded-xl bg-slate-950/90 border border-red-500/40 space-y-2.5">
+              <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-950/90 border border-red-200 dark:border-red-500/40 space-y-2.5">
                 <div className="flex items-center space-x-2">
-                  <div className="p-1.5 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 shrink-0">
-                    <Thermometer className="w-4 h-4 text-red-400 animate-pulse" />
+                  <div className="p-1.5 rounded-lg bg-red-500/15 text-red-500 dark:text-red-400 border border-red-500/30 shrink-0">
+                    <Thermometer className="w-4 h-4 text-red-500 dark:text-red-400 animate-pulse" />
                   </div>
-                  <h4 className="text-xs font-extrabold text-white font-heading">
+                  <h4 className="text-xs font-extrabold text-slate-900 dark:text-white font-heading">
                     Kiln Thermal Overshoot Spike
                   </h4>
                 </div>
 
-                <p className="text-[11.5px] text-slate-300 leading-snug">
-                  Furnace Burner #2 spiked to <strong className="text-red-400 font-mono">1,418°C</strong> (48 tCO₂e/mo excessive fuel waste).
+                <p className="text-[11.5px] text-slate-700 dark:text-slate-300 leading-snug">
+                  Furnace Burner #2 spiked to <strong className="text-red-600 dark:text-red-400 font-mono">1,418°C</strong> (48 tCO₂e/mo excessive fuel waste).
                 </p>
 
-                <div className="flex items-center justify-between text-[10.5px] font-mono text-slate-400 pt-1 border-t border-slate-900">
+                <div className="flex items-center justify-between text-[10.5px] font-mono text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-900">
                   <span>Sensor #K2-A</span>
-                  <span className="text-rose-400 font-bold">₹12,400 / day loss</span>
+                  <span className="text-rose-600 dark:text-rose-400 font-bold">₹12,400 / day loss</span>
                 </div>
               </div>
             </div>
@@ -481,10 +481,10 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             {/* Direct Single Link Navigating to the Problem */}
             <button
               onClick={() => onNavigate('analytics_hub')}
-              className="w-full py-2 px-3 rounded-xl bg-red-600/25 hover:bg-red-600/40 text-red-200 hover:text-white text-xs font-extrabold font-heading flex items-center justify-center space-x-2 transition-colors border border-red-500/50 shadow-md group"
+              className="w-full py-2 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 dark:bg-red-600/25 dark:hover:bg-red-600/40 text-red-600 dark:text-red-200 hover:text-red-700 dark:hover:text-white text-xs font-extrabold font-heading flex items-center justify-center space-x-2 transition-colors border border-red-500/40 shadow-md group"
             >
               <span>Fix Setpoint in 3D Analytics</span>
-              <ArrowRight className="w-4 h-4 text-red-400 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-red-500 dark:text-red-400 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </aside>
@@ -493,22 +493,22 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       {/* ============================================================ */}
       {/* 2. BOTTOM SECTION (FULL-WIDTH INTERACTIVE PLATFORM MODULES) */}
       {/* ============================================================ */}
-      <section className="w-full space-y-6 pt-6 border-t border-[#1F2937]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1F2937] pb-4">
+      <section className="w-full space-y-6 pt-6 border-t border-slate-200 dark:border-[#1F2937]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-[#1F2937] pb-4">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-[#06B6D4]/10 text-[#06B6D4] border border-[#06B6D4]/30 shadow-sm">
-              <Target className="w-5 h-5 text-[#06B6D4] animate-pulse" />
+            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-[#06B6D4] border border-cyan-500/30 shadow-sm">
+              <Target className="w-5 h-5 text-cyan-600 dark:text-[#06B6D4] animate-pulse" />
             </div>
             <div>
-              <h3 className="text-lg font-black font-heading text-white uppercase tracking-wider">
+              <h3 className="text-lg font-black font-heading text-slate-900 dark:text-white uppercase tracking-wider">
                 INTERACTIVE PLATFORM MODULES
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-600 dark:text-slate-400">
                 Role-based operational tools for plant managers, ESG directors, CFOs, and circular recyclers.
               </p>
             </div>
           </div>
-          <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#06B6D4]/10 text-[#06B6D4] border border-[#06B6D4]/30 font-bold self-start sm:self-auto">
+          <span className="text-xs font-mono px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-[#06B6D4] border border-cyan-500/30 font-bold self-start sm:self-auto">
             4 Interactive Role Modules
           </span>
         </div>
@@ -520,39 +520,39 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             return (
               <Card
                 key={idx}
-                className="p-5 flex flex-col justify-between bg-[#111827] border-[#1F2937] hover:border-[#06B6D4]/60 hover:shadow-[0_0_25px_rgba(6,182,212,0.15)] transition-all duration-300 group rounded-2xl"
+                className="p-5 flex flex-col justify-between bg-white dark:bg-[#111827] border-slate-200 dark:border-[#1F2937] hover:border-cyan-500/60 dark:hover:border-[#06B6D4]/60 hover:shadow-[0_0_25px_rgba(6,182,212,0.15)] transition-all duration-300 group rounded-2xl"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className={cn('p-2.5 rounded-xl border shadow-sm', audience.color)}>
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-[9.5px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
+                    <span className="text-[9.5px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
                       {audience.tag}
                     </span>
                   </div>
 
-                  <h4 className="text-base font-bold font-heading text-white mb-2 group-hover:text-[#06B6D4] transition-colors">
+                  <h4 className="text-base font-bold font-heading text-slate-900 dark:text-white mb-2 group-hover:text-cyan-600 dark:group-hover:text-[#06B6D4] transition-colors">
                     {audience.role}
                   </h4>
 
-                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     {audience.description}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[#1F2937] space-y-3">
+                <div className="pt-4 border-t border-slate-200 dark:border-[#1F2937] space-y-3">
                   <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-slate-400 text-[11px]">Key Focus</span>
-                    <span className="text-[#06B6D4] font-bold">{audience.metrics}</span>
+                    <span className="text-slate-500 dark:text-slate-400 text-[11px]">Key Focus</span>
+                    <span className="text-cyan-600 dark:text-[#06B6D4] font-bold">{audience.metrics}</span>
                   </div>
 
                   <button
                     onClick={() => onNavigate(audience.tabTarget)}
-                    className="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors border border-slate-700 group-hover:border-[#06B6D4]/40"
+                    className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors border border-slate-200 dark:border-slate-700 group-hover:border-cyan-500/40 dark:group-hover:border-[#06B6D4]/40"
                   >
                     <span>{audience.actionLabel}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#06B6D4]" />
+                    <ArrowRight className="w-3.5 h-3.5 text-cyan-600 dark:text-[#06B6D4]" />
                   </button>
                 </div>
               </Card>
