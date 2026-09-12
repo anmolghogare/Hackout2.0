@@ -3,10 +3,12 @@
 
 echo "🚀 Starting Team ByteMe — Industrial Carbon Intelligence Platform..."
 
-# Find Node binary
-NODE_BIN=$(which node 2>/dev/null || find /Users/anmolghogare/.cache -name node -type f 2>/dev/null | head -n 1)
-
-if [ -z "$NODE_BIN" ]; then
+# Locate Node binary
+if command -v node >/dev/null 2>&1; then
+  NODE_BIN="node"
+elif [ -f "/Users/anmolghogare/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node" ]; then
+  NODE_BIN="/Users/anmolghogare/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+else
   NODE_BIN="node"
 fi
 
