@@ -4,6 +4,7 @@ const {
   calculateSimulation,
   getCopilotResponse,
   getCircularMatches,
+  analyzeByProduct,
   getRoadmap,
   getRegressionCharts
 } = require('./controllers/mainController');
@@ -56,6 +57,21 @@ const requestHandler = (req, res) => {
   // GET /api/circular/matches
   if (url.pathname === '/api/circular/matches' && req.method === 'GET') {
     return getCircularMatches(req, resWrapper);
+  }
+
+  // POST /api/circular/analyze-product
+  if (url.pathname === '/api/circular/analyze-product' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        req.body = body ? JSON.parse(body) : {};
+      } catch (e) {
+        req.body = {};
+      }
+      analyzeByProduct(req, resWrapper);
+    });
+    return;
   }
 
   // GET /api/roadmap

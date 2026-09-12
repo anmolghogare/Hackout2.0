@@ -60,3 +60,25 @@ export async function queryCopilot(prompt: string): Promise<any> {
   }
   return null;
 }
+
+export async function analyzeByProduct(productData: {
+  name: string;
+  quantity: string;
+  category?: string;
+  location?: string;
+  description?: string;
+}): Promise<any> {
+  try {
+    const res = await fetch(`${API_BASE}/circular/analyze-product`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(productData),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('API Offline: using local AI by-product analysis fallback', err);
+  }
+  return null;
+}
