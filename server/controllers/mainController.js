@@ -5,8 +5,46 @@ const {
   empiricalRegressionData
 } = require('../models/facilityModel');
 
-// In-memory dynamic B2B circular matches storage
-let activeCircularListings = [...b2bCircularMatch];
+let activeCircularListings = [
+  {
+    id: 'L1',
+    materialName: 'Off-Cut Trim Scrap (LLDPE Polymer)',
+    seller: 'Apex Packaging Pvt. Ltd. (Factory A)',
+    quantity: '12 Tons / Month',
+    pricePerTon: '₹25,000 / Ton',
+    carbonOffsetPotential: '1.8 tCO₂e / Ton',
+    matchScore: 98,
+    location: 'Pune Industrial Belt, MH',
+    aiAnalysis: {
+      recipientIndustry: 'Pipe & Conduit Manufacturers (Factory B)',
+      buyerDiscount: '30% below virgin polymer',
+      annualRevenueDisplay: '+₹3,00,000 / year',
+      annualLandfillFeeSavedDisplay: '+₹2,16,000 / year',
+      landfillDiversionPct: '85% Landfill Diversion',
+      recommendation: 'Direct B2B supply of off-cut trim scrap to Factory B replaces virgin resin at 30% discount while generating ₹3.0L/yr scrap sales revenue.'
+    }
+  },
+  {
+    id: 'L2',
+    materialName: 'Clean Industrial Biomass Briquettes',
+    seller: 'GreenFuel Eco Solutions',
+    quantity: '50 Tons / Month',
+    pricePerTon: '₹6,800 / Ton',
+    carbonOffsetPotential: '2.4 tCO₂e / Ton (vs Heavy Fuel)',
+    matchScore: 94,
+    location: 'Chakan Industrial Zone, MH'
+  },
+  {
+    id: 'L3',
+    materialName: 'Post-Consumer Recycled (PCR) HDPE Granules',
+    seller: 'ResinTech Circular Synthetics',
+    quantity: '25 Tons / Month',
+    pricePerTon: '₹48,000 / Ton',
+    carbonOffsetPotential: '1.4 tCO₂e / Ton',
+    matchScore: 89,
+    location: 'Vapi Industrial Area, GJ'
+  }
+];
 
 // Baseline emission factor constants (IPCC 2006 / CEA India v19)
 const EMISSION_FACTORS = {
