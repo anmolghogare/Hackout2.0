@@ -4,6 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Explicit Global Input Text High-Contrast Rules */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="search"],
+select,
+textarea {
+  color: #0f172a !important;
+}
+
+.dark input[type="text"],
+.dark input[type="number"],
+.dark input[type="email"],
+.dark input[type="search"],
+.dark select,
+.dark textarea {
+  color: #f8fafc !important;
+}
+
+
 @keyframes flowParticle {
   0% { stroke-dashoffset: 60; }
   100% { stroke-dashoffset: 0; }

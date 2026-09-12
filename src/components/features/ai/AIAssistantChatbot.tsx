@@ -5,21 +5,6 @@ import {
   X,
   Send,
   Sparkles,
-  Zap,
-  ArrowRight,
-  Flame,
-  Activity,
-  Scan,
-  Layers,
-  Recycle,
-  BarChart3,
-  FileCheck,
-  RotateCcw,
-  CheckCircle2,
-  DollarSign,
-  Leaf,
-  MessageSquare,
-  ShieldCheck,
 } from 'lucide-react';
 import { queryCopilot } from '../../../lib/api';
 import { cn } from '../../../lib/utils';
@@ -31,6 +16,7 @@ export interface AIAssistantChatbotProps {
   onToggleViewMode: () => void;
   onOpenBRSRModal: () => void;
   onApplyPreset: (preset: Partial<SliderInputs>) => void;
+  onStartJudgeTour?: () => void;
 }
 
 export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
@@ -40,47 +26,99 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
   onToggleViewMode,
   onOpenBRSRModal,
   onApplyPreset,
+  onStartJudgeTour,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<
-    { id: string; sender: 'user' | 'assistant'; text: string; structuredData?: any; actionChip?: { label: string; action: () => void } }[]
+    { id: string; sender: 'user' | 'assistant'; text: string; actionChip?: { label: string; action: () => void } }[]
   >([
     {
       id: 'welcome',
       sender: 'assistant',
-      text: "👋 Hi! I'm your ByteMe AI Industrial Sustainability Assistant for Apex Packaging Pvt. Ltd. Ask me how to reduce furnace emissions, monetize trim scrap, or view IPCC/CEA India factors.",
+      text: "👋 Hi! I'm your ByteMe Assistant. I can guide you through the platform, jump directly to any module, or run live simulations for you.",
+      actionChip: {
+        label: '🚀 Start 3-Min Judge Demo',
+        action: () => onStartJudgeTour && onStartJudgeTour(),
+      },
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
   // Quick navigation shortcuts
   const navShortcuts = [
-    { label: '🏠 Home Context', tab: 'overview' as TabId },
+    { label: '🏠 Home Overview', tab: 'overview' as TabId },
+    { label: '🏭 Digital Twin', tab: 'simulation' as TabId },
     { label: '🎛️ ROI Simulator', tab: 'simulator_hub' as TabId },
     { label: '🔥 3D Heatmap', tab: 'analytics_hub' as TabId },
     { label: '📄 OCR Scanner', tab: 'intake' as TabId },
-    { label: '🏭 Digital Twin', tab: 'simulation' as TabId },
-    { label: '🧪 Scenario Sandbox', tab: 'sandbox' as TabId },
     { label: '🔄 Waste Sankey', tab: 'circular' as TabId },
-    { label: '📊 ROI Matrix', tab: 'roadmap' as TabId },
+    { label: '🧪 Scenario Sandbox', tab: 'sandbox' as TabId },
   ];
 
-  const handleSend = async (customPrompt?: string) => {
-    const textToSend = customPrompt || query;
-    if (!textToSend.trim()) return;
+  const handleSendMessage = async (text?: string) => {
+    const prompt = text || query;
+    if (!prompt.trim()) return;
 
-    const userMsgId = Date.now().toString();
-    setMessages((prev) => [
-      ...prev,
-      { id: userMsgId, sender: 'user', text: textToSend },
-    ]);
+    const userMsg = { id: Date.now().toString(), sender: 'user' as const, text: prompt };
+    setMessages((prev) => [...prev, userMsg]);
     setQuery('');
     setIsTyping(true);
 
-    const lower = textToSend.toLowerCase();
+    const lower = prompt.toLowerCase();
 
-    // Check local command triggers
+    if (lower.includes('home') || lower.includes('about') || lower.includes('overview')) {
+      setTimeout(() => {
+        onNavigateTab('overview');
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'assistant',
+            text: 'Navigated to the ByteMe Home & Product Overview! Here you can review our mission, target audience profiles, and feature architecture.',
+          },
+        ]);
+        setIsTyping(false);
+      }, 300);
+      return;
+    }
+
+    if (lower.includes('twin') || lower.includes('pipeline') || lower.includes('particle')) {
+      setTimeout(() => {
+        onNavigateTab('simulation');
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'assistant',
+            text: 'Navigated to the Digital Twin Process Pipeline! Follow the glowing particle stream from Input to Output and inspect the Stage 02 furnace leak point.',
+          },
+        ]);
+        setIsTyping(false);
+      }, 300);
+      return;
+    }
+
+    if (lower.includes('tour') || lower.includes('demo') || lower.includes('judge')) {
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'assistant',
+            text: 'Launching the guided 3-minute judge demo walkthrough across all modules!',
+            actionChip: {
+              label: 'Step Through Demo Now',
+              action: () => onStartJudgeTour && onStartJudgeTour(),
+            },
+          },
+        ]);
+        if (onStartJudgeTour) onStartJudgeTour();
+        setIsTyping(false);
+      }, 400);
+      return;
+    }
+
     if (lower.includes('brsr') || lower.includes('audit') || lower.includes('report') || lower.includes('pdf')) {
       setTimeout(() => {
         setMessages((prev) => [
@@ -90,8 +128,8 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
             sender: 'assistant',
             text: 'Opening the SEBI BRSR Principle 6 Core Audit Compliance Pack generator modal.',
             actionChip: {
-              label: 'Generate BRSR Report',
-              action: () => onOpenBRSRModal(),
+              label: 'Open BRSR Pack',
+              action: onOpenBRSRModal,
             },
           },
         ]);
@@ -101,7 +139,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
       return;
     }
 
-    if (lower.includes('rupee') || lower.includes('currency') || lower.includes('toggle') || lower.includes('carbon view')) {
+    if (lower.includes('rupee') || lower.includes('financial') || lower.includes('inr') || lower.includes('currency')) {
       setTimeout(() => {
         onToggleViewMode();
         setMessages((prev) => [
@@ -109,7 +147,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
           {
             id: (Date.now() + 1).toString(),
             sender: 'assistant',
-            text: `Toggled dashboard metric view mode to ${viewMode === 'carbon' ? 'Financial Cash Flow (₹ INR)' : 'Carbon Intensity (tCO2e)'}!`,
+            text: `Toggled dashboard view to ${viewMode === 'carbon' ? 'Financial (₹ INR)' : 'Carbon (tCO₂e)'} mode!`,
           },
         ]);
         setIsTyping(false);
@@ -117,60 +155,16 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
       return;
     }
 
-    // Call server-side AI Q&A API
-    const apiResult = await queryCopilot(textToSend);
-
-    if (apiResult && apiResult.data) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          sender: 'assistant',
-          text: apiResult.data.text || apiResult.data.summary || 'Here is your structured AI operational action plan:',
-          structuredData: apiResult.data,
-        },
-      ]);
-    } else {
-      // Zero-hallucination fallback
+    if (lower.includes('preset') || lower.includes('net-zero') || lower.includes('net zero') || lower.includes('biomass')) {
       setTimeout(() => {
+        onApplyPreset({ fuelShiftPct: 80, tempReductionPct: 15, pcrResinPct: 40, scrapRecyclePct: 100 });
+        onNavigateTab('simulator_hub');
         setMessages((prev) => [
           ...prev,
           {
             id: (Date.now() + 1).toString(),
             sender: 'assistant',
-            text: `Based on Apex Packaging's baseline telemetry, substituting 20% Virgin Polymer with PCR Resin and reducing thermal overshoot cuts carbon intensity by 21% while generating ₹6.5 Lakh/year in net profit.`,
-            structuredData: {
-              aiTitle: 'Apex Packaging Operational Plan',
-              referenceStandards: 'IPCC 2006 & CEA India Factor Database v19',
-              actionItems: [
-                {
-                  step: 1,
-                  title: 'Furnace Insulation & 5% Temp Overshoot Reduction',
-                  co2Impact: 'CO₂ Reduction: -9%',
-                  financialImpact: 'Annual Energy Savings: ₹3,50,000 / year',
-                  paybackPeriod: '4.2 Months',
-                },
-                {
-                  step: 2,
-                  title: '20% PCR Polymer Resin Substitution Blend',
-                  co2Impact: 'CO₂ Reduction: -7%',
-                  financialImpact: 'Financial Impact: Cost-Neutral Shift',
-                  paybackPeriod: '7.5 Months',
-                },
-                {
-                  step: 3,
-                  title: 'B2B Scrap Route (12T/mo) to Factory B',
-                  co2Impact: 'CO₂ Reduction: -5%',
-                  financialImpact: 'Scrap Sales Revenue: +₹3,00,000 / year',
-                  paybackPeriod: 'Immediate',
-                },
-              ],
-              totalImpact: {
-                co2ReductionPct: '21% Total CO₂ Cut',
-                annualProfitIncrease: '+₹6,50,000 / year Net Profit',
-                paybackPeriodMonths: '~10.5 Months Payback',
-              },
-            },
+            text: 'Applied the Net-Zero 2030 target simulation preset (80% fuel shift, 40% PCR resin, 100% scrap circularity) and jumped to the ROI Playground!',
           },
         ]);
         setIsTyping(false);
@@ -178,63 +172,98 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
       return;
     }
 
+    try {
+      const res = await queryCopilot(prompt);
+      if (res && res.response) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            sender: 'assistant',
+            text: res.response,
+          },
+        ]);
+      } else {
+        fallbackResponse(prompt);
+      }
+    } catch {
+      fallbackResponse(prompt);
+    }
     setIsTyping(false);
+  };
+
+  const fallbackResponse = (_prompt: string) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: (Date.now() + 1).toString(),
+        sender: 'assistant',
+        text: `At Apex Packaging (Pune), the largest emission hotspot is Stage 2 (Furnace Heating: 48 tCO₂e/mo) followed by Scrap Waste (17 tCO₂e/mo). Shifting 50% furnace fuel to biomass briquettes cuts emissions by 28.8% with an estimated ₹6.5 Lakhs/year in net savings.`,
+        actionChip: {
+          label: 'Apply 50% Biomass Shift',
+          action: () => onApplyPreset({ fuelShiftPct: 50, tempReductionPct: 5 }),
+        },
+      },
+    ]);
   };
 
   return (
     <>
-      {/* Floating Chat Trigger Button */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 p-3.5 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-2xl shadow-emerald-500/40 hover:scale-105 transition-all duration-300 flex items-center space-x-2 group"
-          title="Open AI Sustainability Assistant"
-        >
-          <Bot className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          <span className="text-xs font-extrabold font-heading hidden sm:inline pr-1">AI Assistant</span>
-          <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
-        </button>
-      )}
+      {/* Floating Toggle Button (Bottom-Right) */}
+      <div className="fixed bottom-6 right-6 z-50">
+        {!isOpen ? (
+          <button
+            onClick={() => setIsOpen(true)}
+            className="group relative flex items-center space-x-2.5 px-4 py-3 rounded-full bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-slate-900/20 dark:shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all duration-300"
+            aria-label="Open AI Assistant Chatbot"
+          >
+            <Bot className="w-5 h-5 text-emerald-400 dark:text-white" />
+            <span className="font-heading">AI Assistant</span>
+            <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+          </button>
+        ) : null}
+      </div>
 
-      {/* Slide-Up Chat Interface Modal */}
+      {/* Floating Glassmorphism Chatbot Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-[92vw] sm:w-[420px] max-h-[580px] bg-slate-900/95 dark:bg-[#0c1629]/95 text-slate-100 border border-slate-800 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden animate-fadeIn">
+        <div className="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] h-[580px] max-h-[85vh] rounded-3xl bg-white dark:bg-[#0c101c] border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-fadeIn select-none">
           {/* Header */}
-          <div className="p-4 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-bold">
-                <Bot className="w-4 h-4" />
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-9 h-9 rounded-2xl bg-emerald-600 dark:bg-emerald-500 flex items-center justify-center text-white shadow-sm">
+                <Bot className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-xs font-bold font-heading text-white flex items-center space-x-1">
-                  <span>ByteMe AI Assistant</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono">Grounded</span>
-                </h4>
-                <p className="text-[10px] text-slate-400">Apex Packaging SME Operational Intelligence</p>
+                <div className="flex items-center space-x-1.5">
+                  <h4 className="font-heading font-extrabold text-sm text-slate-900 dark:text-white">
+                    ByteMe Copilot Assistant
+                  </h4>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                </div>
+                <p className="text-[10.5px] text-slate-500 dark:text-slate-400">Navigation & Intelligence Co-pilot</p>
               </div>
             </div>
 
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="Close Assistant"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Nav Shortcuts Strip */}
-          <div className="p-2.5 bg-slate-950/40 border-b border-slate-800/60 overflow-x-auto flex space-x-1.5 custom-scrollbar">
+          {/* Quick Navigation Chips Strip */}
+          <div className="p-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 overflow-x-auto whitespace-nowrap flex space-x-1.5 custom-scrollbar">
             {navShortcuts.map((sc, i) => (
               <button
                 key={i}
-                onClick={() => {
-                  onNavigateTab(sc.tab);
-                }}
+                onClick={() => onNavigateTab(sc.tab)}
                 className={cn(
-                  'px-2.5 py-1 rounded-xl text-[10px] font-semibold whitespace-nowrap transition-colors shrink-0',
+                  'px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors shrink-0',
                   activeTab === sc.tab
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold'
-                    : 'bg-slate-800/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/40 font-bold'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700'
                 )}
               >
                 {sc.label}
@@ -242,95 +271,68 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
             ))}
           </div>
 
-          {/* Chat Stream */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3.5 custom-scrollbar text-xs">
-            {messages.map((msg) => (
+          {/* Chat Stream Area */}
+          <div className="flex-1 p-4 overflow-y-auto space-y-3.5 custom-scrollbar text-xs bg-slate-50/30 dark:bg-transparent">
+            {messages.map((m) => (
               <div
-                key={msg.id}
-                className={`flex space-x-2 ${
-                  msg.sender === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+                key={m.id}
+                className={cn('flex flex-col', m.sender === 'user' ? 'items-end' : 'items-start')}
               >
-                {msg.sender === 'assistant' && (
-                  <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                    <Bot className="w-3.5 h-3.5" />
-                  </div>
-                )}
-
                 <div
-                  className={`max-w-[85%] p-3 rounded-2xl ${
-                    msg.sender === 'user'
-                      ? 'bg-emerald-600 text-white rounded-br-none font-medium'
-                      : 'bg-slate-800/80 border border-slate-700/70 text-slate-200 rounded-bl-none'
-                  }`}
-                >
-                  <p>{msg.text}</p>
-
-                  {/* Action Chip Trigger */}
-                  {msg.actionChip && (
-                    <button
-                      onClick={msg.actionChip.action}
-                      className="mt-2.5 px-3 py-1.5 rounded-xl bg-emerald-500 text-white text-[11px] font-bold flex items-center space-x-1 shadow-sm hover:bg-emerald-600 transition-colors"
-                    >
-                      <span>{msg.actionChip.label}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                  className={cn(
+                    'max-w-[85%] p-3.5 rounded-2xl leading-relaxed',
+                    m.sender === 'user'
+                      ? 'bg-emerald-600 text-white rounded-br-none shadow-sm font-medium'
+                      : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-bl-none shadow-sm'
                   )}
+                >
+                  <p>{m.text}</p>
 
-                  {/* Structured AI Plan */}
-                  {msg.structuredData && (
-                    <div className="mt-2.5 pt-2.5 border-t border-slate-700/60 space-y-2">
-                      <div className="flex items-center justify-between text-[10px] text-emerald-400 font-bold">
-                        <span>{msg.structuredData.aiTitle || 'AI Action Plan'}</span>
-                        <span className="flex items-center space-x-1 text-slate-400 font-mono">
-                          <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                          <span>IPCC/CEA</span>
-                        </span>
-                      </div>
-
-                      {msg.structuredData.actionItems && (
-                        <div className="space-y-1.5">
-                          {msg.structuredData.actionItems.map((item: any, idx: number) => (
-                            <div key={idx} className="p-2 rounded-lg bg-slate-900/90 text-[11px] space-y-0.5">
-                              <span className="font-bold text-white block">{item.step || idx + 1}. {item.title}</span>
-                              <div className="flex justify-between font-mono text-[10px] text-emerald-400">
-                                <span>{item.co2Impact}</span>
-                                <span className="text-purple-300">{item.financialImpact}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  {m.actionChip && (
+                    <button
+                      onClick={m.actionChip.action}
+                      className="mt-2.5 w-full py-1.5 px-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/20 hover:bg-emerald-100 dark:hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 font-bold text-[11px] flex items-center justify-center space-x-1 transition-colors"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      <span>{m.actionChip.label}</span>
+                    </button>
                   )}
                 </div>
               </div>
             ))}
 
             {isTyping && (
-              <div className="flex space-x-2 items-center text-slate-400 text-[11px] font-mono">
-                <Bot className="w-3.5 h-3.5 text-emerald-500 animate-spin" />
-                <span>Thinking & querying facility dataset...</span>
+              <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400 text-xs font-mono">
+                <Bot className="w-4 h-4 text-emerald-500 animate-spin" />
+                <span>ByteMe AI is analyzing telemetry...</span>
               </div>
             )}
           </div>
 
-          {/* Chat Input */}
-          <div className="p-3 bg-slate-950/60 border-t border-slate-800 flex items-center space-x-2">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask AI Copilot about emissions, costs..."
-              className="flex-1 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-            <button
-              onClick={() => handleSend()}
-              className="p-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition-colors"
+          {/* Bottom Chat Input Bar - Fully Visible and High Contrast */}
+          <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMessage();
+              }}
+              className="flex items-center space-x-2"
             >
-              <Send className="w-4 h-4" />
-            </button>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Ask or command (e.g., 'Jump to Sankey', 'BRSR report')..."
+                className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+              />
+              <button
+                type="submit"
+                disabled={!query.trim()}
+                className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white transition-colors"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
           </div>
         </div>
       )}
