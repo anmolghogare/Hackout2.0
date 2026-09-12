@@ -15,12 +15,11 @@ import { BRSRExportModal } from '../components/features/dashboard/BRSRExportModa
 import { AuditReportExportModal } from '../components/features/dashboard/AuditReportExportModal';
 import { DataProvenanceModal } from '../components/features/dashboard/DataProvenanceModal';
 import { GoogleAuthModal } from '../components/auth/GoogleAuthModal';
-import { KPICards } from '../components/features/dashboard/KPICards';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
-import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
 import { RoadmapTable } from '../components/features/dashboard/RoadmapTable';
 import { ComplianceHub } from '../components/features/dashboard/ComplianceHub';
 import { CarbonCreditsHub } from '../components/features/dashboard/CarbonCreditsHub';
+import { AIReviewCard } from '../components/features/ai/AIReviewCard';
 
 export const DashboardPage: React.FC = () => {
   const {
@@ -55,15 +54,16 @@ export const DashboardPage: React.FC = () => {
     savedScenarios,
     saveScenario,
     deleteScenario,
-    isJudgeTourActive,
-    judgeTourStep,
-    judgeTourSteps,
     startJudgeTour,
-    nextJudgeTourStep,
-    stopJudgeTour,
   } = useDashboardData();
 
   const [isAuditExportOpen, setIsAuditExportOpen] = useState(false);
+  const reviewProps = {
+    facilityConfig,
+    sliders: sliderInputs,
+    apiKey: aiSettings.apiKey,
+    aiModel: aiSettings.model,
+  };
 
   return (
     <BaseLayout
@@ -81,9 +81,10 @@ export const DashboardPage: React.FC = () => {
       onStartJudgeTour={startJudgeTour}
       onApplyPreset={applyPreset}
       sliderInputs={sliderInputs}
+      apiKey={aiSettings.apiKey}
+      aiModel={aiSettings.model}
       isBackendOnline={isBackendOnline}
     >
-      {/* Google Identity Services Authentication Modal */}
       <GoogleAuthModal
         isOpen={isGoogleModalOpen}
         onClose={() => setIsGoogleModalOpen(false)}
@@ -93,204 +94,97 @@ export const DashboardPage: React.FC = () => {
         onAddAccount={addGoogleAccount}
         onSignOut={signOutGoogleAccount}
       />
+      <CopilotCommandModal isOpen={isCopilotOpen} onClose={() => setIsCopilotOpen(false)} onApplyPreset={applyPreset} viewMode={viewMode} />
+      <BRSRExportModal isOpen={isBRSRModalOpen} onClose={() => setIsBRSRModalOpen(false)} kpiData={kpiData} stages={stages} />
+      <AuditReportExportModal isOpen={isAuditExportOpen} onClose={() => setIsAuditExportOpen(false)} kpiData={kpiData} />
+      <DataProvenanceModal isOpen={isDataProvenanceModalOpen} onClose={() => setIsDataProvenanceModalOpen(false)} facilityConfig={facilityConfig} />
 
-      {/* Global AI Command Modal (Cmd + K) */}
-      <CopilotCommandModal
-        isOpen={isCopilotOpen}
-        onClose={() => setIsCopilotOpen(false)}
-        onApplyPreset={applyPreset}
-        viewMode={viewMode}
-      />
-
-      {/* Global SEBI BRSR Regulatory Audit Modal */}
-      <BRSRExportModal
-        isOpen={isBRSRModalOpen}
-        onClose={() => setIsBRSRModalOpen(false)}
-        kpiData={kpiData}
-        stages={stages}
-      />
-
-      {/* Executive Configurable Audit Export Modal */}
-      <AuditReportExportModal
-        isOpen={isAuditExportOpen}
-        onClose={() => setIsAuditExportOpen(false)}
-        kpiData={kpiData}
-      />
-
-      {/* Scientific Data Provenance & Regulatory Inspector Modal */}
-      <DataProvenanceModal
-        isOpen={isDataProvenanceModalOpen}
-        onClose={() => setIsDataProvenanceModalOpen(false)}
-        facilityConfig={facilityConfig}
-      />
-
-      {/* ============================================================ */}
-      {/* 1. CORE PLATFORM: EXECUTIVE OVERVIEW */}
-      {/* ============================================================ */}
       {activeTab === 'overview' && (
-        <ByteMeOverview
-          onNavigate={setActiveTab}
-          onStartJudgeTour={startJudgeTour}
-          onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
-        />
+        <ByteMeOverview onNavigate={setActiveTab} onStartJudgeTour={startJudgeTour} onOpenBRSRModal={() => setIsBRSRModalOpen(true)} />
       )}
 
-      {/* ============================================================ */}
-      {/* 2. CORE PLATFORM: FACILITY ONBOARDING & CONFIG */}
-      {/* ============================================================ */}
       {activeTab === 'admin' && (
-        <div className="animate-fadeIn">
-          <AdminHub
-            currentConfig={facilityConfig}
-            onSaveConfig={saveFacilityConfig}
-            aiSettings={aiSettings}
-            onSaveAISettings={saveAISettings}
-            onNavigateTab={setActiveTab}
-            onOpenProvenanceModal={() => setIsDataProvenanceModalOpen(true)}
-            viewMode={viewMode}
-          />
+        <div className="animate-fadeIn space-y-8">
+          <AdminHub currentConfig={facilityConfig} onSaveConfig={saveFacilityConfig} aiSettings={aiSettings} onSaveAISettings={saveAISettings} onNavigateTab={setActiveTab} onOpenProvenanceModal={() => setIsDataProvenanceModalOpen(true)} viewMode={viewMode} />
+          <AIReviewCard section="facility" title="Audit this facility configuration" description="Check saved plant inputs before trusting a simulation." {...reviewProps} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 3. CORE PLATFORM: REAL-TIME IOT SENSORS */}
-      {/* ============================================================ */}
       {activeTab === 'sensors' && (
-        <div className="animate-fadeIn space-y-6">
+        <div className="animate-fadeIn space-y-8">
           <SensorsTelemetryHub facilityConfig={facilityConfig} />
+          <AIReviewCard section="sensors" title="AI telemetry review" description="Flag implausible furnace or power-factor readings." {...reviewProps} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 4. SIMULATION: DIGITAL TWIN PIPELINE */}
-      {/* ============================================================ */}
       {activeTab === 'simulation' && (
-        <div className="animate-fadeIn space-y-6">
-          <ProcessFlowCanvas
-            stages={stages}
-            viewMode={viewMode}
-            onSelectStageForSimulation={(stageIdx) => {
-              if (stageIdx === 0) applyPreset({ pcrResinPct: 20 });
-              else if (stageIdx === 1) applyPreset({ fuelShiftPct: 50, tempReductionPct: 10 });
-              else if (stageIdx === 2) applyPreset({ fuelShiftPct: 30, scrapRecyclePct: 50 });
-              else if (stageIdx === 3) applyPreset({ scrapRecyclePct: 100 });
-              setActiveTab('simulator_hub');
-            }}
-          />
+        <div className="animate-fadeIn space-y-8">
+          <ProcessFlowCanvas stages={stages} viewMode={viewMode} onSelectStageForSimulation={(stageIdx) => {
+            if (stageIdx === 0) applyPreset({ pcrResinPct: 20 });
+            else if (stageIdx === 1) applyPreset({ fuelShiftPct: 50, tempReductionPct: 10 });
+            else if (stageIdx === 2) applyPreset({ fuelShiftPct: 30, scrapRecyclePct: 50 });
+            else if (stageIdx === 3) applyPreset({ scrapRecyclePct: 100 });
+            setActiveTab('simulator_hub');
+          }} />
+          <AIReviewCard section="process" title="AI leak-point review" description="Hottest stage, grounded in live facility data." {...reviewProps} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 5. SIMULATION: WHAT-IF ROI STUDIO */}
-      {/* ============================================================ */}
       {activeTab === 'simulator_hub' && (
-        <div className="animate-fadeIn space-y-6">
-          <UnifiedSimulatorHub
-            sliderInputs={sliderInputs}
-            onSliderChange={updateSlider}
-            onApplyPreset={applyPreset}
-            onReset={resetSliders}
-            viewMode={viewMode}
-          />
+        <div className="animate-fadeIn space-y-8">
+          <UnifiedSimulatorHub sliderInputs={sliderInputs} onSliderChange={updateSlider} onApplyPreset={applyPreset} onReset={resetSliders} viewMode={viewMode} />
+          <AIReviewCard section="simulator" title="AI scenario critique" description="Which slider buys ~20% efficiency without inflating opex." {...reviewProps} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 6. SIMULATION: 3D THERMAL DIAGNOSTICS & HEATMAP */}
-      {/* ============================================================ */}
       {activeTab === 'analytics_hub' && (
         <div className="animate-fadeIn space-y-6">
-          <AdvancedAnalyticsHub
-            onOpenAnomalyCopilot={() => setIsCopilotOpen(true)}
-            viewMode={viewMode}
-          />
+          <AdvancedAnalyticsHub onOpenAnomalyCopilot={() => setIsCopilotOpen(true)} viewMode={viewMode} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 7. SIMULATION: SCENARIO MATRIX */}
-      {/* ============================================================ */}
       {activeTab === 'sandbox' && (
         <div className="animate-fadeIn space-y-6">
-          <ScenarioSandbox
-            scenarios={savedScenarios}
-            onSaveCurrentScenario={saveScenario}
-            onDeleteScenario={deleteScenario}
-            onLoadScenario={(inputs) => {
-              applyPreset(inputs);
-              setActiveTab('simulator_hub');
-            }}
-            viewMode={viewMode}
-          />
+          <ScenarioSandbox scenarios={savedScenarios} onSaveCurrentScenario={saveScenario} onDeleteScenario={deleteScenario} onLoadScenario={(inputs) => { applyPreset(inputs); setActiveTab('simulator_hub'); }} viewMode={viewMode} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 8. CIRCULAR ECONOMY: SANKEY STREAM */}
-      {/* ============================================================ */}
       {(activeTab === 'circular' || activeTab === 'sankey') && (
-        <div className="animate-fadeIn space-y-6">
+        <div className="animate-fadeIn space-y-8">
           <SankeyVisualizer viewMode={viewMode} />
+          <AIReviewCard section="circular" title="AI offtake review" description="Scrap tons and PCR economics only — no invented buyers." {...reviewProps} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 10. DATA & AI: OCR INGESTION */}
-      {/* ============================================================ */}
       {activeTab === 'intake' && (
         <div className="animate-fadeIn space-y-6">
           <OCRIntakeHub />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 11. DATA & AI: COPILOT PANEL */}
-      {/* ============================================================ */}
       {activeTab === 'copilot' && (
         <div className="animate-fadeIn">
-          <CopilotPanel facilityConfig={facilityConfig} sliderInputs={sliderInputs} />
+          <CopilotPanel facilityConfig={facilityConfig} sliderInputs={sliderInputs} apiKey={aiSettings.apiKey} aiModel={aiSettings.model} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 12. COMPLIANCE: CAPEX ROADMAP */}
-      {/* ============================================================ */}
       {activeTab === 'roadmap' && (
-        <div className="animate-fadeIn space-y-6">
-          <RoadmapTable
-            viewMode={viewMode}
-            onSimulatePhase={(inputs) => {
-              applyPreset(inputs);
-              setActiveTab('simulator_hub');
-            }}
-          />
+        <div className="animate-fadeIn space-y-8">
+          <RoadmapTable viewMode={viewMode} onSimulatePhase={(inputs) => { applyPreset(inputs); setActiveTab('simulator_hub'); }} />
+          <AIReviewCard section="roadmap" title="AI 90-day capex review" description="Sequence work using modeled INR and tCO2e only." {...reviewProps} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 13. COMPLIANCE: SEBI BRSR ESG */}
-      {/* ============================================================ */}
       {activeTab === 'compliance' && (
-        <div className="animate-fadeIn space-y-6">
-          <ComplianceHub
-            kpiData={kpiData}
-            stages={stages}
-            facilityConfig={facilityConfig}
-            onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
-          />
+        <div className="animate-fadeIn space-y-8">
+          <ComplianceHub kpiData={kpiData} stages={stages} facilityConfig={facilityConfig} onOpenBRSRModal={() => setIsBRSRModalOpen(true)} />
+          <AIReviewCard section="compliance" title="AI BRSR gap review" description="Missing evidence stays UNKNOWN." {...reviewProps} />
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* 14. FINANCE: GREEN CREDITS */}
-      {/* ============================================================ */}
       {activeTab === 'carbon_credits' && (
         <div className="animate-fadeIn space-y-6">
-          <CarbonCreditsHub
-            kpiData={kpiData}
-            facilityConfig={facilityConfig}
-            onNavigateTab={setActiveTab}
-          />
+          <CarbonCreditsHub kpiData={kpiData} facilityConfig={facilityConfig} onNavigateTab={setActiveTab} />
         </div>
       )}
     </BaseLayout>
