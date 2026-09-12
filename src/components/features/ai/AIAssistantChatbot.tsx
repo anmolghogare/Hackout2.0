@@ -50,11 +50,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
     {
       id: 'welcome',
       sender: 'assistant',
-      text: "👋 Hi! I'm your ByteMe Assistant. I can guide you through the platform, jump directly to any module, or run live simulations for you.",
-      actionChip: {
-        label: '🚀 Start 3-Min Judge Demo',
-        action: () => onStartJudgeTour && onStartJudgeTour(),
-      },
+      text: "👋 Hi! I'm your ByteMe AI Assistant. I can answer facility emission queries, guide you through decarbonization modules, or run live ROI simulations.",
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);

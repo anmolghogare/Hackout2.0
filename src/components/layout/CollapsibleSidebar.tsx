@@ -202,23 +202,7 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
 
         {/* Bottom Utility Actions: Judge Demo, Copilot, Facility Badge */}
         <div className="p-3 border-t border-slate-200/80 dark:border-white/[0.08] space-y-2 shrink-0">
-          {/* Judge Demo Quick Action */}
-          {onStartJudgeTour && (
-            <button
-              onClick={() => {
-                onStartJudgeTour();
-                if (isMobileOpen) onCloseMobile();
-              }}
-              className={cn(
-                'w-full flex items-center rounded-xl transition-all duration-200 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-600 hover:to-teal-700 font-bold',
-                isCollapsed && !isMobileOpen ? 'justify-center p-3' : 'px-3.5 py-2.5 space-x-2.5 text-xs'
-              )}
-              title="Run 3-Min Judge Demo Walkthrough"
-            >
-              <PlayCircle className="w-4 h-4 shrink-0 fill-current" />
-              {(!isCollapsed || isMobileOpen) && <span>Run Judge Demo</span>}
-            </button>
-          )}
+
 
           {/* Plant Context Footer */}
           {(!isCollapsed || isMobileOpen) && (
