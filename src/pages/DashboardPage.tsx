@@ -16,6 +16,7 @@ import { AuditReportExportModal } from '../components/features/dashboard/AuditRe
 import { DataProvenanceModal } from '../components/features/dashboard/DataProvenanceModal';
 import { GoogleAuthModal } from '../components/auth/GoogleAuthModal';
 import { SankeyVisualizer } from '../components/features/dashboard/SankeyVisualizer';
+import { CircularNetwork } from '../components/features/dashboard/CircularNetwork';
 import { RoadmapTable } from '../components/features/dashboard/RoadmapTable';
 import { ComplianceHub } from '../components/features/dashboard/ComplianceHub';
 import { CarbonCreditsHub } from '../components/features/dashboard/CarbonCreditsHub';
@@ -23,85 +24,32 @@ import { AIReviewCard } from '../components/features/ai/AIReviewCard';
 
 export const DashboardPage: React.FC = () => {
   const {
-    activeTab,
-    setActiveTab,
-    viewMode,
-    toggleViewMode,
-    sliderInputs,
-    updateSlider,
-    applyPreset,
-    resetSliders,
-    facilityConfig,
-    saveFacilityConfig,
-    aiSettings,
-    saveAISettings,
-    kpiData,
-    stages,
-    isBackendOnline,
-    isCopilotOpen,
-    setIsCopilotOpen,
-    isBRSRModalOpen,
-    setIsBRSRModalOpen,
-    isDataProvenanceModalOpen,
-    setIsDataProvenanceModalOpen,
-    isGoogleModalOpen,
-    setIsGoogleModalOpen,
-    googleAccounts,
-    activeGoogleUser,
-    selectGoogleAccount,
-    addGoogleAccount,
-    signOutGoogleAccount,
-    savedScenarios,
-    saveScenario,
-    deleteScenario,
-    startJudgeTour,
+    activeTab, setActiveTab, viewMode, toggleViewMode, sliderInputs, updateSlider, applyPreset, resetSliders,
+    facilityConfig, saveFacilityConfig, aiSettings, saveAISettings, kpiData, stages, isBackendOnline,
+    isCopilotOpen, setIsCopilotOpen, isBRSRModalOpen, setIsBRSRModalOpen, isDataProvenanceModalOpen, setIsDataProvenanceModalOpen,
+    isGoogleModalOpen, setIsGoogleModalOpen, googleAccounts, activeGoogleUser, selectGoogleAccount, addGoogleAccount, signOutGoogleAccount,
+    savedScenarios, saveScenario, deleteScenario, startJudgeTour,
   } = useDashboardData();
 
   const [isAuditExportOpen, setIsAuditExportOpen] = useState(false);
-  const reviewProps = {
-    facilityConfig,
-    sliders: sliderInputs,
-    apiKey: aiSettings.apiKey,
-    aiModel: aiSettings.model,
-  };
+  const reviewProps = { facilityConfig, sliders: sliderInputs, apiKey: aiSettings.apiKey, aiModel: aiSettings.model };
 
   return (
     <BaseLayout
-      activeTab={activeTab}
-      onTabChange={setActiveTab}
-      viewMode={viewMode}
-      onToggleViewMode={toggleViewMode}
-      onOpenCopilotModal={() => setIsCopilotOpen(true)}
-      onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
-      onOpenAuditExportModal={() => setIsAuditExportOpen(true)}
-      onOpenProvenanceModal={() => setIsDataProvenanceModalOpen(true)}
-      facilityConfig={facilityConfig}
-      activeGoogleUser={activeGoogleUser}
-      onOpenGoogleAuthModal={() => setIsGoogleModalOpen(true)}
-      onStartJudgeTour={startJudgeTour}
-      onApplyPreset={applyPreset}
-      sliderInputs={sliderInputs}
-      apiKey={aiSettings.apiKey}
-      aiModel={aiSettings.model}
-      isBackendOnline={isBackendOnline}
+      activeTab={activeTab} onTabChange={setActiveTab} viewMode={viewMode} onToggleViewMode={toggleViewMode}
+      onOpenCopilotModal={() => setIsCopilotOpen(true)} onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
+      onOpenAuditExportModal={() => setIsAuditExportOpen(true)} onOpenProvenanceModal={() => setIsDataProvenanceModalOpen(true)}
+      facilityConfig={facilityConfig} activeGoogleUser={activeGoogleUser} onOpenGoogleAuthModal={() => setIsGoogleModalOpen(true)}
+      onStartJudgeTour={startJudgeTour} onApplyPreset={applyPreset} sliderInputs={sliderInputs}
+      apiKey={aiSettings.apiKey} aiModel={aiSettings.model} isBackendOnline={isBackendOnline}
     >
-      <GoogleAuthModal
-        isOpen={isGoogleModalOpen}
-        onClose={() => setIsGoogleModalOpen(false)}
-        activeUser={activeGoogleUser}
-        accounts={googleAccounts}
-        onSelectAccount={selectGoogleAccount}
-        onAddAccount={addGoogleAccount}
-        onSignOut={signOutGoogleAccount}
-      />
+      <GoogleAuthModal isOpen={isGoogleModalOpen} onClose={() => setIsGoogleModalOpen(false)} activeUser={activeGoogleUser} accounts={googleAccounts} onSelectAccount={selectGoogleAccount} onAddAccount={addGoogleAccount} onSignOut={signOutGoogleAccount} />
       <CopilotCommandModal isOpen={isCopilotOpen} onClose={() => setIsCopilotOpen(false)} onApplyPreset={applyPreset} viewMode={viewMode} />
       <BRSRExportModal isOpen={isBRSRModalOpen} onClose={() => setIsBRSRModalOpen(false)} kpiData={kpiData} stages={stages} />
       <AuditReportExportModal isOpen={isAuditExportOpen} onClose={() => setIsAuditExportOpen(false)} kpiData={kpiData} />
       <DataProvenanceModal isOpen={isDataProvenanceModalOpen} onClose={() => setIsDataProvenanceModalOpen(false)} facilityConfig={facilityConfig} />
 
-      {activeTab === 'overview' && (
-        <ByteMeOverview onNavigate={setActiveTab} onStartJudgeTour={startJudgeTour} onOpenBRSRModal={() => setIsBRSRModalOpen(true)} />
-      )}
+      {activeTab === 'overview' && <ByteMeOverview onNavigate={setActiveTab} onStartJudgeTour={startJudgeTour} onOpenBRSRModal={() => setIsBRSRModalOpen(true)} />}
 
       {activeTab === 'admin' && (
         <div className="animate-fadeIn space-y-8">
@@ -149,18 +97,21 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      {(activeTab === 'circular' || activeTab === 'sankey') && (
+      {activeTab === 'circular' && (
         <div className="animate-fadeIn space-y-8">
-          <SankeyVisualizer viewMode={viewMode} />
-          <AIReviewCard section="circular" title="AI offtake review" description="Scrap tons and PCR economics only — no invented buyers." {...reviewProps} />
+          <CircularNetwork />
+          <AIReviewCard section="circular" title="AI offtake review" description="Scrap tons and PCR economics only." {...reviewProps} />
         </div>
       )}
 
-      {activeTab === 'intake' && (
-        <div className="animate-fadeIn space-y-6">
-          <OCRIntakeHub />
+      {activeTab === 'sankey' && (
+        <div className="animate-fadeIn space-y-8">
+          <SankeyVisualizer viewMode={viewMode} />
+          <AIReviewCard section="circular" title="AI offtake review" description="Scrap tons and PCR economics only." {...reviewProps} />
         </div>
       )}
+
+      {activeTab === 'intake' && <div className="animate-fadeIn space-y-6"><OCRIntakeHub /></div>}
 
       {activeTab === 'copilot' && (
         <div className="animate-fadeIn">
