@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TabId, ViewMode } from '../../types';
 import {
   Zap,
@@ -15,6 +15,10 @@ import {
   Download,
   FileCheck,
   X,
+  BookOpen,
+  HelpCircle,
+  ChevronRight,
+  Info,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -50,6 +54,8 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
   onOpenBRSRModal,
   onOpenAuditExportModal,
 }) => {
+  const [isModalGuideOpen, setIsModalGuideOpen] = useState(false);
+
   const navItems: NavItem[] = [
     { id: 'overview', label: 'Home Overview', category: 'Platform', icon: Sparkles, badge: 'Overview' },
     { id: 'simulation', label: 'Digital Twin Pipeline', category: 'Interactive Tools', icon: Flame, badge: 'Twin' },
@@ -71,6 +77,120 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
           className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden transition-opacity"
           onClick={onCloseMobile}
         />
+      )}
+
+      {/* Standalone Guide Modal for Collapsed Sidebar or Quick Modal Trigger */}
+      {isModalGuideOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <BookOpen className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-base font-extrabold text-white font-heading">
+                  About Us & Utility Guide
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsModalGuideOpen(false)}
+                className="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* About ByteMe - 2-Sentence Plain English Summary */}
+            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-slate-200 leading-relaxed font-normal">
+              ByteMe is a smart operational platform designed to track real-time factory energy loss, cut carbon emissions, and save operational costs effortlessly. It translates complex machine sensors into plain financial savings for your plant floor.
+            </div>
+
+            {/* Interactive Utility Guide */}
+            <div className="space-y-3">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 block">
+                Key Tools Explained Simply
+              </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={() => {
+                    onTabChange('simulation');
+                    setIsModalGuideOpen(false);
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 hover:border-emerald-500 text-left transition-all group space-y-1"
+                >
+                  <div className="flex items-center space-x-2 text-xs font-bold text-white group-hover:text-emerald-400">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                    <span>🟢 Digital Twin Pipeline</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-tight">
+                    Visual digital map that tracks machine heating, thermal loss, and operational health across your plant.
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => {
+                    onTabChange('simulator_hub');
+                    setIsModalGuideOpen(false);
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 hover:border-emerald-500 text-left transition-all group space-y-1"
+                >
+                  <div className="flex items-center space-x-2 text-xs font-bold text-white group-hover:text-emerald-400">
+                    <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>⚡ ROI Playground</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-tight">
+                    Interactive calculator that estimates how fast green equipment upgrades will save money and pay for themselves.
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => {
+                    onTabChange('intake');
+                    setIsModalGuideOpen(false);
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 hover:border-emerald-500 text-left transition-all group space-y-1"
+                >
+                  <div className="flex items-center space-x-2 text-xs font-bold text-white group-hover:text-emerald-400">
+                    <Scan className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                    <span>📄 OCR Bill Scanner</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-tight">
+                    Instant scanner to upload utility and fuel bills, automatically logging carbon and cost data without manual entry.
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => {
+                    if (onOpenBRSRModal) onOpenBRSRModal();
+                    else onTabChange('roadmap');
+                    setIsModalGuideOpen(false);
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 hover:border-emerald-500 text-left transition-all group space-y-1"
+                >
+                  <div className="flex items-center space-x-2 text-xs font-bold text-white group-hover:text-emerald-400">
+                    <FileCheck className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                    <span>📋 BRSR Audit Pack</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-tight">
+                    One-click report generator to instantly export verified compliance docs ready for official audits.
+                  </p>
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-2 text-center">
+              <button
+                onClick={() => setIsModalGuideOpen(false)}
+                className="w-full py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs hover:bg-emerald-400 transition-colors"
+              >
+                Close Guide
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Sidebar Container */}
@@ -191,6 +311,116 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
               </div>
             );
           })}
+
+          {/* PERMANENT "ABOUT US & UTILITY GUIDE" SECTION IN PLAIN-ENGLISH */}
+          {(!isCollapsed || isMobileOpen) ? (
+            <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/80 space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-900 dark:text-white font-heading">
+                  <BookOpen className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0" />
+                  <span>About Us & Utility Guide</span>
+                </div>
+                <span className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 uppercase">
+                  Plain-English
+                </span>
+              </div>
+
+              {/* 2-Sentence Plain English About Summary */}
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                ByteMe is a smart operational platform designed to track real-time factory energy loss, cut carbon emissions, and save operational costs effortlessly.
+              </div>
+
+              {/* Interactive Utility Guide */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block px-1">
+                  Key Tools Explained Simply
+                </span>
+
+                {/* 1. Digital Twin Pipeline */}
+                <button
+                  onClick={() => {
+                    onTabChange('simulation');
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="w-full text-left p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-500/10 hover:border-emerald-500/40 border border-slate-200 dark:border-slate-800 transition-all group"
+                >
+                  <div className="flex items-center space-x-1.5 text-[11.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                    <span>🟢 Digital Twin Pipeline</span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+                    Visual digital map that tracks machine heating, thermal loss, and operational health across your plant.
+                  </p>
+                </button>
+
+                {/* 2. ROI Playground */}
+                <button
+                  onClick={() => {
+                    onTabChange('simulator_hub');
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="w-full text-left p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-500/10 hover:border-emerald-500/40 border border-slate-200 dark:border-slate-800 transition-all group"
+                >
+                  <div className="flex items-center space-x-1.5 text-[11.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                    <Zap className="w-3 h-3 text-amber-500 shrink-0" />
+                    <span>⚡ ROI Playground</span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+                    Interactive calculator that estimates how fast green equipment upgrades will save money and pay for themselves.
+                  </p>
+                </button>
+
+                {/* 3. OCR Bill Scanner */}
+                <button
+                  onClick={() => {
+                    onTabChange('intake');
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="w-full text-left p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-500/10 hover:border-emerald-500/40 border border-slate-200 dark:border-slate-800 transition-all group"
+                >
+                  <div className="flex items-center space-x-1.5 text-[11.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                    <Scan className="w-3 h-3 text-purple-500 shrink-0" />
+                    <span>📄 OCR Bill Scanner</span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+                    Instant scanner to upload utility and fuel bills, automatically logging carbon and cost data without manual entry.
+                  </p>
+                </button>
+
+                {/* 4. BRSR Audit Pack */}
+                <button
+                  onClick={() => {
+                    if (onOpenBRSRModal) onOpenBRSRModal();
+                    else onTabChange('roadmap');
+                    if (isMobileOpen) onCloseMobile();
+                  }}
+                  className="w-full text-left p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-500/10 hover:border-emerald-500/40 border border-slate-200 dark:border-slate-800 transition-all group"
+                >
+                  <div className="flex items-center space-x-1.5 text-[11.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                    <FileCheck className="w-3 h-3 text-teal-500 shrink-0" />
+                    <span>📋 BRSR Audit Pack</span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+                    One-click report generator to instantly export verified compliance docs ready for official audits.
+                  </p>
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Collapsed Rail Info Button Trigger */
+            <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-center">
+              <button
+                onClick={() => setIsModalGuideOpen(true)}
+                className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all border border-emerald-200 dark:border-emerald-500/30 group relative"
+                title="About Us & Plain-English Utility Guide"
+              >
+                <BookOpen className="w-4 h-4" />
+                <div className="absolute left-full ml-3 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-semibold whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 border border-slate-700 shadow-xl">
+                  About Us & Platform Guide
+                </div>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Bottom Quick Tools: Command Modal, BRSR, Export, Facility Context */}
@@ -266,3 +496,4 @@ export const CollapsibleSidebar: React.FC<CollapsibleSidebarProps> = ({
     </>
   );
 };
+

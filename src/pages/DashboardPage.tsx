@@ -118,7 +118,11 @@ export const DashboardPage: React.FC = () => {
       {/* 1. HOME / PRODUCT OVERVIEW (Clean, Spacious, Narrative-Led) */}
       {/* ============================================================ */}
       {activeTab === 'overview' && (
-        <ByteMeOverview onNavigate={setActiveTab} />
+        <ByteMeOverview
+          onNavigate={setActiveTab}
+          onStartJudgeTour={startJudgeTour}
+          onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
+        />
       )}
 
       {/* ============================================================ */}
