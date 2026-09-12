@@ -11,26 +11,17 @@ import {
   Save,
   RotateCcw,
   CheckCircle2,
-  AlertTriangle,
-  Info,
-  DollarSign,
-  TrendingUp,
   ShieldCheck,
-  Bot,
   Brain,
-  Lightbulb,
-  Check,
-  Play,
-  RefreshCw,
   Sliders,
   Download,
   Gauge,
   Activity,
-  FileText,
-  FileCheck,
-  Cpu,
   ShieldAlert,
-  Award,
+  ArrowRight,
+  Bot,
+  RefreshCw,
+  Play,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 
@@ -52,18 +43,9 @@ export const AdminHub: React.FC<AdminHubProps> = ({
   onOpenProvenanceModal,
 }) => {
   const [formConfig, setFormConfig] = useState<FacilityConfig>(() => JSON.parse(JSON.stringify(currentConfig)));
-  const [formAISettings, setFormAISettings] = useState<AISettings>(() => ({ ...aiSettings }));
   const [activeSection, setActiveSection] = useState<'profile' | 'stages' | 'financial' | 'ai'>('profile');
   const [saveSuccessMessage, setSaveSuccessMessage] = useState<string | null>(null);
-
-  // AI Audit State & Stress Testing State
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false);
-  const [aiAuditGenerated, setAiAuditGenerated] = useState(true);
-  const [stressTestMultiplier, setStressTestMultiplier] = useState<{ fuel: number; tariff: number; name: string }>({
-    fuel: 1.0,
-    tariff: 1.0,
-    name: 'Normal Operations',
-  });
 
   const handleProfileChange = (field: keyof typeof formConfig.profile, value: any) => {
     setFormConfig((prev) => ({
@@ -126,11 +108,16 @@ export const AdminHub: React.FC<AdminHubProps> = ({
   };
 
   const handleLoadPreset = (presetKey: string) => {
-    const preset = DEFAULT_FACILITY_PRESETS[presetKey];
-    if (preset) {
-      setFormConfig(JSON.parse(JSON.stringify(preset)));
-      showFlashMessage(`Loaded preset: ${preset.profile.name}`);
+    const selected = DEFAULT_FACILITY_PRESETS[presetKey];
+    if (selected) {
+      setFormConfig(JSON.parse(JSON.stringify(selected)));
+      showFlashMessage(`Loaded preset: ${selected.profile.name}`);
     }
+  };
+
+  const handleResetToCurrent = () => {
+    setFormConfig(JSON.parse(JSON.stringify(currentConfig)));
+    showFlashMessage('Reset form to active facility configuration.');
   };
 
   const handleSaveAll = () => {
@@ -139,14 +126,7 @@ export const AdminHub: React.FC<AdminHubProps> = ({
       updatedAt: new Date().toISOString(),
     };
     onSaveConfig(updated);
-    onSaveAISettings(formAISettings);
-    showFlashMessage('✅ Facility parameters saved! Integrated AI review & all live modules recalculated.');
-  };
-
-  const handleResetToCurrent = () => {
-    setFormConfig(JSON.parse(JSON.stringify(currentConfig)));
-    setFormAISettings({ ...aiSettings });
-    showFlashMessage('Reset form to active configuration.');
+    showFlashMessage('Facility parameters successfully saved & live telemetry recalculated!');
   };
 
   const showFlashMessage = (msg: string) => {
@@ -156,7 +136,6 @@ export const AdminHub: React.FC<AdminHubProps> = ({
     }, 4500);
   };
 
-  // Compute live AI telemetry analysis based on currently configured form values
   const liveSimulation = calculateDynamicFacilitySimulation(formConfig, {
     fuelShiftPct: 50,
     tempReductionPct: 5,
@@ -164,7 +143,6 @@ export const AdminHub: React.FC<AdminHubProps> = ({
     scrapRecyclePct: 100,
   });
 
-  // Calculate Facility Decarbonization Health Score (0–100)
   const calculateFacilityHealthScore = () => {
     let score = 55;
     if (formConfig.stage2.thermalEfficiencyPct >= 75) score += 15;
@@ -181,17 +159,14 @@ export const AdminHub: React.FC<AdminHubProps> = ({
 
   const healthScore = calculateFacilityHealthScore();
 
-  // Run AI Audit Generation
   const handleRunAIAudit = () => {
     setIsAnalyzingAI(true);
     setTimeout(() => {
       setIsAnalyzingAI(false);
-      setAiAuditGenerated(true);
-      showFlashMessage(`🤖 Integrated AI Audit generated for ${formConfig.profile.name}! Health Score: ${healthScore}/100`);
-    }, 1100);
+      showFlashMessage(`AI Audit generated! Facility Decarbonization Score: ${healthScore}/100`);
+    }, 900);
   };
 
-  // Apply AI Recommended Targets to Form
   const handleApplyAIRecommendedStrategy = () => {
     setFormConfig((prev) => ({
       ...prev,
@@ -200,10 +175,9 @@ export const AdminHub: React.FC<AdminHubProps> = ({
       stage3: { ...prev.stage3, powerFactor: 0.98, rooftopSolarKWp: Math.max(75, prev.stage3.rooftopSolarKWp) },
       stage4: { ...prev.stage4, recyclerSellingRatePerTonINR: Math.max(22000, prev.stage4.recyclerSellingRatePerTonINR) },
     }));
-    showFlashMessage('✨ AI-Recommended High Efficiency Targets applied! Click "Save & Recalculate" to make it live.');
+    showFlashMessage('AI-recommended parameters applied to form. Click "Save & Recalculate" to activate.');
   };
 
-  // Download AI Executive Report
   const handleDownloadAuditReport = () => {
     const reportText = `===================================================================
 BYTEME INDUSTRIAL DECARBONIZATION AI EXECUTIVE AUDIT REPORT
@@ -213,21 +187,21 @@ Location: ${formConfig.profile.location} (${formConfig.profile.cluster})
 Generated At: ${new Date().toLocaleString('en-IN')}
 ===================================================================
 
-1. EXECUTIVE DECARBONIZATION HEALTH SCORE: ${healthScore} / 100 (${healthScore >= 80 ? 'Grade A+: High Efficiency Leader' : 'Grade A: Decarbonization Ready'})
+1. EXECUTIVE DECARBONIZATION HEALTH SCORE: ${healthScore} / 100
 2. BASELINE MONTHLY CARBON EMISSIONS: ${liveSimulation.kpiData.baselineMonthlyCO2} tCO2e / month
-3. BASELINE MONTHLY ENERGY & MATERIAL SPEND: ₹${(liveSimulation.kpiData.baselineMonthlyCostINR || 2850000).toLocaleString('en-IN')} / month
-4. ESTIMATED ANNUAL CARBON TAX / CBAM EXPOSURE: ${formatINRLakhs(Math.round(liveSimulation.kpiData.baselineMonthlyCO2 * 12 * 850))} / year (@ ₹850/tCO2e)
+3. BASELINE MONTHLY ENERGY & MATERIAL SPEND: ${formatINRLakhs(liveSimulation.kpiData.baselineMonthlyCostINR || 2850000)} / month
+4. ESTIMATED ANNUAL CARBON TAX RISK: ${formatINRLakhs(Math.round(liveSimulation.kpiData.baselineMonthlyCO2 * 12 * 850))} / year
 
-5. AI STAGE-BY-STAGE AUDIT FINDINGS:
-- Stage 1 Raw Material: ${formConfig.stage1.materialName} (${formConfig.stage1.monthlyVolumeTons} T/mo @ ₹${formConfig.stage1.costPerTonINR}/T). PCR Blend: ${formConfig.stage1.recycledPcrAvailablePct}%.
+5. STAGE AUDIT FINDINGS:
+- Stage 1 Raw Material: ${formConfig.stage1.materialName} (${formConfig.stage1.monthlyVolumeTons} T/mo). PCR Blend: ${formConfig.stage1.recycledPcrAvailablePct}%.
 - Stage 2 Thermal Combustion: Primary Fuel: ${formConfig.stage2.fuelType} @ ${formConfig.stage2.furnaceOperatingTempC}°C. Efficiency: ${formConfig.stage2.thermalEfficiencyPct}%.
-- Stage 3 Electricity Grid: Monthly Draw: ${formConfig.stage3.monthlyElectricityKWh.toLocaleString()} kWh @ ₹${formConfig.stage3.gridTariffPerKWhINR}/kWh (CEA Baseline Factor: 0.82 kgCO2e/kWh). Solar Installed: ${formConfig.stage3.rooftopSolarKWp} kWp.
-- Stage 4 Circular Scrap: ${formConfig.stage4.monthlyScrapTons} T/mo of ${formConfig.stage4.scrapTypeName}. Zero landfill achieved via B2B off-take @ ₹${formConfig.stage4.recyclerSellingRatePerTonINR}/T.
+- Stage 3 Electricity Grid: Draw: ${formConfig.stage3.monthlyElectricityKWh.toLocaleString()} kWh @ ₹${formConfig.stage3.gridTariffPerKWhINR}/kWh (CEA Baseline Factor: 0.82). Solar: ${formConfig.stage3.rooftopSolarKWp} kWp.
+- Stage 4 Circular Scrap: ${formConfig.stage4.monthlyScrapTons} T/mo of ${formConfig.stage4.scrapTypeName}. Offtake rate: ₹${formConfig.stage4.recyclerSellingRatePerTonINR}/T.
 
-6. STATUTORY REGULATORY VERIFICATION:
-- CEA India Grid Baseline Database Ver. 19.0
-- IPCC 2006 Guidelines for National Greenhouse Gas Inventories (Vol 2 Energy)
-- CPCB Plastic Waste Management Rules 2022 (Schedule II EPR Norms)
+6. STATUTORY REGULATORY STANDARDS:
+- CEA India Grid Baseline Database Ver. 19.0 (0.82 kgCO2e/kWh)
+- IPCC 2006 Guidelines for National Greenhouse Gas Inventories
+- CPCB Plastic Waste Management Rules 2022 (Schedule II EPR)
 - SEBI BRSR Core Circular (SEBI/HO/CFD/CFD-SEC-2/P/CIR/2023/122)
 ===================================================================`;
 
@@ -240,190 +214,166 @@ Generated At: ${new Date().toLocaleString('en-IN')}
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showFlashMessage('📄 AI Decarbonization Audit Report downloaded!');
+    showFlashMessage('AI Decarbonization Audit Report downloaded!');
   };
 
   return (
-    <div className="space-y-8 animate-fadeIn pb-12">
-      {/* Top Banner & Heading */}
-      <div className="rounded-3xl bg-white/95 dark:bg-[#0D0F18]/95 border border-slate-200/80 dark:border-white/[0.08] p-6 sm:p-10 text-slate-900 dark:text-white relative overflow-hidden shadow-xl space-y-6">
+    <div className="space-y-8 animate-fadeIn pb-16 font-sans">
+      {/* 1. CLEAN HEADER & PRESET SELECTOR */}
+      <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
+          <div className="space-y-2">
             <div className="flex items-center space-x-2">
-              <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 uppercase tracking-wider flex items-center space-x-1.5">
-                <Building2 className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Facility Admin Portal</span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                Facility Configuration
               </span>
-              <span className="text-xs text-slate-400 font-mono">Integrated AI Telemetry</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                Live Parameter Telemetry
+              </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">
-              Factory Parameters & Live Onboarding
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Factory Parameters & Onboarding Setup
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-              Input your plant's operational parameters, raw materials, thermal fuels, electricity tariffs, and scrap volumes.
-              Our integrated AI automatically reviews your parameters and recalculates carbon baselines, 3D thermal hotspots, and ROI in real time.
+            <p className="text-sm text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+              Configure plant materials, combustion fuels, electricity tariffs, and byproduct scrap streams. The engine recalculates your carbon baseline and ROI automatically.
             </p>
           </div>
 
-          {/* Quick Preset Selector Buttons */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] space-y-2.5 shrink-0 max-w-xs w-full shadow-xs">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
-              Load Pre-Configured SME Preset
+          {/* Clean SME Preset Pills */}
+          <div className="flex flex-col space-y-2 shrink-0">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              Load Facility Preset:
             </span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={() => handleLoadPreset('apex_packaging')}
-                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-700 transition-colors"
               >
-                <span className="font-bold block truncate font-heading">Apex Packaging</span>
-                <span className="text-[10px] text-slate-400 font-mono">Polymer (Pune)</span>
+                Apex Packaging (Pune)
               </button>
-
               <button
                 type="button"
                 onClick={() => handleLoadPreset('rajkot_forging')}
-                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-700 transition-colors"
               >
-                <span className="font-bold block truncate font-heading">Rajkot Forging</span>
-                <span className="text-[10px] text-slate-400 font-mono">Steel (Gujarat)</span>
+                Rajkot Forging (Gujarat)
               </button>
-
               <button
                 type="button"
                 onClick={() => handleLoadPreset('surat_textiles')}
-                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-700 transition-colors"
               >
-                <span className="font-bold block truncate font-heading">Surat Textiles</span>
-                <span className="text-[10px] text-slate-400 font-mono">Dyeing & Mills</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleLoadPreset('vapi_chemicals')}
-                className="p-2.5 rounded-xl text-left bg-white dark:bg-[#111624] hover:bg-emerald-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/40 transition-all text-xs text-slate-900 dark:text-slate-200"
-              >
-                <span className="font-bold block truncate font-heading">Vapi Chemicals</span>
-                <span className="text-[10px] text-slate-400 font-mono">Agrochem Belt</span>
+                Surat Textiles (Dyeing)
               </button>
             </div>
           </div>
         </div>
 
-        {/* Flash Message Alert */}
+        {/* Flash Notification */}
         {saveSuccessMessage && (
-          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between animate-fadeIn text-xs text-emerald-700 dark:text-emerald-300 font-medium">
-            <div className="flex items-center space-x-2.5">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+          <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300 font-medium">
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>{saveSuccessMessage}</span>
             </div>
             <button
               onClick={() => onNavigateTab('simulator_hub')}
-              className="text-xs px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-colors"
+              className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline flex items-center space-x-1"
             >
-              Go to Simulator ➔
+              <span>View Simulator</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
       </div>
 
-      {/* Navigation Tabs Bar inside Admin */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 dark:bg-white/[0.04] rounded-2xl border border-slate-200/80 dark:border-white/[0.08]">
+      {/* 2. SECTION TABS BAR */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
         <button
           onClick={() => setActiveSection('profile')}
           className={cn(
-            'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
+            'px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2',
             activeSection === 'profile'
-              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           )}
         >
-          <Building2 className="w-4 h-4" />
-          <span>1. Plant Profile & Schedule</span>
+          <Building2 className="w-3.5 h-3.5" />
+          <span>1. Plant Profile & Shifts</span>
         </button>
 
         <button
           onClick={() => setActiveSection('stages')}
           className={cn(
-            'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
+            'px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2',
             activeSection === 'stages'
-              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           )}
         >
-          <Layers className="w-4 h-4" />
+          <Layers className="w-3.5 h-3.5" />
           <span>2. Stage 1–4 Energy & Materials</span>
         </button>
 
         <button
           onClick={() => setActiveSection('financial')}
           className={cn(
-            'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
+            'px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2',
             activeSection === 'financial'
-              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           )}
         >
-          <DollarSign className="w-4 h-4" />
-          <span>3. Financial & CAPEX Parameters</span>
+          <Zap className="w-3.5 h-3.5" />
+          <span>3. Financial & Capex Context</span>
         </button>
 
         <button
           onClick={() => setActiveSection('ai')}
           className={cn(
-            'flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all',
+            'px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2',
             activeSection === 'ai'
-              ? 'bg-white dark:bg-[#141724] text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-white/[0.1]'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-emerald-600 text-white shadow-sm font-bold'
+              : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100'
           )}
         >
-          <Sparkles className="w-4 h-4 text-emerald-500" />
-          <span>4. AI Audit & Review Studio</span>
+          <Brain className="w-3.5 h-3.5" />
+          <span>4. AI Decarbonization Review</span>
         </button>
-
-        <div className="ml-auto pr-2 hidden sm:flex items-center">
-          <button
-            type="button"
-            onClick={onOpenProvenanceModal}
-            className="flex items-center space-x-1.5 text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Statutory Standards (CEA / IPCC)</span>
-          </button>
-        </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* TAB 1: PLANT PROFILE & OPERATIONAL SHIFTS */}
+      {/* SECTION 1: PLANT PROFILE & SHIFTS */}
       {/* ========================================================================= */}
       {activeSection === 'profile' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white font-heading">
-              Facility Identity & Operating Schedule
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Basic company registration, industry classification, and operating rhythm.
+        <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-sm">
+          <div className="pb-4 border-b border-slate-100 dark:border-slate-800">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              Plant Profile & Operating Rhythm
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Specify business registration, industrial sector, and production schedule.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Company / Facility Name</label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Facility / Company Name</label>
               <input
                 type="text"
                 value={formConfig.profile.name}
                 onChange={(e) => handleProfileChange('name', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Industrial Sector</label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Industrial Sector</label>
               <select
                 value={formConfig.profile.sector}
                 onChange={(e) => handleProfileChange('sector', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <option value="Plastic & Polymer Extrusion">Plastic & Polymer Extrusion</option>
                 <option value="Automotive Metal Forging">Automotive Metal Forging</option>
@@ -435,66 +385,46 @@ Generated At: ${new Date().toLocaleString('en-IN')}
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Location / MIDC Zone</label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Location / Industrial Zone</label>
               <input
                 type="text"
                 value={formConfig.profile.location}
                 onChange={(e) => handleProfileChange('location', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Industrial Cluster</label>
-              <input
-                type="text"
-                value={formConfig.profile.cluster}
-                onChange={(e) => handleProfileChange('cluster', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Shifts per Day (1 / 2 / 3)</label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Operating Shifts per Day</label>
               <input
                 type="number"
-                min="1"
-                max="3"
+                min={1}
+                max={3}
                 value={formConfig.profile.shiftsPerDay}
-                onChange={(e) => handleProfileChange('shiftsPerDay', parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                onChange={(e) => handleProfileChange('shiftsPerDay', parseInt(e.target.value, 10) || 1)}
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Working Days / Month</label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Working Days per Month</label>
               <input
                 type="number"
-                min="20"
-                max="31"
+                min={20}
+                max={31}
                 value={formConfig.profile.workingDaysPerMonth}
-                onChange={(e) => handleProfileChange('workingDaysPerMonth', parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                onChange={(e) => handleProfileChange('workingDaysPerMonth', parseInt(e.target.value, 10) || 26)}
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Total Employees</label>
-              <input
-                type="number"
-                value={formConfig.profile.totalEmployees}
-                onChange={(e) => handleProfileChange('totalEmployees', parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">Annual Turnover (INR)</label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Annual Revenue Turnover (INR)</label>
               <input
                 type="text"
                 value={formConfig.profile.annualTurnoverINR}
                 onChange={(e) => handleProfileChange('annualTurnoverINR', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
           </div>
@@ -502,307 +432,232 @@ Generated At: ${new Date().toLocaleString('en-IN')}
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 2: STAGE 1–4 ENERGY & MATERIAL TELEMETRY */}
+      {/* SECTION 2: STAGES 1-4 ENERGY & MATERIALS */}
       {/* ========================================================================= */}
       {activeSection === 'stages' && (
         <div className="space-y-6">
-          {/* Stage 1: Raw Material */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">1</div>
-              <div>
-                <h4 className="font-heading font-extrabold text-slate-900 dark:text-white text-sm">
-                  Stage 1: Raw Material Input & Feedstock
-                </h4>
-                <p className="text-[11px] text-slate-500">Scope 3 cradle-to-gate feedstock & PCR blend substitution availability</p>
+          {/* Stage 1 & 2 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Stage 1 */}
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-4">
+              <div className="pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Stage 01: Raw Material & Polymer Feedstock
+                </h3>
+                <span className="text-xs text-slate-400 font-mono">Scope 3 Upstream</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Material Name</label>
+                  <input
+                    type="text"
+                    value={formConfig.stage1.materialName}
+                    onChange={(e) => handleStage1Change('materialName', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Monthly Volume (Tons)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage1.monthlyVolumeTons}
+                    onChange={(e) => handleStage1Change('monthlyVolumeTons', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Virgin Material Cost (₹ / Ton)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage1.costPerTonINR}
+                    onChange={(e) => handleStage1Change('costPerTonINR', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Available PCR Recycled (%)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={formConfig.stage1.recycledPcrAvailablePct}
+                    onChange={(e) => handleStage1Change('recycledPcrAvailablePct', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Material Specification</label>
-                <input
-                  type="text"
-                  value={formConfig.stage1.materialName}
-                  onChange={(e) => handleStage1Change('materialName', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
+            {/* Stage 2 */}
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-4">
+              <div className="pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Stage 02: Thermal Combustion & Furnace
+                </h3>
+                <span className="text-xs text-slate-400 font-mono">Scope 1 Direct</span>
               </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Monthly Volume (Tons / month)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage1.monthlyVolumeTons}
-                  onChange={(e) => handleStage1Change('monthlyVolumeTons', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Primary Fuel Type</label>
+                  <select
+                    value={formConfig.stage2.fuelType}
+                    onChange={(e) => handleStage2Change('fuelType', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  >
+                    <option value="Heavy Furnace Oil">Heavy Furnace Oil (HFO)</option>
+                    <option value="PNG Natural Gas">PNG Natural Gas</option>
+                    <option value="High Speed Diesel">High Speed Diesel (HSD)</option>
+                    <option value="Biomass Briquettes">Agro-Biomass Briquettes</option>
+                  </select>
+                </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Virgin Material Cost (₹ / Ton)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage1.costPerTonINR}
-                  onChange={(e) => handleStage1Change('costPerTonINR', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Monthly Fuel (Liters/SCM)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage2.monthlyFuelConsumption}
+                    onChange={(e) => handleStage2Change('monthlyFuelConsumption', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Virgin Emission Factor (tCO₂e / Ton)</label>
-                <input
-                  type="number"
-                  step="0.05"
-                  value={formConfig.stage1.virginEmissionFactor}
-                  onChange={(e) => handleStage1Change('virginEmissionFactor', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Operating Temperature (°C)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage2.furnaceOperatingTempC}
+                    onChange={(e) => handleStage2Change('furnaceOperatingTempC', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Recycled / PCR Available (%)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage1.recycledPcrAvailablePct}
-                  onChange={(e) => handleStage1Change('recycledPcrAvailablePct', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">PCR Material Cost (₹ / Ton)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage1.recycledMaterialCostPerTonINR}
-                  onChange={(e) => handleStage1Change('recycledMaterialCostPerTonINR', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Stage 2: Furnace & Thermal Heating */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">2</div>
-              <div>
-                <h4 className="font-heading font-extrabold text-slate-900 dark:text-white text-sm">
-                  Stage 2: Furnace Combustion & Thermal Heating
-                </h4>
-                <p className="text-[11px] text-slate-500">Scope 1 direct fuel combustion, operating temperature, and thermal loss</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Primary Fuel Type</label>
-                <select
-                  value={formConfig.stage2.fuelType}
-                  onChange={(e) => handleStage2Change('fuelType', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                >
-                  <option value="Heavy Furnace Oil">Heavy Furnace Oil (HFO)</option>
-                  <option value="PNG Natural Gas">PNG Natural Gas (Piped Gas)</option>
-                  <option value="High Speed Diesel">High Speed Diesel (HSD)</option>
-                  <option value="Biomass Briquettes">Biomass Briquettes / Agro Waste</option>
-                  <option value="Electric Arc Induction">Electric Arc / Induction</option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Monthly Fuel Consumption ({formConfig.stage2.fuelUnit})</label>
-                <input
-                  type="number"
-                  value={formConfig.stage2.monthlyFuelConsumption}
-                  onChange={(e) => handleStage2Change('monthlyFuelConsumption', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Fuel Unit Cost (₹ / {formConfig.stage2.fuelUnit})</label>
-                <input
-                  type="number"
-                  value={formConfig.stage2.fuelCostPerUnitINR}
-                  onChange={(e) => handleStage2Change('fuelCostPerUnitINR', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Operating Temperature (°C)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage2.furnaceOperatingTempC}
-                  onChange={(e) => handleStage2Change('furnaceOperatingTempC', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Fuel Emission Factor (kgCO₂e / unit)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formConfig.stage2.fuelEmissionFactor}
-                  onChange={(e) => handleStage2Change('fuelEmissionFactor', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Thermal Efficiency (%)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage2.thermalEfficiencyPct}
-                  onChange={(e) => handleStage2Change('thermalEfficiencyPct', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Thermal Efficiency (%)</label>
+                  <input
+                    type="number"
+                    min={20}
+                    max={95}
+                    value={formConfig.stage2.thermalEfficiencyPct}
+                    onChange={(e) => handleStage2Change('thermalEfficiencyPct', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Stage 3: Processing Line & Electricity */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold">3</div>
-              <div>
-                <h4 className="font-heading font-extrabold text-slate-900 dark:text-white text-sm">
-                  Stage 3: Processing Line & Electricity Grid
-                </h4>
-                <p className="text-[11px] text-slate-500">Scope 2 grid power consumption, CEA baseline factor, and captive solar offset</p>
+          {/* Stage 3 & 4 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Stage 3 */}
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-4">
+              <div className="pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Stage 03: Extrusion Electricity & Grid
+                </h3>
+                <span className="text-xs text-slate-400 font-mono">Scope 2 Indirect</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Monthly Electricity (kWh)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage3.monthlyElectricityKWh}
+                    onChange={(e) => handleStage3Change('monthlyElectricityKWh', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Grid Tariff (₹ / kWh)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={formConfig.stage3.gridTariffPerKWhINR}
+                    onChange={(e) => handleStage3Change('gridTariffPerKWhINR', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Rooftop Solar (kWp)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage3.rooftopSolarKWp}
+                    onChange={(e) => handleStage3Change('rooftopSolarKWp', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Power Factor (0.80 - 1.0)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min={0.8}
+                    max={1.0}
+                    value={formConfig.stage3.powerFactor}
+                    onChange={(e) => handleStage3Change('powerFactor', parseFloat(e.target.value) || 0.95)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Monthly Electricity (kWh / month)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage3.monthlyElectricityKWh}
-                  onChange={(e) => handleStage3Change('monthlyElectricityKWh', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
+            {/* Stage 4 */}
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-4">
+              <div className="pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Stage 04: Byproduct Scrap & Circular Off-Take
+                </h3>
+                <span className="text-xs text-slate-400 font-mono">Circular EPR</span>
               </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Grid Tariff Rate (₹ / kWh)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formConfig.stage3.gridTariffPerKWhINR}
-                  onChange={(e) => handleStage3Change('gridTariffPerKWhINR', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Scrap Type</label>
+                  <input
+                    type="text"
+                    value={formConfig.stage4.scrapTypeName}
+                    onChange={(e) => handleStage4Change('scrapTypeName', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Grid Emission Factor (CEA India)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formConfig.stage3.gridEmissionFactor}
-                  onChange={(e) => handleStage3Change('gridEmissionFactor', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Monthly Scrap (Tons)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage4.monthlyScrapTons}
+                    onChange={(e) => handleStage4Change('monthlyScrapTons', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Contract Demand (kVA)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage3.contractDemandKVA}
-                  onChange={(e) => handleStage3Change('contractDemandKVA', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Recycler Sale Rate (₹ / Ton)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage4.recyclerSellingRatePerTonINR}
+                    onChange={(e) => handleStage4Change('recyclerSellingRatePerTonINR', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Installed Rooftop Solar (kWp)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage3.rooftopSolarKWp}
-                  onChange={(e) => handleStage3Change('rooftopSolarKWp', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Operating Power Factor (0.90 – 0.99)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formConfig.stage3.powerFactor}
-                  onChange={(e) => handleStage3Change('powerFactor', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Stage 4: Off-Cut Waste Scrap */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold">4</div>
-              <div>
-                <h4 className="font-heading font-extrabold text-slate-900 dark:text-white text-sm">
-                  Stage 4: Off-Cut Trim & Waste Circularity
-                </h4>
-                <p className="text-[11px] text-slate-500">Solid waste generation, landfill avoidance, and secondary market scrap price</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Scrap / Residue Type</label>
-                <input
-                  type="text"
-                  value={formConfig.stage4.scrapTypeName}
-                  onChange={(e) => handleStage4Change('scrapTypeName', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Monthly Scrap Volume (Tons / month)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage4.monthlyScrapTons}
-                  onChange={(e) => handleStage4Change('monthlyScrapTons', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Current Landfill / Disposal Fee (₹ / Ton)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage4.disposalOrLandfillCostPerTonINR}
-                  onChange={(e) => handleStage4Change('disposalOrLandfillCostPerTonINR', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Recycler Offtake Selling Price (₹ / Ton)</label>
-                <input
-                  type="number"
-                  value={formConfig.stage4.recyclerSellingRatePerTonINR}
-                  onChange={(e) => handleStage4Change('recyclerSellingRatePerTonINR', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Landfill Emission Factor (tCO₂e / Ton)</label>
-                <input
-                  type="number"
-                  step="0.05"
-                  value={formConfig.stage4.landfillEmissionFactor}
-                  onChange={(e) => handleStage4Change('landfillEmissionFactor', parseFloat(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
+                <div className="space-y-1">
+                  <label className="font-medium text-slate-600 dark:text-slate-300">Landfill Disposal Fee (₹ / Ton)</label>
+                  <input
+                    type="number"
+                    value={formConfig.stage4.disposalOrLandfillCostPerTonINR}
+                    onChange={(e) => handleStage4Change('disposalOrLandfillCostPerTonINR', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -810,120 +665,71 @@ Generated At: ${new Date().toLocaleString('en-IN')}
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 3: FINANCIAL & CAPEX CONSTRAINTS */}
+      {/* SECTION 3: FINANCIAL & CAPEX CONTEXT */}
       {/* ========================================================================= */}
       {activeSection === 'financial' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white font-heading">
-              Financial Capital Limits & Hurdle Rates
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Set your executive budget boundaries, target payback periods, and carbon credit valuations.
+        <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-sm">
+          <div className="pb-4 border-b border-slate-100 dark:border-slate-800">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              Financial Context & CapEx Hurdle Rates
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Parameters used by the ROI and Payback simulation engine.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">
-                Available Green CAPEX Budget (₹ INR)
-              </label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Available CapEx Budget (₹ INR)</label>
               <input
                 type="number"
                 value={formConfig.financial.availableCapexBudgetINR}
-                onChange={(e) => handleFinancialChange('availableCapexBudgetINR', parseFloat(e.target.value))}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                onChange={(e) => handleFinancialChange('availableCapexBudgetINR', parseFloat(e.target.value) || 0)}
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
               />
-              <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">
-                Current: {formatINRLakhs(formConfig.financial.availableCapexBudgetINR)}
-              </span>
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">
-                Maximum Acceptable Payback Threshold (Months)
-              </label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Max Payback Threshold (Months)</label>
               <input
                 type="number"
                 value={formConfig.financial.maxPaybackThresholdMonths}
-                onChange={(e) => handleFinancialChange('maxPaybackThresholdMonths', parseFloat(e.target.value))}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                onChange={(e) => handleFinancialChange('maxPaybackThresholdMonths', parseFloat(e.target.value) || 0)}
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
               />
-              <span className="text-[11px] text-slate-400 font-mono">
-                SME Standard: 12 – 18 Months
-              </span>
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">
-                Cost of Capital / Discount Rate (%)
-              </label>
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Cost of Capital / WACC (%)</label>
               <input
                 type="number"
                 step="0.1"
                 value={formConfig.financial.costOfCapitalPct}
-                onChange={(e) => handleFinancialChange('costOfCapitalPct', parseFloat(e.target.value))}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
+                onChange={(e) => handleFinancialChange('costOfCapitalPct', parseFloat(e.target.value) || 0)}
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
               />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 dark:text-slate-300">
-                Internal Carbon Offset Price (₹ / tCO₂e)
-              </label>
-              <input
-                type="number"
-                value={formConfig.financial.carbonOffsetCreditPriceINR}
-                onChange={(e) => handleFinancialChange('carbonOffsetCreditPriceINR', parseFloat(e.target.value))}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
-              />
-              <span className="text-[11px] text-slate-400 font-mono">
-                Indian Voluntary Carbon Market benchmark
-              </span>
             </div>
           </div>
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 4: AUTOMATED AI INTELLIGENCE & AUDIT REVIEW (ZERO API KEY REQUIRED) */}
+      {/* SECTION 4: INTEGRATED AI DECARBONIZATION AUDIT STUDIO */}
       {/* ========================================================================= */}
       {activeSection === 'ai' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
-          {/* Header & Status Banner */}
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-8">
+          {/* Top AI Action Banner */}
+          <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
-                  <Brain className="w-4 h-4" />
-                </div>
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white font-heading">
-                  Integrated AI Decarbonization Audit Studio
+                <Brain className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  Deterministic AI Decarbonization Review
                 </h3>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Pre-integrated AI model evaluates feeded facility parameters, computes carbon health scores, estimates CBAM tax exposures, and outputs statutory-backed recommendations without requiring any user API keys.
+                Pre-configured intelligence analyzing parameters against IPCC 2006 & CEA standards.
               </p>
-            </div>
-
-            <div className="flex items-center space-x-2 shrink-0">
-              <span className="px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center space-x-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>AI Engine Pre-Integrated & Ready</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Primary Action Toolbar */}
-          <div className="p-4 rounded-2xl bg-slate-900 text-white border border-slate-800 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center space-x-3">
-              <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
-              <div>
-                <h4 className="text-xs font-extrabold text-white">Live AI Review for {formConfig.profile.name}</h4>
-                <p className="text-[11px] text-slate-400 font-mono">
-                  {formConfig.profile.sector} • {formConfig.profile.shiftsPerDay} Shifts/day • {formConfig.profile.location}
-                </p>
-              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5">
@@ -931,17 +737,17 @@ Generated At: ${new Date().toLocaleString('en-IN')}
                 type="button"
                 onClick={handleRunAIAudit}
                 disabled={isAnalyzingAI}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-xs flex items-center space-x-2 shadow-lg shadow-emerald-500/20 transition-all active:scale-95 disabled:opacity-50"
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-sm flex items-center space-x-1.5"
               >
                 {isAnalyzingAI ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
-                    <span>Analyzing Facility Telemetry...</span>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Analyzing...</span>
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-current text-slate-950" />
-                    <span>Run AI Facility Decarbonization Review</span>
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>Run AI Audit</span>
                   </>
                 )}
               </button>
@@ -949,340 +755,173 @@ Generated At: ${new Date().toLocaleString('en-IN')}
               <button
                 type="button"
                 onClick={handleApplyAIRecommendedStrategy}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs flex items-center space-x-1.5 transition-colors"
+                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition-colors"
               >
-                <Sliders className="w-3.5 h-3.5" />
-                <span>1-Click Apply AI Recommended Targets</span>
+                1-Click Apply AI Targets
               </button>
 
               <button
                 type="button"
                 onClick={handleDownloadAuditReport}
-                className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center space-x-1.5 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-700 transition-colors flex items-center space-x-1"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Export Audit (TXT)</span>
+                <span>Export Audit</span>
               </button>
             </div>
           </div>
 
-          {/* AI Decarbonization Health Scorecard & Tax Exposure */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Health Score Gauge */}
-            <div className="p-5 rounded-3xl bg-slate-900 text-white border border-slate-800 space-y-3 flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-                  <Gauge className="w-4 h-4 text-emerald-400" />
-                  <span>Decarbonization Health Score</span>
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold">
-                  BEE PAT Calibrated
-                </span>
-              </div>
-
-              <div className="flex items-baseline space-x-3 my-1">
-                <span className="text-4xl sm:text-5xl font-black font-mono text-emerald-400 tracking-tight">
+          {/* 3 Unified Scorecards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">DECARBONIZATION HEALTH SCORE</span>
+              <div className="flex items-baseline space-x-2">
+                <span className="text-3xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
                   {healthScore}
                 </span>
-                <span className="text-sm font-bold text-slate-400 font-mono">/ 100</span>
-                <span className="ml-auto text-xs px-2.5 py-1 rounded-full bg-slate-800 text-emerald-300 font-bold border border-slate-700">
+                <span className="text-xs text-slate-400 font-mono">/ 100</span>
+                <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-medium">
                   {healthScore >= 80 ? 'Grade A+: Leader' : 'Grade A: Ready'}
                 </span>
               </div>
-
-              <div className="space-y-1.5 text-[11px] text-slate-400">
-                <div className="flex justify-between">
-                  <span>Thermal Combustion Rating:</span>
-                  <span className="font-mono text-white font-bold">{formConfig.stage2.thermalEfficiencyPct}%</span>
-                </div>
-                <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-700"
-                    style={{ width: `${formConfig.stage2.thermalEfficiencyPct}%` }}
-                  />
-                </div>
-              </div>
+              <span className="text-xs text-slate-400 font-mono block">BEE PAT Thermal Benchmark Verified</span>
             </div>
 
-            {/* Baseline Carbon & Monthly Energy Spend */}
-            <div className="p-5 rounded-3xl bg-slate-900 text-white border border-slate-800 space-y-3 flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-                  <Activity className="w-4 h-4 text-amber-400" />
-                  <span>Monthly Baseline Telemetry</span>
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">MONTHLY BASELINE FOOTPRINT</span>
+              <div className="flex items-baseline space-x-2">
+                <span className="text-3xl font-bold font-mono text-slate-900 dark:text-white">
+                  {liveSimulation.kpiData.baselineMonthlyCO2}
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono font-bold">
-                  Scope 1, 2 & 3
-                </span>
+                <span className="text-xs text-slate-500 font-mono">tCO₂e / mo</span>
               </div>
-
-              <div className="space-y-2">
-                <div>
-                  <span className="text-2xl font-extrabold font-mono text-white">
-                    {liveSimulation.kpiData.baselineMonthlyCO2}{' '}
-                    <span className="text-xs text-slate-400 font-normal">tCO₂e / month</span>
-                  </span>
-                </div>
-                <div>
-                  <span className="text-xs text-slate-400 block font-mono">Monthly Energy & Material Spend:</span>
-                  <span className="text-lg font-bold font-mono text-emerald-400">
-                    ₹{(liveSimulation.kpiData.baselineMonthlyCostINR || 2850000).toLocaleString('en-IN')} / mo
-                  </span>
-                </div>
-              </div>
-
-              <div className="text-[11px] text-slate-400 border-t border-slate-800/80 pt-2 flex items-center justify-between font-mono">
-                <span>Annual Output:</span>
-                <span className="text-slate-200 font-bold">
-                  {Math.round(liveSimulation.kpiData.baselineMonthlyCO2 * 12).toLocaleString('en-IN')} tCO₂e / yr
-                </span>
-              </div>
+              <span className="text-xs text-slate-400 font-mono block">Monthly Spend: {formatINRLakhs(liveSimulation.kpiData.baselineMonthlyCostINR || 2850000)}</span>
             </div>
 
-            {/* Carbon Tax & CBAM Penalty Exposure */}
-            <div className="p-5 rounded-3xl bg-slate-900 text-white border border-slate-800 space-y-3 flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-                  <ShieldAlert className="w-4 h-4 text-red-400" />
-                  <span>CBAM & Carbon Tax Risk</span>
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-mono font-bold">
-                  Mandatory 2026
-                </span>
-              </div>
-
-              <div>
-                <span className="text-2xl sm:text-3xl font-extrabold font-mono text-red-400">
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">ANNUAL CARBON TAX RISK</span>
+              <div className="flex items-baseline space-x-2">
+                <span className="text-3xl font-bold font-mono text-slate-900 dark:text-white">
                   {formatINRLakhs(Math.round(liveSimulation.kpiData.baselineMonthlyCO2 * 12 * 850))}
-                  <span className="text-xs text-slate-400 font-normal"> / year</span>
                 </span>
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Estimated annual statutory risk @ ₹850/tCO₂e benchmark if baseline emissions remain unaddressed.
-                </p>
+                <span className="text-xs text-slate-500 font-mono">/ year</span>
               </div>
-
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-emerald-400 font-mono font-bold">
-                <span>Mitigated Tax with AI Strategy:</span>
-                <span>-78% Exposure</span>
-              </div>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium font-mono block">-78% Exposure with AI Strategy</span>
             </div>
           </div>
 
-          {/* 4-Quadrant Stage-by-Stage AI Diagnostic Cards */}
-          <div className="space-y-4 text-xs">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-              <h4 className="font-extrabold text-slate-900 dark:text-white text-sm font-heading flex items-center space-x-2">
-                <Bot className="w-4 h-4 text-emerald-500" />
-                <span>AI Stage-by-Stage Telemetry Review</span>
-              </h4>
-              <span className="text-[11px] text-slate-400 font-mono">Real-Time Recalculated</span>
-            </div>
+          {/* 4 Spacious Stage-by-Stage Review Cards */}
+          <div className="space-y-4">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              AI Stage-by-Stage Telemetry Review
+            </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Scope 1 Thermal Review */}
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Card 1 */}
+              <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-2 text-xs">
-                    <Flame className="w-4 h-4 text-amber-500" />
-                    <span>Stage 2: Scope 1 Thermal Combustion</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">
+                    Stage 02: Thermal Combustion
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold">
-                    Primary Thermal Hotspot
+                  <span className="text-xs font-mono font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                    Primary Hotspot
                   </span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
-                  Your furnace runs on <strong>{formConfig.stage2.fuelType}</strong> at <strong>{formConfig.stage2.furnaceOperatingTempC}°C</strong> consuming{' '}
-                  <strong>{formConfig.stage2.monthlyFuelConsumption.toLocaleString('en-IN')} {formConfig.stage2.fuelUnit}/mo</strong>.
-                  AI recommends dual-fuel biomass briquette conversion to eliminate thermal carbon intensity.
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Furnace consumes {formConfig.stage2.monthlyFuelConsumption.toLocaleString('en-IN')} {formConfig.stage2.fuelUnit}/mo of {formConfig.stage2.fuelType} at {formConfig.stage2.furnaceOperatingTempC}°C. AI recommends dual-fuel biomass briquette conversion to cut fuel costs.
                 </p>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                  <span>Est. Annual Fuel Savings:</span>
-                  <span>+{formatINRLakhs(liveSimulation.kpiData.financialSavings.energySavings || 420000)}/yr</span>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-400">Est. Fuel Savings:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">+{formatINRLakhs(liveSimulation.kpiData.financialSavings.energySavings || 420000)}/yr</span>
                 </div>
               </div>
 
-              {/* Scope 2 Grid & Solar Review */}
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2.5">
+              {/* Card 2 */}
+              <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-2 text-xs">
-                    <Zap className="w-4 h-4 text-emerald-500" />
-                    <span>Stage 3: Scope 2 Grid Power & Solar</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">
+                    Stage 03: Extrusion Grid Power
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
+                  <span className="text-xs font-mono font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">
                     CEA Factor 0.82
                   </span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
-                  Monthly grid draw is <strong>{formConfig.stage3.monthlyElectricityKWh.toLocaleString('en-IN')} kWh</strong> at <strong>₹{formConfig.stage3.gridTariffPerKWhINR}/kWh</strong>.
-                  Your <strong>{formConfig.stage3.rooftopSolarKWp} kWp</strong> rooftop solar offsets peak grid tariff hours. Power Factor is currently <strong>{formConfig.stage3.powerFactor}</strong>.
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Monthly grid draw of {formConfig.stage3.monthlyElectricityKWh.toLocaleString('en-IN')} kWh @ ₹{formConfig.stage3.gridTariffPerKWhINR}/kWh. {formConfig.stage3.rooftopSolarKWp} kWp solar offsets peak load. Power Factor is steady at {formConfig.stage3.powerFactor}.
                 </p>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                  <span>Power Factor Status:</span>
-                  <span>{formConfig.stage3.powerFactor >= 0.96 ? 'Optimal (PF > 0.95)' : 'Needs Automatic Capacitor Bank'}</span>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-400">Power Factor Status:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">{formConfig.stage3.powerFactor >= 0.96 ? 'Optimal (> 0.95)' : 'Evaluate Capacitors'}</span>
                 </div>
               </div>
 
-              {/* Scope 3 Material Review */}
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2.5">
+              {/* Card 3 */}
+              <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-2 text-xs">
-                    <Layers className="w-4 h-4 text-blue-500" />
-                    <span>Stage 1: Scope 3 Feedstock & PCR Blend</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">
+                    Stage 01: Polymer Feedstock Blend
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-bold">
-                    CPCB EPR Target
+                  <span className="text-xs font-mono font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">
+                    CPCB EPR
                   </span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
-                  Using <strong>{formConfig.stage1.monthlyVolumeTons} T/mo</strong> of {formConfig.stage1.materialName}.
-                  Increasing PCR blend to {formConfig.stage1.recycledPcrAvailablePct}% saves <strong>₹{(formConfig.stage1.costPerTonINR - formConfig.stage1.recycledMaterialCostPerTonINR).toLocaleString('en-IN')}/ton</strong> in material cost differential.
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Using {formConfig.stage1.monthlyVolumeTons} T/mo of {formConfig.stage1.materialName}. Blending {formConfig.stage1.recycledPcrAvailablePct}% PCR reduces virgin material expenditures significantly.
                 </p>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                  <span>Est. Material Cost Savings:</span>
-                  <span>+{formatINRLakhs(liveSimulation.kpiData.financialSavings.materialSavings || 240000)}/yr</span>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-400">Est. Material Savings:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">+{formatINRLakhs(liveSimulation.kpiData.financialSavings.materialSavings || 240000)}/yr</span>
                 </div>
               </div>
 
-              {/* Stage 4 Scrap Circularity Review */}
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2.5">
+              {/* Card 4 */}
+              <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900 dark:text-white flex items-center space-x-2 text-xs">
-                    <Recycle className="w-4 h-4 text-purple-500" />
-                    <span>Stage 4: Off-Cut Waste Monetization</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">
+                    Stage 04: Byproduct Monetization
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-bold">
+                  <span className="text-xs font-mono font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
                     Zero Waste
                   </span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-300 text-[11.5px] leading-relaxed">
-                  Generating <strong>{formConfig.stage4.monthlyScrapTons} T/mo</strong> of {formConfig.stage4.scrapTypeName}.
-                  Routing 100% through B2B circular buyer clusters yields <strong>₹{formConfig.stage4.recyclerSellingRatePerTonINR.toLocaleString('en-IN')}/ton</strong> in resale revenue while eliminating landfill fees.
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Generates {formConfig.stage4.monthlyScrapTons} T/mo of {formConfig.stage4.scrapTypeName}. Routing 100% via B2B off-take yields ₹{formConfig.stage4.recyclerSellingRatePerTonINR.toLocaleString('en-IN')}/Ton revenue while avoiding landfill fees.
                 </p>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                  <span>Est. Annual Scrap Revenue:</span>
-                  <span>+{formatINRLakhs(liveSimulation.kpiData.financialSavings.scrapRevenue || 300000)}/yr</span>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-400">Est. Scrap Revenue:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">+{formatINRLakhs(liveSimulation.kpiData.financialSavings.scrapRevenue || 336000)}/yr</span>
                 </div>
               </div>
-            </div>
-
-            {/* Economic Stress Testing Matrix */}
-            <div className="p-5 rounded-3xl bg-slate-900 text-white border border-slate-800 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <TrendingUp className="w-4 h-4 text-emerald-400" />
-                  <h4 className="text-xs font-bold font-heading">AI Economic Sensitivity & Stress Testing</h4>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">Simulate Real-World Market Shocks</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStressTestMultiplier({ fuel: 1.25, tariff: 1.0, name: '+25% Fuel Price Shock' });
-                    showFlashMessage('🔥 Applied +25% Fuel Price Shock scenario to live AI review.');
-                  }}
-                  className={cn(
-                    'p-3 rounded-2xl border text-left transition-all',
-                    stressTestMultiplier.name.includes('Fuel')
-                      ? 'bg-amber-500/20 border-amber-500/50 text-amber-200'
-                      : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-                  )}
-                >
-                  <span className="font-bold block">🔥 +25% Fuel Price Shock</span>
-                  <span className="text-[10px] text-slate-400">Tests HFO / Gas spike impact</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStressTestMultiplier({ fuel: 1.0, tariff: 1.15, name: '+15% Tariff Increase' });
-                    showFlashMessage('⚡ Applied +15% Grid Tariff Increase scenario to live AI review.');
-                  }}
-                  className={cn(
-                    'p-3 rounded-2xl border text-left transition-all',
-                    stressTestMultiplier.name.includes('Tariff')
-                      ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-200'
-                      : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-                  )}
-                >
-                  <span className="font-bold block">⚡ +15% Grid Tariff Hike</span>
-                  <span className="text-[10px] text-slate-400">Tests DISCOM rate inflation</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStressTestMultiplier({ fuel: 1.0, tariff: 1.0, name: 'Normal Operations' });
-                    showFlashMessage('Reset stress testing to active factory baseline.');
-                  }}
-                  className={cn(
-                    'p-3 rounded-2xl border text-left transition-all',
-                    stressTestMultiplier.name === 'Normal Operations'
-                      ? 'bg-blue-500/20 border-blue-500/50 text-blue-200'
-                      : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-                  )}
-                >
-                  <span className="font-bold block">🔄 Baseline Operational Rhythm</span>
-                  <span className="text-[10px] text-slate-400">Standard fed parameters</span>
-                </button>
-              </div>
-            </div>
-
-            {/* AI Copilot Direct Integration Prompt */}
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center space-x-3">
-                <Bot className="w-5 h-5 text-emerald-500 shrink-0" />
-                <div>
-                  <h5 className="font-bold text-slate-900 dark:text-white text-xs">
-                    Need customized conversational insights for your facility?
-                  </h5>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Ask ByteMe's AI Copilot natural language questions about your factory's Scope 1–3 emissions, ROI, or thermal losses.
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => onNavigateTab('copilot')}
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center space-x-1.5 transition-colors shrink-0"
-              >
-                <Bot className="w-4 h-4" />
-                <span>Open Conversational Copilot</span>
-              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* BOTTOM FLOATING / STICKY ACTION BAR */}
-      {/* ========================================================================= */}
-      <div className="sticky bottom-4 z-30 p-4 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-slate-800 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center space-x-3 text-xs text-slate-300">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span>
-            Configuring: <strong className="text-white">{formConfig.profile.name}</strong> ({formConfig.profile.sector})
+      {/* 3. CLEAN EMBEDDED SAVE BAR */}
+      <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center space-x-2.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+            Active Configuration: {formConfig.profile.name} ({formConfig.profile.sector})
           </span>
         </div>
 
-        <div className="flex items-center space-x-2.5 w-full sm:w-auto justify-end">
+        <div className="flex items-center space-x-3">
           <button
             type="button"
             onClick={handleResetToCurrent}
-            className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center space-x-1.5 transition-colors"
+            className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors flex items-center space-x-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset</span>
+            <span>Reset Changes</span>
           </button>
 
           <button
             type="button"
             onClick={handleSaveAll}
-            className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 transition-all active:scale-95"
+            className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center space-x-1.5"
           >
-            <Save className="w-4 h-4" />
+            <Save className="w-3.5 h-3.5" />
             <span>Save & Recalculate Live Platform</span>
           </button>
         </div>
@@ -1290,4 +929,3 @@ Generated At: ${new Date().toLocaleString('en-IN')}
     </div>
   );
 };
-
