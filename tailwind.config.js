@@ -16,9 +16,10 @@ export default {
           700: '#047857',
         },
         dark: {
-          bg: '#070d19',
-          card: '#0f172a',
-          border: 'rgba(255, 255, 255, 0.08)',
+          bg: '#090A0F',
+          card: '#151824',
+          surface: '#1c2030',
+          border: 'rgba(255, 255, 255, 0.09)',
         }
       },
       fontFamily: {

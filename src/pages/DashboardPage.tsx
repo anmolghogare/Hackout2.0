@@ -59,6 +59,7 @@ export const DashboardPage: React.FC = () => {
       onOpenBRSRModal={() => setIsBRSRModalOpen(true)}
       onOpenAuditExportModal={() => setIsAuditExportOpen(true)}
       onStartJudgeTour={startJudgeTour}
+      onApplyPreset={applyPreset}
       isBackendOnline={isBackendOnline}
     >
       {/* Top Guided "Judge Tour" Banner */}
