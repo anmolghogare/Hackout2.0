@@ -456,8 +456,8 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
                   className={cn(
                     'w-full flex items-center justify-between p-3 rounded-xl transition-all',
                     activeStageIdx === i
-                      ? 'bg-emerald-500/15 border border-emerald-500/40 text-white font-bold'
-                      : 'bg-white dark:bg-[#161928] border border-slate-200 dark:border-white/[0.06] text-slate-300 hover:border-white/20'
+                      ? 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-700 dark:text-white font-bold'
+                      : 'bg-white dark:bg-[#161928] border border-slate-200 dark:border-white/[0.06] text-slate-700 dark:text-slate-300 hover:border-emerald-500/30'
                   )}
                 >
                   <div className="flex items-center space-x-2.5 truncate">
@@ -528,21 +528,21 @@ export const ProcessFlowCanvas: React.FC<ProcessFlowCanvasProps> = ({
 
               {/* Mathematical Equation Provenance */}
               <div className="p-4 rounded-2xl bg-slate-100 dark:bg-[#0B0D15] border border-slate-200 dark:border-white/[0.08] text-xs font-mono">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block mb-1.5 flex items-center space-x-1.5">
-                  <Info className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider block mb-1.5 flex items-center space-x-1.5">
+                  <Info className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
                   <span>EMPIRICAL REGRESSION MATHEMATICAL FORMULA</span>
                 </span>
-                <p className="text-emerald-400 font-semibold">{activeBreakdown.formula}</p>
+                <p className="text-emerald-700 dark:text-emerald-400 font-semibold">{activeBreakdown.formula}</p>
               </div>
             </div>
 
             {/* Bottom Recommendation Action */}
             <div className="mt-6 pt-4 border-t border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-center space-x-2 text-xs text-slate-300">
-                <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center space-x-2 text-xs text-slate-700 dark:text-slate-300">
+                <Sparkles className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
                 <span>
                   Recommended Action:{' '}
-                  <strong className="text-white">{activeBreakdown.actionPreset}</strong>
+                  <strong className="text-slate-900 dark:text-white">{activeBreakdown.actionPreset}</strong>
                 </span>
               </div>
 

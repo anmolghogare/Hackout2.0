@@ -103,7 +103,47 @@ textarea {
 
 
 :root {
-  /* High-Contrast Dark Canvas Tokens */
+  /* High-Contrast Light Canvas Tokens (Day Mode Default) */
+  --bg-dark: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-glass: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: rgba(241, 245, 249, 0.95);
+  
+  --border-card: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.12);
+  --border-accent: rgba(16, 185, 129, 0.45);
+  
+  /* Primary & Accent Colors */
+  --primary: #059669;        /* Emerald Green */
+  --primary-glow: rgba(16, 185, 129, 0.25);
+  --secondary: #0891b2;      /* Cyan */
+  --secondary-glow: rgba(6, 182, 212, 0.25);
+  --accent-purple: #7c3aed;  /* Purple */
+  --purple-glow: rgba(124, 58, 237, 0.25);
+  
+  /* Alert & Status Colors */
+  --danger: #dc2626;         /* Red Alert */
+  --danger-glow: rgba(220, 38, 38, 0.25);
+  --warning: #d97706;        /* Amber Evaluate */
+  --success: #059669;
+  
+  /* Typography Tokens */
+  --text-main: #0f172a;
+  --text-muted: #334155;
+  --text-dim: #64748b;
+  
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', sans-serif;
+  
+  /* Borders & Shadows */
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+  --shadow-glow: 0 8px 30px 0 rgba(0, 0, 0, 0.06);
+}
+
+.dark {
+  /* High-Contrast Dark Canvas Tokens (Night Mode) */
   --bg-dark: #090A0F;
   --bg-card: #151824;
   --bg-card-glass: rgba(21, 24, 36, 0.85);
@@ -113,32 +153,22 @@ textarea {
   --border-subtle: rgba(255, 255, 255, 0.12);
   --border-accent: rgba(16, 185, 129, 0.45);
   
-  /* Primary & Accent Colors */
-  --primary: #10b981;        /* Emerald Green */
+  --primary: #10b981;
   --primary-glow: rgba(16, 185, 129, 0.4);
-  --secondary: #06b6d4;      /* Cyan */
+  --secondary: #06b6d4;
   --secondary-glow: rgba(6, 182, 212, 0.4);
-  --accent-purple: #8b5cf6;  /* Purple */
+  --accent-purple: #8b5cf6;
   --purple-glow: rgba(139, 92, 246, 0.4);
   
-  /* Alert & Status Colors */
-  --danger: #ef4444;         /* Red Alert */
+  --danger: #ef4444;
   --danger-glow: rgba(239, 68, 68, 0.4);
-  --warning: #f59e0b;        /* Amber Evaluate */
+  --warning: #f59e0b;
   --success: #10b981;
   
-  /* Typography Tokens */
   --text-main: #f8fafc;
   --text-muted: #cbd5e1;
   --text-dim: #94a3b8;
   
-  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Outfit', sans-serif;
-  
-  /* Borders & Shadows */
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 8px;
   --shadow-glow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
 }
 
@@ -482,8 +512,8 @@ body {
    ========================================================================== */
 
 .hero-overview-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(10, 16, 30, 0.95));
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
   position: relative;
   overflow: hidden;
 }
@@ -495,7 +525,7 @@ body {
   right: 0;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.15), transparent 70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.12), transparent 70%);
   pointer-events: none;
 }
 
@@ -512,7 +542,7 @@ body {
 }
 
 .overview-box {
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   padding: 20px;
@@ -536,7 +566,7 @@ body {
 }
 
 .impact-mini-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-sm);
   padding: 16px;
@@ -544,7 +574,7 @@ body {
 }
 
 .impact-mini-card:hover {
-  background: rgba(16, 185, 129, 0.06);
+  background: var(--bg-card-hover);
   border-color: var(--primary);
   transform: translateY(-2px);
 }
@@ -565,7 +595,7 @@ body {
 }
 
 .process-stage-card {
-  background: rgba(15, 23, 42, 0.8);
+  background: var(--bg-card);
   border: 2px solid var(--border-card);
   border-radius: var(--radius-md);
   padding: 20px;
@@ -577,18 +607,18 @@ body {
 
 .process-stage-card.red-alert {
   border-color: var(--danger);
-  background: radial-gradient(circle at top right, rgba(239, 68, 68, 0.15), rgba(15, 23, 42, 0.9));
+  background: radial-gradient(circle at top right, rgba(239, 68, 68, 0.12), var(--bg-card));
   box-shadow: 0 0 25px var(--danger-glow);
 }
 
 .process-stage-card.evaluate {
   border-color: var(--warning);
-  background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), rgba(15, 23, 42, 0.9));
+  background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), var(--bg-card));
 }
 
 .process-stage-card.normal {
   border-color: var(--primary);
-  background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.9));
+  background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), var(--bg-card));
 }
 
 .stage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
