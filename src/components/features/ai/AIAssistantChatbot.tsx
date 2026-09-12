@@ -230,12 +230,11 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
         {!isOpen ? (
           <button
             onClick={() => setIsOpen(true)}
-            className="group relative flex items-center space-x-2.5 px-4 py-3 rounded-full bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-slate-900/20 dark:shadow-emerald-600/30 hover:scale-105 active:scale-95 transition-all duration-300"
-            aria-label="Open AI Assistant Chatbot"
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-full bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-semibold text-xs shadow-lg hover:shadow-xl transition-all duration-200"
+            aria-label="Open AI Assistant"
           >
-            <Bot className="w-5 h-5 text-emerald-400 dark:text-white" />
-            <span className="font-heading">AI Assistant</span>
-            <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+            <Bot className="w-4 h-4 text-emerald-400 dark:text-white" />
+            <span>Ask AI</span>
           </button>
         ) : null}
       </div>
