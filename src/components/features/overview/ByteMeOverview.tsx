@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { TabId } from '../../../types';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
@@ -7,27 +7,17 @@ import {
   Zap,
   Activity,
   Flame,
-  Scan,
-  Layers,
   Recycle,
-  ShieldCheck,
   ArrowRight,
   ChevronRight,
-  Clock,
-  RefreshCw,
   Building2,
   TrendingDown,
   Coins,
-  CheckCircle2,
-  AlertTriangle,
   FileCheck,
-  Cpu,
-  BarChart3,
-  ExternalLink,
-  Users,
+  ShieldCheck,
   Compass,
+  AlertCircle,
 } from 'lucide-react';
-import { cn } from '../../../lib/utils';
 
 export interface ByteMeOverviewProps {
   onNavigate: (tab: TabId) => void;
@@ -40,21 +30,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   onStartJudgeTour,
   onOpenBRSRModal,
 }) => {
-  const [lastRefreshed, setLastRefreshed] = useState('Just now');
-  const [currentTime, setCurrentTime] = useState<Date>(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const handleRefreshStats = () => {
-    setLastRefreshed(
-      new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-    );
-  };
-
-  // Proof metrics
+  // Key Proof Numbers
   const keyProofMetrics = [
     {
       label: 'Total Capex Investment',
@@ -88,7 +64,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     },
   ];
 
-  // 5 Core Functionalities
+  // 5 Core Functionalities (Standardized Template)
   const coreFunctionalities = [
     {
       num: '01',
@@ -98,8 +74,9 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         'Simulate material and energy flow across Input Feedstock, High-Temperature Thermal Furnaces, Polymer Extrusion, and Byproduct Recovery with live mass-energy balance calculations.',
       mechanism: 'Simulates 4 sequential stages with real-time empirical equations for specific heat and grid power draw.',
       impactMetric: 'Pinpoints 48 tCO₂e/mo furnace leak',
+      isAlert: false,
       tabTarget: 'simulation' as TabId,
-      actionLabel: 'Inspect Process Pipeline',
+      actionLabel: 'Launch Twin Pipeline',
       icon: Flame,
     },
     {
@@ -109,10 +86,11 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       description:
         'Continuous telemetry monitoring identifies physical heat breaches, including 1,418°C kiln burner thermal overshoots and 380°C refractory wall radiation losses costing ₹12,400 daily.',
       mechanism: 'Calibrated against FLIR thermal infrared imaging curves and Zone 3 flue gas sensor telemetry.',
-      impactMetric: '₹3.72L/mo preventable fuel loss',
+      impactMetric: 'CRITICAL ALERT: ₹3.72L/mo fuel loss',
+      isAlert: true, // Uses Rose alert color ONLY for red-alert state
       tabTarget: 'analytics_hub' as TabId,
-      actionLabel: 'View 3D Hotspot Diagnostics',
-      icon: Activity,
+      actionLabel: 'Inspect Hotspots',
+      icon: AlertCircle,
     },
     {
       num: '03',
@@ -121,9 +99,10 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       description:
         'Accepts natural language operational queries and returns structured, costed action plans grounded strictly in facility telemetry, IPCC 2006 guidelines, and CEA India Grid v19 factors.',
       mechanism: 'Server-side key vault with deterministic zero-hallucination fallback engine for 99.9% uptime.',
-      impactMetric: 'Zero hallucinated numbers',
+      impactMetric: 'Zero hallucinated metrics',
+      isAlert: false,
       tabTarget: 'copilot' as TabId,
-      actionLabel: 'Launch AI Copilot Engine',
+      actionLabel: 'Launch AI Copilot',
       icon: Sparkles,
     },
     {
@@ -134,8 +113,9 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         'Interactive empirical sliders allowing plant managers to model fuel shifts (Biomass, RDF), temperature setpoint tuning, rooftop solar integration, and post-consumer recycled (PCR) resin blends.',
       mechanism: 'Calculates dynamic carbon abatement curves, monthly operational savings, and net payback schedule.',
       impactMetric: 'Instant split ROI comparison',
+      isAlert: false,
       tabTarget: 'simulator_hub' as TabId,
-      actionLabel: 'Run What-If ROI Simulator',
+      actionLabel: 'Run What-If Simulator',
       icon: Zap,
     },
     {
@@ -146,8 +126,9 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
         'Transforms manufacturing off-cut plastic and trim scrap into recurring revenue via automated algorithmic matchmaking with nearby industrial cluster buyers, eliminating landfill tipping fees.',
       mechanism: 'Calculates 30% virgin feedstock discount, avoided ₹1,500/Ton tipping fees, and net logistics costs.',
       impactMetric: '+₹3.0L/yr Byproduct Revenue',
+      isAlert: false,
       tabTarget: 'circular' as TabId,
-      actionLabel: 'Explore Circular Sankey Stream',
+      actionLabel: 'Explore Waste Network',
       icon: Recycle,
     },
   ];
@@ -214,7 +195,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     {
       role: 'ESG & Compliance Directors',
       tag: 'Regulatory & Audit',
-      benefit: 'Instantly generate verified SEBI BRSR Principle 6 Core audit packs and ISO 14064 GHG Scope 1-3 reports with zero consulting overhead.',
+      benefit: 'Instantly generate verified SEBI BRSR Principle 6 Core audit packs and ISO 14064 GHG Scope 1-3 reports.',
       kpi: '1-Click Audit Filing',
       action: 'Open BRSR Roadmap',
       target: 'roadmap' as TabId,
@@ -229,8 +210,8 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     },
     {
       role: 'Circular Economy Recyclers',
-      tag: 'Secondary Raw Materials',
-      benefit: 'Source pre-qualified industrial polymer trim and scrap directly from local manufacturers at discounted feedstock pricing.',
+      tag: 'Secondary Materials',
+      benefit: 'Source pre-qualified industrial polymer trim scrap directly from local manufacturers at discounted feedstock pricing.',
       kpi: '85% Landfill Diversion',
       action: 'View Waste Sankey',
       target: 'circular' as TabId,
@@ -238,42 +219,42 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
   ];
 
   return (
-    <div className="w-full space-y-10 animate-fadeIn pb-16 font-sans">
+    <div className="w-full max-w-7xl mx-auto space-y-12 animate-fadeIn pb-16 text-slate-900 dark:text-slate-100 font-sans">
       {/* ============================================================ */}
       {/* 1. HERO SECTION                                              */}
       {/* ============================================================ */}
-      <section className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 sm:p-10 shadow-xs transition-colors">
-        <div className="max-w-4xl space-y-6">
-          {/* Status Chip & Facility Badge */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+      <section className="rounded-2xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-[#0E131F] p-8 md:p-10 shadow-xs">
+        <div className="max-w-3xl space-y-6">
+          {/* Facility Context Chip */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
               <span>Pilot Facility: Apex Packaging Pvt. Ltd. (Pune, India)</span>
             </span>
-            <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-mono">
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/80 text-xs font-mono">
               <Building2 className="w-3.5 h-3.5" />
-              <span>Plastics & Polymer Manufacturing</span>
+              <span>Plastics &amp; Packaging SME</span>
             </span>
           </div>
 
-          {/* Primary Product Value Headline */}
+          {/* Product Title & Subtitle */}
           <div className="space-y-3">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
               Industrial Emission Leak-Point Detector &amp;{' '}
               <span className="text-emerald-600 dark:text-emerald-400">Circular Recommender</span>
             </h1>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-              ByteMe identifies hidden thermal and electrical carbon leak points in SME factories, modeling costed, ROI-ranked circular interventions to cut emissions by 42% while delivering sub-11-month financial payback.
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+              ByteMe identifies hidden carbon leak points in SME factories and recommends costed, ROI-ranked circular interventions to cut emissions by 42% with a sub-11-month financial payback.
             </p>
           </div>
 
-          {/* Primary Action Buttons */}
+          {/* Single Primary CTA + Secondary Actions */}
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <Button
               variant="primary"
               size="lg"
               onClick={() => onNavigate('simulation')}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 shadow-xs"
             >
               <span>Launch Digital Twin Pipeline</span>
               <ArrowRight className="w-4 h-4" />
@@ -297,7 +278,7 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                 className="flex items-center space-x-2"
               >
                 <Compass className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-                <span>Start 60s Guided Tour</span>
+                <span>60s Guided Tour</span>
               </Button>
             )}
           </div>
@@ -305,71 +286,33 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       </section>
 
       {/* ============================================================ */}
-      {/* 2. KEY PROOF NUMBERS (BENCHMARK STATS BAR)                   */}
+      {/* 2. THE PROBLEM: THE INDUSTRIAL SME DILEMMA                   */}
       {/* ============================================================ */}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
-            Verified Facility Impact Proof Metrics
-          </h2>
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-            IPCC 2006 &amp; CEA India Grid v19 Grounded
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-          {keyProofMetrics.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={idx} className="p-4 sm:p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">
-                    {stat.label}
-                  </span>
-                  <Icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    {stat.subtext}
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* 3. THE PROBLEM: THE INDUSTRIAL SME DILEMMA                   */}
-      {/* ============================================================ */}
-      <section className="space-y-4">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+      <section className="space-y-6">
+        <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4">
           <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
             The Industrial SME Decarbonization Dilemma
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Why Indian manufacturing SMEs struggle with traditional ESG tools and carbon reporting.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-6 space-y-3">
-            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="p-6 space-y-4">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono font-bold text-xs text-slate-700 dark:text-slate-300">
               01
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
               Unseen Thermal Leak Points
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Industrial kilns and furnaces operate with uncalibrated air-fuel ratios and damaged refractory shell insulation, leaking up to 48 tCO₂e/mo in wasted fossil fuel without operator awareness.
+              Kilns and furnaces operate with uncalibrated air-fuel ratios and damaged refractory shell insulation, leaking up to 48 tCO₂e/mo in wasted fossil fuel without operator awareness.
             </p>
           </Card>
 
-          <Card className="p-6 space-y-3">
-            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+          <Card className="p-6 space-y-4">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono font-bold text-xs text-slate-700 dark:text-slate-300">
               02
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -380,8 +323,8 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             </p>
           </Card>
 
-          <Card className="p-6 space-y-3">
-            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+          <Card className="p-6 space-y-4">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono font-bold text-xs text-slate-700 dark:text-slate-300">
               03
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -395,20 +338,20 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       </section>
 
       {/* ============================================================ */}
-      {/* 4. THE 5 CORE FUNCTIONALITIES (STANDARDIZED SHOWCASE)       */}
+      {/* 3. 5 CORE FUNCTIONALITIES (STANDARDIZED TEMPLATE)            */}
       {/* ============================================================ */}
       <section className="space-y-6">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               5 Core Platform Functionalities
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Empirical modeling, automated leak detection, and algorithmic byproduct monetization.
             </p>
           </div>
-          <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 self-start sm:self-auto">
-            Click any module to launch
+          <span className="text-xs font-mono text-slate-500 dark:text-slate-400 self-start sm:self-auto">
+            Click any module to inspect live state
           </span>
         </div>
 
@@ -418,35 +361,44 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             return (
               <Card
                 key={func.num}
-                className="p-6 hover:border-emerald-500/50 transition-all duration-200 group"
+                className="p-6 transition-all duration-200 hover:border-emerald-500/40"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                  {/* Left Column: Number, Title, Description */}
+                  {/* Left Column: Number Badge, Title, Description, Mechanism */}
                   <div className="flex items-start space-x-4 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-mono font-bold text-sm shrink-0">
+                    <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-mono font-bold text-xs shrink-0 mt-0.5">
                       {func.num}
                     </div>
-                    <div className="space-y-1.5 flex-1 min-w-0">
+
+                    <div className="space-y-2 flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">
                           {func.title}
                         </h3>
-                        <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                        <span className="text-xs font-mono text-slate-400 dark:text-slate-500">
                           • {func.tagline}
                         </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                         {func.description}
                       </p>
-                      <div className="pt-2 flex flex-wrap items-center gap-y-1 gap-x-4 text-xs font-mono text-slate-500 dark:text-slate-400">
-                        <span><strong>Mechanism:</strong> {func.mechanism}</span>
+
+                      <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Mechanism:</span> {func.mechanism}
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Column: Metric Badge & Launch Action */}
-                  <div className="flex lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800 shrink-0">
-                    <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-semibold border border-emerald-500/20">
+                  {/* Right Column: Metric Pill & Standard CTA */}
+                  <div className="flex lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
+                    <div
+                      className={
+                        func.isAlert
+                          ? 'px-3 py-1 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 font-mono text-xs font-semibold border border-rose-500/20'
+                          : 'px-3 py-1 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-semibold border border-emerald-500/20'
+                      }
+                    >
                       {func.impactMetric}
                     </div>
 
@@ -454,11 +406,49 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                       variant="outline"
                       size="sm"
                       onClick={() => onNavigate(func.tabTarget)}
-                      className="flex items-center space-x-1.5 text-xs group-hover:border-emerald-500 group-hover:bg-emerald-600 group-hover:text-white transition-all"
+                      className="flex items-center space-x-1.5 text-xs hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400"
                     >
                       <span>{func.actionLabel}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </Button>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 4. VERIFIED FACILITY IMPACT PROOF METRICS                    */}
+      {/* ============================================================ */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/80 pb-3">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+            Verified Facility Impact Proof Metrics
+          </h2>
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">
+            IPCC 2006 &amp; CEA India Grid v19 Grounded
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          {keyProofMetrics.map((stat, idx) => {
+            const Icon = stat.icon;
+            return (
+              <Card key={idx} className="p-5 flex flex-col justify-between space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
+                    {stat.label}
+                  </span>
+                  <Icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    {stat.value}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {stat.subtext}
                   </div>
                 </div>
               </Card>
@@ -471,12 +461,12 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       {/* 5. FINANCIAL & CARBON ROI IMPACT MATRIX (COSTED TABLE)       */}
       {/* ============================================================ */}
       <section className="space-y-4">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               Costed Decarbonization Action Plan &amp; Payback Matrix
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Ranked financial investment roadmap modeled for Apex Packaging (195 tCO₂e/yr total cut).
             </p>
           </div>
@@ -493,25 +483,25 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
           )}
         </div>
 
-        <Card className="overflow-hidden border border-slate-200 dark:border-slate-800">
+        <Card className="overflow-hidden border border-slate-200 dark:border-slate-800/80">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-sans">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-mono uppercase tracking-wider text-[11px]">
+              <thead className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800/80 text-slate-500 dark:text-slate-400 font-mono uppercase tracking-wider text-[11px]">
                 <tr>
-                  <th className="py-3 px-4">Rank</th>
-                  <th className="py-3 px-4">Intervention &amp; Strategy</th>
-                  <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4 text-right">Capex</th>
-                  <th className="py-3 px-4 text-right">CO₂ Cut / yr</th>
-                  <th className="py-3 px-4 text-right">Annual Savings</th>
-                  <th className="py-3 px-4 text-right">Payback</th>
+                  <th className="py-3.5 px-4">Rank</th>
+                  <th className="py-3.5 px-4">Intervention &amp; Strategy</th>
+                  <th className="py-3.5 px-4">Category</th>
+                  <th className="py-3.5 px-4 text-right">Capex</th>
+                  <th className="py-3.5 px-4 text-right">CO₂ Cut / yr</th>
+                  <th className="py-3.5 px-4 text-right">Annual Savings</th>
+                  <th className="py-3.5 px-4 text-right">Payback</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {roiActionItems.map((item) => (
                   <tr
                     key={item.rank}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors"
                   >
                     <td className="py-3.5 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
                       #{item.rank}
@@ -522,36 +512,36 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                     <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
                       {item.type}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-mono font-semibold text-slate-800 dark:text-slate-200">
+                    <td className="py-3.5 px-4 text-right font-mono text-slate-700 dark:text-slate-300">
                       {item.capex}
                     </td>
                     <td className="py-3.5 px-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">
                       {item.annualCO2}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900 dark:text-white">
+                    <td className="py-3.5 px-4 text-right font-mono font-semibold text-slate-900 dark:text-white">
                       {item.annualSavings}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-mono font-semibold text-slate-700 dark:text-slate-300">
+                    <td className="py-3.5 px-4 text-right font-mono text-slate-600 dark:text-slate-400">
                       {item.payback}
                     </td>
                   </tr>
                 ))}
               </tbody>
-              <tfoot className="bg-slate-100/80 dark:bg-slate-800/80 border-t-2 border-slate-200 dark:border-slate-700 font-mono font-bold text-xs">
+              <tfoot className="bg-slate-50/90 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800/80 font-mono text-xs">
                 <tr>
-                  <td colSpan={3} className="py-3.5 px-4 text-slate-900 dark:text-white uppercase">
+                  <td colSpan={3} className="py-3.5 px-4 text-slate-900 dark:text-white font-bold uppercase">
                     Combined Portfolio Total Impact
                   </td>
-                  <td className="py-3.5 px-4 text-right text-slate-900 dark:text-white">
+                  <td className="py-3.5 px-4 text-right text-slate-900 dark:text-white font-bold">
                     ₹20.30L
                   </td>
-                  <td className="py-3.5 px-4 text-right text-emerald-600 dark:text-emerald-400">
+                  <td className="py-3.5 px-4 text-right text-emerald-600 dark:text-emerald-400 font-bold">
                     195.0 tCO₂e/yr
                   </td>
-                  <td className="py-3.5 px-4 text-right text-slate-900 dark:text-white">
+                  <td className="py-3.5 px-4 text-right text-slate-900 dark:text-white font-bold">
                     ₹16.56L/yr
                   </td>
-                  <td className="py-3.5 px-4 text-right text-emerald-600 dark:text-emerald-400">
+                  <td className="py-3.5 px-4 text-right text-emerald-600 dark:text-emerald-400 font-bold">
                     ~10.5 mos
                   </td>
                 </tr>
@@ -564,21 +554,21 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       {/* ============================================================ */}
       {/* 6. STAKEHOLDER BENEFICIARIES                                  */}
       {/* ============================================================ */}
-      <section className="space-y-4">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+      <section className="space-y-6">
+        <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4">
           <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
             Stakeholder Alignment &amp; Value Realization
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Tailored workflows for every decision-maker in the industrial SME hierarchy.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stakeholders.map((s, idx) => (
-            <Card key={idx} className="p-5 flex flex-col justify-between space-y-4">
-              <div className="space-y-2">
-                <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+            <Card key={idx} className="p-6 flex flex-col justify-between space-y-4">
+              <div className="space-y-3">
+                <span className="text-[10px] font-mono font-semibold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/80">
                   {s.tag}
                 </span>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -589,18 +579,20 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-3">
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-slate-500">Key Outcome:</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{s.kpi}</span>
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">{s.kpi}</span>
                 </div>
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={() => onNavigate(s.target)}
-                  className="w-full py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center justify-center space-x-1 transition-colors"
+                  className="w-full text-xs flex items-center justify-center space-x-1"
                 >
                   <span>{s.action}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
-                </button>
+                </Button>
               </div>
             </Card>
           ))}
@@ -610,13 +602,13 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       {/* ============================================================ */}
       {/* 7. SCIENTIFIC DATA PROVENANCE & ARCHITECTURE                 */}
       {/* ============================================================ */}
-      <section className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-6 sm:p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+      <section className="rounded-2xl border border-slate-200/90 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0E131F] p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800/80 pb-4">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Scientific Data Provenance &amp; System Architecture
             </h2>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Strictly grounded mathematical calculation engines with statutory citation standards.
             </p>
           </div>
@@ -625,12 +617,12 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2">
-            <div className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-2">
+            <div className="text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
               Emission Factors
             </div>
-            <div className="text-sm font-bold text-slate-900 dark:text-white font-heading">
+            <div className="text-sm font-bold text-slate-900 dark:text-white font-sans">
               CEA India Grid v19 &amp; IPCC 2006
             </div>
             <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed font-sans">
@@ -638,11 +630,11 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2">
-            <div className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-2">
+            <div className="text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
               Compliance Standard
             </div>
-            <div className="text-sm font-bold text-slate-900 dark:text-white font-heading">
+            <div className="text-sm font-bold text-slate-900 dark:text-white font-sans">
               SEBI BRSR Core &amp; ISO 14064
             </div>
             <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed font-sans">
@@ -650,11 +642,11 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2">
-            <div className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-2">
+            <div className="text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
               AI Backend Security
             </div>
-            <div className="text-sm font-bold text-slate-900 dark:text-white font-heading">
+            <div className="text-sm font-bold text-slate-900 dark:text-white font-sans">
               Server-Side API Key Vault
             </div>
             <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed font-sans">
@@ -667,12 +659,12 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
       {/* ============================================================ */}
       {/* 8. TEAM & PROJECT CREDENTIALS                                 */}
       {/* ============================================================ */}
-      <section className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
+      <section className="pt-4 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
         <div className="flex items-center space-x-2">
-          <Building2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           <span>ByteMe v2.0 • Hackout 2.0 National Hackathon Submission</span>
         </div>
-        <div className="flex items-center space-x-4 text-[11px]">
+        <div className="flex items-center space-x-3 text-[11px]">
           <span>React + Vite</span>
           <span>•</span>
           <span>Node.js / Express</span>
