@@ -120,15 +120,15 @@ export const ByteMeOverview: React.FC<ByteMeOverviewProps> = ({
     },
     {
       num: '05',
-      title: 'AI Waste-to-Resource Matching Network',
-      tagline: 'Algorithmic B2B Circular Byproduct Marketplace',
+      title: 'Material & Energy Sankey Flow',
+      tagline: 'Algorithmic Circular Waste & Energy Stream Visualizer',
       description:
-        'Transforms manufacturing off-cut plastic and trim scrap into recurring revenue via automated algorithmic matchmaking with nearby industrial cluster buyers, eliminating landfill tipping fees.',
-      mechanism: 'Calculates 30% virgin feedstock discount, avoided ₹1,500/Ton tipping fees, and net logistics costs.',
-      impactMetric: '+₹3.0L/yr Byproduct Revenue',
+        'Visualizes facility input materials, thermal energy dissipation, and byproduct flows to identify Scope 1-3 decarbonization pathways.',
+      mechanism: 'Calculates material mass balance, waste diversion %, and thermal efficiency metrics.',
+      impactMetric: 'Scope 1-3 Flow Map',
       isAlert: false,
-      tabTarget: 'circular' as TabId,
-      actionLabel: 'Explore Waste Network',
+      tabTarget: 'sankey' as TabId,
+      actionLabel: 'Explore Sankey Flow',
       icon: Recycle,
     },
   ];
