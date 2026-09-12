@@ -18,11 +18,14 @@ export function renderHeader(kpiData = {}) {
         </div>
 
         <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn-primary" id="btn-start-tour" style="font-size:12px; padding:8px 16px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:#fff;">
+            🎬 Pitch Tour
+          </button>
           <button class="btn-primary" id="btn-download-pdf" style="font-size:12px; padding:8px 16px; background:linear-gradient(135deg, #06b6d4, #3b82f6); color:#fff;">
-            📥 Download ESG Audit PDF
+            📥 ESG Audit PDF
           </button>
           <button class="pill-btn" id="btn-preset-baseline" style="background:rgba(239, 68, 68, 0.15); color:var(--danger); border-color:var(--danger);">
-            🚨 Baseline (Red Alert)
+            🚨 Baseline
           </button>
           <button class="pill-btn" id="btn-preset-moderate" style="background:rgba(6, 182, 212, 0.15); color:var(--secondary); border-color:var(--secondary);">
             ⚡ Moderate (-21%)

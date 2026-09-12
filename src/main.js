@@ -1,5 +1,6 @@
 import { App } from './App.js';
 import { initChartInstances } from './components/ChartsPanel.js';
+import { tourSteps } from './components/DemoTour.js';
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -20,6 +21,8 @@ let appState = {
   copilotData: {},
   roadmapData: []
 };
+
+let currentTourIndex = 0;
 
 // Render App
 function render() {
@@ -51,16 +54,7 @@ function attachEventListeners() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const targetTab = e.currentTarget.getAttribute('data-tab');
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-      e.currentTarget.classList.add('active');
-      const contentEl = document.getElementById(targetTab);
-      if (contentEl) contentEl.classList.add('active');
-
-      if (targetTab === 'tab-whatif') {
-        setTimeout(initChartInstances, 50);
-      }
+      switchTab(targetTab);
     });
   });
 
@@ -100,9 +94,87 @@ function attachEventListeners() {
   const pdfBtnRoadmap = document.getElementById('btn-download-pdf-roadmap');
   if (pdfBtnRoadmap) pdfBtnRoadmap.addEventListener('click', handlePDFDownload);
 
+  // Pitch Tour Handlers
+  const tourBtn = document.getElementById('btn-start-tour');
+  if (tourBtn) tourBtn.addEventListener('click', startDemoTour);
+
+  const closeTour = document.getElementById('btn-close-tour');
+  if (closeTour) closeTour.addEventListener('click', endDemoTour);
+
+  const nextTour = document.getElementById('btn-tour-next');
+  if (nextTour) nextTour.addEventListener('click', nextTourStep);
+
+  const prevTour = document.getElementById('btn-tour-prev');
+  if (prevTour) prevTour.addEventListener('click', prevTourStep);
+
   // AI Copilot Ask Button
   const askBtn = document.getElementById('btn-copilot-ask');
   if (askBtn) askBtn.addEventListener('click', handleCopilotQuery);
+}
+
+// Switch Active Tab
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+  const tabBtn = document.querySelector(`[data-tab="${tabId}"]`);
+  if (tabBtn) tabBtn.classList.add('active');
+  
+  const contentEl = document.getElementById(tabId);
+  if (contentEl) contentEl.classList.add('active');
+
+  if (tabId === 'tab-whatif') {
+    setTimeout(initChartInstances, 50);
+  }
+}
+
+// Pitch Demo Tour Handlers
+function startDemoTour() {
+  currentTourIndex = 0;
+  showTourStep(0);
+  const overlay = document.getElementById('demo-tour-overlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function endDemoTour() {
+  const overlay = document.getElementById('demo-tour-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function nextTourStep() {
+  if (currentTourIndex < tourSteps.length - 1) {
+    currentTourIndex++;
+    showTourStep(currentTourIndex);
+  } else {
+    endDemoTour();
+  }
+}
+
+function prevTourStep() {
+  if (currentTourIndex > 0) {
+    currentTourIndex--;
+    showTourStep(currentTourIndex);
+  }
+}
+
+function showTourStep(index) {
+  const step = tourSteps[index];
+  if (!step) return;
+
+  switchTab(step.tab);
+
+  const badgeEl = document.getElementById('tour-step-badge');
+  const titleEl = document.getElementById('tour-title');
+  const descEl = document.getElementById('tour-desc');
+  const prevBtn = document.getElementById('btn-tour-prev');
+  const nextBtn = document.getElementById('btn-tour-next');
+
+  if (badgeEl) badgeEl.innerText = step.badge;
+  if (titleEl) titleEl.innerText = step.title;
+  if (descEl) descEl.innerText = step.desc;
+
+  if (prevBtn) prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
+  if (nextBtn) nextBtn.innerText = index === tourSteps.length - 1 ? 'Finish Tour 🎉' : 'Next Step →';
 }
 
 // 1-Click ESG PDF Generator
@@ -120,7 +192,6 @@ function handlePDFDownload() {
     };
     html2pdf().set(opt).from(element).save();
   } else {
-    // Fallback: Open browser print dialog
     window.print();
   }
 }
@@ -179,8 +250,7 @@ async function handleCopilotQuery() {
       const data = await res.json();
       appState.copilotData = data;
       render();
-      const copilotTabBtn = document.querySelector('[data-tab="tab-copilot"]');
-      if (copilotTabBtn) copilotTabBtn.click();
+      switchTab('tab-copilot');
     }
   } catch (e) {
     console.warn('Copilot query failed:', e);

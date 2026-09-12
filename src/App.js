@@ -5,6 +5,7 @@ import { renderChartsPanel } from './components/ChartsPanel.js';
 import { renderCopilotPanel } from './components/CopilotPanel.js';
 import { renderCircularNetwork } from './components/CircularNetwork.js';
 import { renderRoadmapTable } from './components/RoadmapTable.js';
+import { renderDemoTourModal } from './components/DemoTour.js';
 
 export function App(state = {}) {
   const {
@@ -65,6 +66,8 @@ export function App(state = {}) {
           ${renderRoadmapTable(roadmapData, state)}
         </div>
       </main>
+
+      ${renderDemoTourModal()}
     </div>
   `;
 }
