@@ -86,8 +86,9 @@ export const AdvancedAnalyticsHub: React.FC<AdvancedAnalyticsHubProps> = ({
               Animated 3D facility thermal overlay, multi-axis regression models, and anomaly root-cause explainability.
             </CardDescription>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-semibold border border-rose-500/20">
-            Real-time Thermal Telemetry
+          <span className="text-xs px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold border border-rose-500/30 flex items-center space-x-1">
+            <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+            <span>⚡ AI Thermal Diagnostic Engine</span>
           </span>
         </div>
       </CardHeader>

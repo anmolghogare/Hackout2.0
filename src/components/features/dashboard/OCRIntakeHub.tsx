@@ -125,8 +125,9 @@ export const OCRIntakeHub: React.FC<OCRIntakeHubProps> = ({ onApplyIntakeBaselin
                 Supports PNG, PDF, JPG (Electricity Bills, Furnace Oil Invoices, Weighbridge Slips)
               </p>
 
-              <Button variant="outline" size="sm" className="pointer-events-none">
-                <span>Browse Local Files</span>
+              <Button variant="primary" size="sm" className="pointer-events-none font-bold">
+                <Sparkles className="w-3.5 h-3.5 mr-1" />
+                <span>📄 Run AI OCR Invoice Scanner</span>
               </Button>
             </div>
 

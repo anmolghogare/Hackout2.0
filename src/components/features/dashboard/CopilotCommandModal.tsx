@@ -143,13 +143,16 @@ export const CopilotCommandModal: React.FC<CopilotCommandModalProps> = ({
             </div>
             <div>
               <h3 className="font-extrabold font-heading text-lg text-slate-900 dark:text-white flex items-center space-x-2">
-                <span>AI Copilot Command Terminal</span>
+                <span>🤖 AI Copilot Command Terminal</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono font-bold border border-emerald-500/30">
+                  ✨ Server-Side AI
+                </span>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-slate-600 dark:text-slate-400">
                   Cmd + K
                 </span>
               </h3>
               <p className="text-xs text-slate-500">
-                Natural language simulation engine & provenance-backed engineering cards
+                Natural language simulation engine & IPCC/CEA provenance-backed engineering cards
               </p>
             </div>
           </div>

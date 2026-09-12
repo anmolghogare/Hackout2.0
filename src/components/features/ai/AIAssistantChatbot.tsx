@@ -235,11 +235,13 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
               <div>
                 <div className="flex items-center space-x-1.5">
                   <h4 className="font-heading font-extrabold text-sm text-slate-900 dark:text-white">
-                    ByteMe Copilot Assistant
+                    ByteMe AI Copilot
                   </h4>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[9px] font-mono font-extrabold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                    ✨ Server-Side AI
+                  </span>
                 </div>
-                <p className="text-[10.5px] text-slate-500 dark:text-slate-400">Navigation & Intelligence Co-pilot</p>
+                <p className="text-[10.5px] text-slate-500 dark:text-slate-400">IPCC 2006 & CEA Grounded Intelligence</p>
               </div>
             </div>
 
@@ -279,7 +281,7 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
               >
                 <div
                   className={cn(
-                    'max-w-[85%] p-3.5 rounded-2xl leading-relaxed',
+                    'max-w-[85%] p-3.5 rounded-2xl leading-relaxed whitespace-pre-line',
                     m.sender === 'user'
                       ? 'bg-emerald-600 text-white rounded-br-none shadow-sm font-medium'
                       : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-bl-none shadow-sm'
@@ -299,6 +301,37 @@ export const AIAssistantChatbot: React.FC<AIAssistantChatbotProps> = ({
                 </div>
               </div>
             ))}
+
+            {messages.length === 1 && (
+              <div className="space-y-1.5 pt-1">
+                <span className="text-[10.5px] font-mono font-bold text-slate-400 uppercase tracking-wider block">
+                  ✨ Try AI Prompt Shortcuts:
+                </span>
+                <div className="grid grid-cols-1 gap-1.5">
+                  <button
+                    onClick={() => handleSendMessage('How can I reduce emissions by 20% without raising cost?')}
+                    className="p-2 rounded-xl bg-emerald-50/80 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30 text-[11px] text-left font-medium transition-colors flex items-center justify-between"
+                  >
+                    <span>💡 How to reduce emissions by 20%?</span>
+                    <Sparkles className="w-3 h-3 text-emerald-500 shrink-0" />
+                  </button>
+                  <button
+                    onClick={() => handleSendMessage('What is our ROI and payback period?')}
+                    className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] text-left font-medium transition-colors flex items-center justify-between"
+                  >
+                    <span>💰 What is our ROI & payback period?</span>
+                    <Sparkles className="w-3 h-3 text-teal-500 shrink-0" />
+                  </button>
+                  <button
+                    onClick={() => handleSendMessage('How to monetize 12T trim scrap?')}
+                    className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] text-left font-medium transition-colors flex items-center justify-between"
+                  >
+                    <span>🔄 How to monetize 12T trim scrap?</span>
+                    <Sparkles className="w-3 h-3 text-amber-500 shrink-0" />
+                  </button>
+                </div>
+              </div>
+            )}
 
             {isTyping && (
               <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400 text-xs font-mono">
